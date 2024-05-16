@@ -49,4 +49,13 @@ class AuthController extends Controller
             return redirect()->route('login')->with('error', 'Login gagal. Periksa kembali email dan password Anda.');
         }
     }
+    // Log out
+    public function logoutUser(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('login');
+    }
     }
