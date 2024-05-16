@@ -16,9 +16,9 @@ use App\Http\Controllers\AsetController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/', function () {
+    return view('welcome');
+});
 Route::get('/aset', function () {
     return view('layouts.main');
 });
