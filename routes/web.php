@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,5 @@ Route::get('/aset', function () {
 });
 
 Route::resource('categories', CategoryController::class);
+Route::get('/categories/{id}/edit', 'CategoryController@edit');
+
