@@ -20,4 +20,4 @@ Route::get('/aset', function () {
     return view('layouts.main');
 });
 
-Route::resource('categories', CategoryController::class);
+Route::get('/categories', [CategoryController::class, 'index']);
