@@ -15,7 +15,7 @@
                     
         <div class="container">
             <h1>Categories</h1>
-            <a href="{{ route('categories.create') }}" class="btn btn-primary">Create Category</a>
+            <a href="{{ route('category.create') }}" class="btn btn-primary">Create Category</a>
             <table class="table">
                 <thead>
                     <tr>

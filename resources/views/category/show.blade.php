@@ -12,6 +12,6 @@
             <p>Category Name: {{ $category->name }}</p>
         </div>
     </div>
-    <a href="{{ route('categories.index') }}" class="btn btn-secondary mt-3">Back to Categories</a>
+    <a href="{{ route('category.index') }}" class="btn btn-secondary mt-3">Back to Categories</a>
 </div>
 @endsection
