@@ -19,3 +19,5 @@ Route::get('/', function () {
 Route::get('/aset', function () {
     return view('layouts.main');
 });
+
+Route::resource('categories', CategoryController::class);
