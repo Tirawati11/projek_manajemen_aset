@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aset;
+use App\Models\Year;
+use App\Models\Code;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,8 +16,10 @@ class AsetController extends Controller
      */
     public function index()
     {
-        $aset = Aset::latest()->paginate(10);
-        return view('aset.index', compact('aset'));
+        $asets = Aset::with('years', 'codes')->latest()->paginate(1);
+        $years = Year::All();
+        $codes = Code::All();
+        return view('aset.index', compact('asets', 'years', 'codes'));
     }
 
     /**
@@ -23,7 +27,9 @@ class AsetController extends Controller
      */
     public function create()
     {
-        return view('aset.create');
+        $years = Year::all();
+        $codes = Code::all();
+        return view('aset.create', compact('years', 'codes'));
     }
 
     /**
@@ -33,36 +39,35 @@ class AsetController extends Controller
     {
         $validated = $request->validate([
             'gambar' => 'required|image|mimes:jpeg,jpg,png|max:2048',
-            'kode' => 'required|max:15',
+            'code_id' => 'required|max:15',
             'nama_barang' => 'required',
             'jumlah' => 'required',
-            'status' => 'required',
             'deskripsi' => 'required',
-            'lokasi' => 'required',
             'merek' => 'required',
-            'tahun' => 'required',
+            'year_id' => 'required', // Ubah ini sesuai dengan nama field foreign key yang digunakan dalam model Aset
             'kondisi' => 'required',
         ]);
 
-        // Simpan gambar ke dalam direktori 'public/gambar'
-        $gambarPath = $request->file('gambar')->store('public/gambar');
+       //upload image
+       $image = $request->file( 'gambar' );
+       $image->storeAs( 'public/aset', $image->hashName() );
+
 
         // Buat dan simpan data aset ke dalam database
         $aset = new Aset();
-        $aset->gambar = $gambarPath;  // Simpan path gambar ke dalam kolom 'gambar'
-        $aset->kode = $request->kode;
+        $aset->gambar = $image->hashName();  // Simpan path gambar ke dalam kolom 'gambar'
+        $aset->code_id = $request->code_id;
         $aset->nama_barang = $request->nama_barang;
         $aset->jumlah = $request->jumlah;
-        $aset->status = $request->status;
         $aset->deskripsi = $request->deskripsi;
-        $aset->lokasi = $request->lokasi;
         $aset->merek = $request->merek;
-        $aset->tahun = $request->tahun;
+        $aset->year_id = $request->year_id; // Sesuaikan dengan nama field foreign key yang digunakan dalam model Aset
         $aset->kondisi = $request->kondisi;
         $aset->save();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil disimpan.');
     }
+
 
     /**
      * Display the specified resource.
@@ -75,51 +80,59 @@ class AsetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Aset $aset)
+    public function edit(string $id)
     {
-        return view('aset.edit', compact('aset'));
+        $aset = Aset::findOrFail($id);
+        $years = Year::all();
+        $codes = Code::all();
+        return view('aset.edit', compact('aset', 'years', 'codes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Aset $aset)
-    {
-        $validated = $request->validate([
-            'gambar' => 'image|mimes:jpeg,jpg,png|max:2048',
-            'kode' => 'required|max:15',
-            'nama_barang' => 'required',
-            'jumlah' => 'required',
-            'status' => 'required',
-            'deskripsi' => 'required',
-            'lokasi' => 'required',
-            'merek' => 'required',
-            'tahun' => 'required',
-            'kondisi' => 'required',
-        ]);
+    public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'gambar' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+        'code_id' => 'required|max:15',
+        'nama_barang' => 'required',
+        'jumlah' => 'required',
+        'deskripsi' => 'required',
+        'merek' => 'required',
+        'year_id' => 'required', // Ubah ini sesuai dengan nama field foreign key yang digunakan dalam model Aset
+        'kondisi' => 'required',
+    ]);
 
-        if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            Storage::delete($aset->gambar);
+    $aset = Aset::findOrFail($id);
+    // Jika ada file gambar yang diunggah
+    if ($request->hasFile('gambar')) {
+        $gambar = $request->file('gambar');
+        $imageName = $gambar->getClientOriginalName();
+        $gambar->storeAs('public/article', $imageName);
 
-            // Simpan gambar baru ke dalam direktori 'public/gambar'
-            $gambarPath = $request->file('gambar')->store('public/gambar');
-            $aset->gambar = $gambarPath;  // Simpan path gambar ke dalam kolom 'gambar'
-        }
+        // Hapus gambar lama dari storage
+        Storage::delete('public/article/'.$aset->gambar);
 
-        $aset->kode = $request->kode;
-        $aset->nama_barang = $request->nama_barang;
-        $aset->jumlah = $request->jumlah;
-        $aset->status = $request->status;
-        $aset->deskripsi = $request->deskripsi;
-        $aset->lokasi = $request->lokasi;
-        $aset->merek = $request->merek;
-        $aset->tahun = $request->tahun;
-        $aset->kondisi = $request->kondisi;
-        $aset->save();
 
-        return redirect()->route('aset.index')->with('success', 'Data aset berhasil diperbarui.');
+        // Upload gambar baru
+        $image = $request->file('gambar');
+        $image->storeAs('public/aset', $image->hashName());
+        $aset->gambar = $image->hashName();  // Simpan path gambar baru ke dalam kolom 'gambar'
     }
+
+    // Update data aset
+    $aset->code_id = $request->code_id;
+    $aset->nama_barang = $request->nama_barang;
+    $aset->jumlah = $request->jumlah;
+    $aset->deskripsi = $request->deskripsi;
+    $aset->merek = $request->merek;
+    $aset->year_id = $request->year_id;
+    $aset->kondisi = $request->kondisi;
+    $aset->save();
+
+    return redirect()->route('aset.index')->with('success', 'Data aset berhasil diperbarui.');
+}
 
     /**
      * Remove the specified resource from storage.

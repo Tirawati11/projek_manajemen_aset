@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('asets', function (Blueprint $table) {
             $table->id();
-            $table->string('kode');
             $table->string('gambar');
-            $table->string('nama barang');
-            $table->string('Merek');
-            $table->string('tahun');
+            $table->string('nama_barang');
+            $table->string('merek');
             $table->string('jumlah');
             $table->string('status')->nullable();
             $table->string('lokasi')->nullable();
