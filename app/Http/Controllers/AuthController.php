@@ -44,7 +44,13 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->route('/dashboard'); 
+            $user = Auth::user();
+
+        if (!$user->approved){
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'Akun anda belum disetujui admin');
+        }
+         return redirect()->route('dashboard');
         } else {
             return redirect()->route('login')->with('error', 'Login gagal. Periksa kembali email dan password Anda.');
         }
