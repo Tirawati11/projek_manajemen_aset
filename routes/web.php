@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PengajuanBarangController;
 
 
 /*
@@ -21,3 +22,5 @@ Route::get('/aset', function () {
     return view('layouts.main');
 });
 
+// Route pengajuan barang
+Route::resource('pengajuan', PengajuanBarangController::class);
