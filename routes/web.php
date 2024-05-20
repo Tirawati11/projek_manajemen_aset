@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,6 @@ Route::get('/', function () {
 Route::get('/aset', function () {
     return view('layouts.main');
 });
+
+Route::resource('users', UserController::class);
+Route::put('users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
