@@ -1,5 +1,4 @@
 @extends('layouts.main')
-@section('content')
 <style>
     .card-header-action {
         padding: 4.8px 12.8px;
@@ -50,7 +49,7 @@
 </style>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+@section('content')
 <div class="section-body">
     <div class="row">
         <div class="col-12">
@@ -75,7 +74,7 @@
                                     <th>Merek</th>
                                     <th>Tahun</th>
                                     <th>Jumlah</th>
-                                    <th>Action</th>
+                                    <th style="width:150px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -100,6 +99,7 @@
                                                 <i class="fas fa-edit"></i>
                                                 EDIT
                                             </a>
+                                        </div>
                                             <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('aset.destroy', $aset->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
