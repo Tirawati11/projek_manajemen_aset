@@ -25,3 +25,7 @@ Route::post('/register', [AuthController::class, 'registerPost'])->name('registe
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
 Route::delete('/logout', [AuthController::class, 'logout']);
+
+Route::get('dashboard', function(){
+    return 'hallo';
+})->name('dashboard');
