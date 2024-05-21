@@ -172,7 +172,7 @@
                                     'Kategori telah dihapus.',
                                     'success'
                                 ).then(() => {
-                                    location.reload();
+                                    location.reload(); // Memuat ulang halaman setelah penghapusan berhasil
                                 });
                             } else {
                                 Swal.fire(
