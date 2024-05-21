@@ -23,14 +23,17 @@ public function create()
 }
 
 public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required',
-    ]);
+    {
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+        ]);
 
-    Category::create($request->all());
-    return redirect()->route('categories.index');
-}
+        Category::create([
+            'name' => $request->nama_kategori,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
+    }
 
 public function show(Category $category)
 {
@@ -44,8 +47,14 @@ public function edit(Category $category)
 
 public function update(Request $request, Category $category)
 {
-    $category->update($request->all());
-    return redirect()->route('categories.index');
+    $request->validate([
+        'nama_kategori' => 'required|string|max:255',
+    ]);
+
+    $category->name = $request->nama_kategori;
+    $category->save();
+
+    return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
 }
 
 public function destroy(Category $category)
