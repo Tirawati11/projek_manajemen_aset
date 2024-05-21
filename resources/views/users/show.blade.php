@@ -1,13 +1,16 @@
 @extends('layouts.main')
 
 @section('content')
-<div class="row">
-    <div class="col-md-10 col-lg-10">
-        <div class="card">
-            <div class="card-header">
-                <h4>Detail Pengguna</h4>
-            </div>
-            <div class="card-body">
+<section class="section">
+    <div class="section-header">
+        <h1>Detail Data User</h1>
+    </div>
+    </section>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded">
+                    <div class="card-body">
                 <div class="form-group">
                     <label for="nama_user">Nama User</label>
                     <input type="text" class="form-control" id="nama_user" value="{{ $user->nama_user }}" readonly>
