@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\LaporanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,3 +19,6 @@ Route::get('/', function () {
 Route::get('/aset', function () {
     return view('layouts.main');
 });
+
+// cetak laporan
+Route::get('/laporan', [LaporanController::class, 'laporan']);
