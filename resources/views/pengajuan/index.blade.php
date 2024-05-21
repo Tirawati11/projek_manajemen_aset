@@ -51,7 +51,7 @@
                                     <td class="align-middle">{{ $item->nama_barang }}</td>
                                     <td class="align-middle">{{ $item->user_id }}</td>
                                     <td class="align-middle">{{ $item->status }}</td>
-                              
+                                    <td class="align-middle">{{ $item->categories->nama }}</td>
                                     <td class="align-middle">{{ $item->jumlah}}</td>
                                     <td class="align-middle">{{ $item->deskripsi}}</td>
                                     <td>
