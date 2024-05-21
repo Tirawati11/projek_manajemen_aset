@@ -11,6 +11,7 @@
         padding: 4.8px, 12.8px; /* Gunakan titik (.) sebagai penghubung antara property dan nilai */
     }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Aset</h1>
@@ -27,7 +28,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header-action">
-                    <a href="{{ route('pengajuan.create') }}" class="btn btn-primary">Tambah Pengajuan</a>
+                    <a href="{{ route('pengajuan.create') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Tambah Pengajuan</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -51,7 +52,7 @@
                                     <td class="align-middle">{{ $item->nama_barang }}</td>
                                     <td class="align-middle">{{ $item->user_id }}</td>
                                     <td class="align-middle">{{ $item->status }}</td>
-                                    <td class="align-middle">{{ $item->categories->nama }}</td>
+                                    {{-- <td class="align-middle">{{ $item->categories->nama }}</td> --}}
                                     <td class="align-middle">{{ $item->jumlah}}</td>
                                     <td class="align-middle">{{ $item->deskripsi}}</td>
                                     <td>
@@ -89,7 +90,12 @@
         </div>
     </div>
 </section>
+@endsection
 
+@section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     //message with toastr
     @if(session()->has('success'))

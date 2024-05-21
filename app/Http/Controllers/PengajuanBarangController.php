@@ -19,8 +19,8 @@ class PengajuanBarangController extends Controller
     public function create()
     {
         // Mendapatkan semua barang untuk ditampilkan di form pengajuan
-        $category= Categories::all();
-        return view('pengajuan.create', compact('category'));
+        // $category= Categories::all();
+        return view('pengajuan.create');
     }
 
     public function store(Request $request)
@@ -52,29 +52,35 @@ class PengajuanBarangController extends Controller
     public function edit($id)
     {
         $pengajuan = PengajuanBarang::findOrFail($id);
-        $category= Categories::all();
-        return view('pengajuan.edit', compact('pengajuan', compact('category')));
+        // $category= Categories::all();
+        return view('pengajuan.edit', compact('pengajuan'));
     }
 
      // Update pengajuan
      public function update(Request $request, $id)
      {
          $pengajuan = PengajuanBarang::findOrFail($id);
-     
+
          $request->validate([
              'nama_barang' => 'required',
              'jumlah' => 'required|integer|min:1',
-             'status' => 'required', 
+             'status' => 'required',
+             'deskripsi' => 'required',
+             'stok' => 'required|integer|min:0', // Validasi untuk stok
+             'user_id' => 'required|exists:users,id', // Validasi untuk user_id
          ]);
-     
+
          $pengajuan->update([
              'nama_barang' => $request->nama_barang,
              'jumlah' => $request->jumlah,
+             'stok' => $request->stok, // Memperbarui stok
              'status' => $request->status,
+             'deskripsi' => $request->deskripsi,
+             'user_id' => $request->user_id, // Memperbarui user_id
          ]);
-     
+dd($pengajuan);
          return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil diperbarui.');
-     } 
+     }
 
     //  Menghapus pengajuan
     public function destroy($id)
