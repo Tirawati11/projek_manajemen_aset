@@ -7,7 +7,6 @@
     }
 </style>
 @endsection
-
 @section('content')
 <div class="section-body">
     <div class="row">
