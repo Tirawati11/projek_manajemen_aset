@@ -1,15 +1,16 @@
 @extends('layouts.main')
 
 @section('content')
-<div class="row">
-    <div class="col-md-10 col-lg-10">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h4>Data Kategori</h4>
-                <div class="card-header-form">
-                </div>
-            </div>
-            <div class="card-body">
+<section class="section">
+<div class="section-header">
+    <h1>Data Kategori</h1>
+</div>
+</section>
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
                 <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori">Tambah Kategori</a>
                 <div class="table-responsive">
                     <table class="table table-bordered table-md">
@@ -17,7 +18,7 @@
                             <tr>
                                 <th class="col-no">No</th>
                                 <th class="col-id">ID</th>
-                                <th class="col-name">Nama</th>
+                                <th class="col-name">Kategori</th>
                                 <th class="col-action">Aksi</th>
                             </tr>
                         </thead>
@@ -28,13 +29,9 @@
                                     <td>{{ $category->id }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>
-                                        <a href="{{ route('categories.show', $category) }}" class="btn btn-sm btn-primary">Show</a>
-                                        <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus kategori ini?')">Hapus</button>
-                                        </form>
+                                        <a href="#" class="btn btn-sm btn-primary btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Show</a>
+                                        <a href="#" class="btn btn-sm btn-warning btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Edit</a>
+                                        <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}">Hapus</button>
                                     </td>
                                 </tr>
                             @empty
@@ -56,7 +53,7 @@
 
 <!-- Modal Tambah Kategori -->
 <div class="modal fade" id="modal-tambah-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-tambah-kategori-title" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modal-tambah-kategori-title">Tambah Kategori</h5>
@@ -65,7 +62,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Form tambah kategori disini -->
                 <form id="form-tambah-kategori" action="{{ route('categories.store') }}" method="POST">
                     @csrf
                     <div class="form-group">
@@ -79,15 +75,116 @@
     </div>
 </div>
 
+<!-- Modal Edit Kategori -->
+<div class="modal fade" id="modal-edit-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-edit-kategori-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-edit-kategori-title">Edit Kategori</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-kategori" action="" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-group">
+                        <label for="edit_nama_kategori">Nama Kategori</label>
+                        <input type="text" class="form-control" id="edit_nama_kategori" name="nama_kategori" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Show Kategori -->
+<div class="modal fade" id="modal-show-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-show-kategori-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-show-kategori-title">Detail Kategori</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="show_nama_kategori">Nama Kategori</label>
+                    <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
     $(document).ready(function() {
-        // Saat tombol "Tambah Kategori" diklik, tampilkan modal
         $('#btn-tambah-kategori').click(function() {
             $('#modal-tambah-kategori').modal('show');
+        });
+
+        $('.btn-edit').click(function() {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            $('#edit_nama_kategori').val(name);
+            $('#form-edit-kategori').attr('action', '/categories/' + id);
+            $('#modal-edit-kategori').modal('show');
+        });
+
+        $('.btn-show').click(function() {
+            var name = $(this).data('name');
+            $('#show_nama_kategori').val(name);
+            $('#modal-show-kategori').modal('show');
+        });
+
+        $('.btn-delete').click(function() {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/categories/' + id,
+                        type: 'POST',
+                        data: {
+                            '_method': 'DELETE',
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if(response.success) {
+                                Swal.fire(
+                                    'Dihapus!',
+                                    'Kategori telah dihapus.',
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    'Kategori gagal dihapus.',
+                                    'error'
+                                );
+                            }
+                        }
+                    });
+                }
+            });
         });
 
         @if(session()->has('success'))
