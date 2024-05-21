@@ -1,54 +1,13 @@
 @extends('layouts.main')
+
+@section('styles')
 <style>
     .card-header-action {
-        padding: 4.8px 12.8px;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .pagination {
-        display: flex;
-        justify-content: center;
-        list-style-type: none;
-        padding: 0;
-    }
-
-    .pagination li {
-        margin: 0 5px;
-    }
-
-    .pagination li a {
-        display: block;
-        padding: 5px 10px;
-        background-color: #f8f9fa;
-        border: 1px solid #ccc;
-        color: #333;
-        text-decoration: none;
-        border-radius: 3px;
-    }
-
-    .pagination li.active a {
-        background-color: #007bff;
-        color: #fff;
-    }
-
-    .pagination li.disabled a {
-        pointer-events: none;
-        cursor: not-allowed;
-        background-color: #ccc;
-        color: #666;
-    }
-     /* Style untuk input search */
-     .search-input {
-        width: 250px;
-        max-width: 100%;
+        padding: 8px 12px;
     }
 </style>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+@endsection
+
 @section('content')
 <div class="section-body">
     <div class="row">
@@ -56,11 +15,13 @@
             <div class="card">
                 <div class="card-header">
                     <h4>DATA ASET</h4>
-                        <input class="form-control" type="search" placeholder="Search" aria-label="Search" data-width="250">
-                        <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
+                    <form action="{{ route('aset.index') }}" method="GET" class="form-inline ml-auto">
+                        <input class="form-control search-input" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
                 </div>
                 <div class="card-header-action">
-                    <a href="{{ route('aset.create') }}" class="btn btn-primary">Tambah Aset</a>
+                    <a href="{{ route('aset.create') }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Tambah Aset</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -74,38 +35,36 @@
                                     <th>Merek</th>
                                     <th>Tahun</th>
                                     <th>Jumlah</th>
-                                    <th style="width:150px;">Action</th>
+                                    <th style="width:250px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($asets as $aset)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ ($asets->currentPage() - 1) * $asets->perPage() + $loop->iteration }}</td>
                                     <td>{{ $aset->codes->first()->kode ?? 'N/A' }}</td>
                                     <td>
                                         <img src="{{ asset('/storage/aset/'.$aset->gambar) }}" class="rounded" style="width: 150px">
                                     </td>
                                     <td>{{ $aset->nama_barang }}</td>
                                     <td>{{ $aset->merek }}</td>
-                                    <td>{{ $aset->years->tahun ?? 'N/A' }}</td>
+                                    <td>{{ $aset->years->first()->tahun ?? 'N/A' }}</td>
                                     <td>{{ $aset->jumlah }}</td>
                                     <td>
-                                        <div class="action-buttons">
-                                            <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark">
-                                                <i class="far fa-eye"></i>
-                                                LIHAT
-                                            </a>
-                                            <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-edit"></i>
-                                                EDIT
-                                            </a>
-                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="action-buttons">
+                                                <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark">
+                                                    <i class="far fa-eye"></i> LIHAT
+                                                </a>
+                                                <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i> EDIT
+                                                </a>
+                                            </div>
                                             <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('aset.destroy', $aset->id) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                    HAPUS
+                                                    <i class="fas fa-trash-alt"></i> HAPUS
                                                 </button>
                                             </form>
                                         </div>
@@ -118,7 +77,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {{ $asets->links('pagination::bootstrap-4') }}
+                        {{ $asets->appends(['search' => $search])->links('pagination::bootstrap-4') }}
                     </div>
                 </div>
             </div>
@@ -126,20 +85,19 @@
     </div>
 </div>
 
+@section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script>
-    //message with toastr
+    // message with toastr
     @if(session()->has('success'))
-
         toastr.success('{{ session('success') }}', 'BERHASIL!');
-
     @elseif(session()->has('error'))
-
         toastr.error('{{ session('error') }}', 'GAGAL!');
-
     @endif
 </script>
+@endsection
+
 @endsection

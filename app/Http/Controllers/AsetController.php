@@ -14,12 +14,38 @@ class AsetController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $asets = Aset::with('years', 'codes')->latest()->paginate(1);
-        $years = Year::All();
-        $codes = Code::All();
-        return view('aset.index', compact('asets', 'years', 'codes'));
+        // Ambil query pencarian dari request
+        $search = $request->input('search');
+
+        // Query untuk mendapatkan data aset dengan pencarian
+        $query = Aset::with('years', 'codes');
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nama_barang', 'like', '%' . $search . '%')
+                  ->orWhere('merek', 'like', '%' . $search . '%')
+                  ->orWhereHas('years', function($q) use ($search) {
+                      $q->where('tahun', 'like', '%' . $search . '%');
+                  })
+                  ->orWhereHas('codes', function($q) use ($search) {
+                      $q->where('kode', 'like', '%' . $search . '%');
+                  });
+            });
+        }
+
+        // Dapatkan hasil paginasi
+        $asets = $query->latest()->paginate(1);
+
+        // Sertakan query pencarian dalam hasil pagination
+        $asets->appends(['search' => $search]);
+
+        // Ambil data years dan codes
+        $years = Year::all();
+        $codes = Code::all();
+
+        return view('aset.index', compact('asets', 'years', 'codes', 'search'));
     }
 
     /**
