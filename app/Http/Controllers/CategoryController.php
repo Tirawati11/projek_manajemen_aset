@@ -57,9 +57,15 @@ public function update(Request $request, Category $category)
     return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
 }
 
-public function destroy(Category $category)
-{
-    $category->delete();
-    return redirect()->route('categories.index');
-}
+    public function destroy($id)
+    {
+        $category = Category::find($id);
+
+        if ($category) {
+            $category->delete();
+            return response()->json(['success' => true, 'message' => 'Kategori telah dihapus.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Kategori tidak ditemukan.']);
+        }
+    }
 }

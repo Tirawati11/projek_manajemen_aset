@@ -17,7 +17,6 @@
                         <thead>
                             <tr>
                                 <th class="col-no">No</th>
-                                <th class="col-id">ID</th>
                                 <th class="col-name">Kategori</th>
                                 <th class="col-action">Aksi</th>
                             </tr>
@@ -26,7 +25,6 @@
                             @forelse ($categories as $category)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $category->id }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>
                                         <a href="#" class="btn btn-sm btn-primary btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Show</a>
@@ -120,7 +118,7 @@
     </div>
 </div>
 
-<!-- SweetAlert2 -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -166,10 +164,11 @@
                             '_token': '{{ csrf_token() }}'
                         },
                         success: function(response) {
+                            console.log(response); // Menampilkan respons di console untuk debugging
                             if(response.success) {
                                 Swal.fire(
                                     'Dihapus!',
-                                    'Kategori telah dihapus.',
+                                    response.message,
                                     'success'
                                 ).then(() => {
                                     location.reload(); // Memuat ulang halaman setelah penghapusan berhasil
@@ -177,10 +176,18 @@
                             } else {
                                 Swal.fire(
                                     'Gagal!',
-                                    'Kategori gagal dihapus.',
+                                    response.message,
                                     'error'
                                 );
                             }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr); // Menampilkan error di console untuk debugging
+                            Swal.fire(
+                                'Gagal!',
+                                'Kategori gagal dihapus.',
+                                'error'
+                            );
                         }
                     });
                 }
