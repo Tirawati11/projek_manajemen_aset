@@ -68,7 +68,7 @@
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">JUMLAH</label>
-                            <input type="text" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ old('jumlah', $aset->jumlah) }}" placeholder="Masukkan jumlah">
+                            <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ old('jumlah', $aset->jumlah) }}" placeholder="Masukkan jumlah">
                             @error('jumlah')
                             <div class="alert alert-danger mt-2">
                                 {{ $message }}

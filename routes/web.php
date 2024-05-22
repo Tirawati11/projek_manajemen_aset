@@ -30,3 +30,5 @@ Route::delete('/logout', [AuthController::class, 'logout']);
 
 // Route Aset
 Route::resource('aset', AsetController::class);
+
+Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);

@@ -64,7 +64,7 @@
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">JUMLAH</label>
-                            <input type="text" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ old('jumlah') }}" placeholder="Masukkan jumlah">
+                            <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ old('jumlah') }}" placeholder="Masukkan jumlah">
                             @error('jumlah')
                             <div class="alert alert-danger mt-2">
                                 {{ $message }}
@@ -99,6 +99,31 @@
 </div>
 @endsection
 
+@section('scripts')
 <!-- Select2 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#kode_select').change(function() {
+            var kode_id = $(this).val(); // Ambil ID kode yang dipilih
+            if (kode_id) {
+                $.ajax({
+                    url: '/get-nama-barang/' + kode_id,
+                    type: 'GET',
+                    success: function(response) {
+                        if (response && response.nama_barang) {
+                            $('#nama_barang_input').val(response.nama_barang); // Update nilai input nama_barang
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText); // Tangani kesalahan jika permintaan gagal
+                    }
+                });
+            } else {
+                $('#nama_barang_input').val(''); // Kosongkan input nama_barang jika tidak ada kode yang dipilih
+            }
+        });
+    });
+    </script>
+@endsection

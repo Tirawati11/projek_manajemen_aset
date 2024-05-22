@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aset;
 use App\Models\Year;
 use App\Models\Code;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -36,7 +37,7 @@ class AsetController extends Controller
         }
 
         // Dapatkan hasil paginasi
-        $asets = $query->latest()->paginate(1);
+        $asets = $query->latest()->paginate(5);
 
         // Sertakan query pencarian dalam hasil pagination
         $asets->appends(['search' => $search]);
@@ -70,7 +71,7 @@ class AsetController extends Controller
             'jumlah' => 'required',
             'deskripsi' => 'required',
             'merek' => 'required',
-            'year_id' => 'required', // Ubah ini sesuai dengan nama field foreign key yang digunakan dalam model Aset
+            'year_id' => 'required',
             'kondisi' => 'required',
         ]);
 
@@ -81,13 +82,13 @@ class AsetController extends Controller
 
         // Buat dan simpan data aset ke dalam database
         $aset = new Aset();
-        $aset->gambar = $image->hashName();  // Simpan path gambar ke dalam kolom 'gambar'
+        $aset->gambar = $image->hashName();
         $aset->code_id = $request->code_id;
         $aset->nama_barang = $request->nama_barang;
         $aset->jumlah = $request->jumlah;
         $aset->deskripsi = $request->deskripsi;
         $aset->merek = $request->merek;
-        $aset->year_id = $request->year_id; // Sesuaikan dengan nama field foreign key yang digunakan dalam model Aset
+        $aset->year_id = $request->year_id;
         $aset->kondisi = $request->kondisi;
         $aset->save();
 
@@ -172,5 +173,18 @@ class AsetController extends Controller
         $aset->delete();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil dihapus.');
+    }
+    public function getNamaBarang($kode_id)
+    {
+        // Cari nama barang berdasarkan kode yang diberikan
+        $nama_barang = Item::where('code_id', $kode_id)->value('nama_barang');
+
+        // Pastikan nama barang ditemukan
+        if ($nama_barang) {
+            return response()->json(['nama_barang' => $nama_barang]);
+        } else {
+            // Jika nama barang tidak ditemukan, kirim respons error
+            return response()->json(['error' => 'Nama barang tidak ditemukan'], 404);
+        }
     }
 }

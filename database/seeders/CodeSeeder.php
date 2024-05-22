@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,16 +12,38 @@ class CodeSeeder extends Seeder
      */
     public function run(): void
     {
-       // Buat array kosong untuk menyimpan kode barang
-       $codes = [];
+        // Daftar nama barang
+        $barang = [
+            'Komputer',
+            'Laptop',
+            'Kipas',
+            'Alat Tulis Kantor',
+        ];
 
-       // Generate beberapa kode barang secara acak
-       for ($i = 0; $i < 10; $i++) { // Ubah angka 10 sesuai dengan jumlah kode barang yang ingin Anda buat
-           $code = 'BRG' . rand(1000, 9999);
-           $codes[] = ['kode' => $code];
-       }
+        // Buat array kosong untuk menyimpan data kode barang
+        $codes = [];
 
-       // Insert semua kode barang ke dalam database
-       DB::table('codes')->insert($codes);
-   }
+        // Generate kode untuk setiap nama barang
+        foreach ($barang as $nama) {
+            // Ambil inisial dari setiap kata dalam nama barang
+            $inisial = '';
+            $kata = explode(' ', $nama);
+            foreach ($kata as $k) {
+                $inisial .= strtoupper(substr($k, 0, 1));
+            }
+
+            // Gabungkan inisial dengan angka acak antara 100 dan 999
+            $angka = rand(100, 999);
+            $kode = $inisial . '-' . $angka;
+
+            // Simpan kode barang ke dalam array
+            $codes[] = [
+                'nama' => $nama,
+                'kode' => $kode,
+            ];
+        }
+
+        // Insert semua data kode barang ke dalam tabel 'codes'
+        DB::table('codes')->insert($codes);
     }
+}
