@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\UserController;
 
 
@@ -25,16 +26,19 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'nama_user' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username',
-            'jabatan' => 'required|string|max:255',
+            'nama_user' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:5',
+            'jabatan' => 'required',
         ]);
+   
         User::create([
             'nama_user' => $request->nama_user,
-            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
             'jabatan' => $request->jabatan,
         ]);
-
+    
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
     }
 
@@ -49,16 +53,24 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user): RedirectResponse
-    {
-        $request->validate([
-            'nama_user' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'jabatan' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'nama_user' => 'required',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:5',
+        'jabatan' => 'required',
+    ]);
 
-        $user->update($request->all());
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui');
+    $data = $request->only('nama_user', 'email', 'jabatan');
+    if ($request->filled('password')) {
+        $data['password'] = Hash::make($request->password);
     }
+
+    $user->update($data);
+
+    return redirect()->route('users.index')->with('success', 'User berhasil diperbarui');
+}
+
 
     public function destroy(User $user)
     {

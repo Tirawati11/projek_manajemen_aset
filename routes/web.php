@@ -23,3 +23,8 @@ Route::get('/aset', function () {
 
 Route::resource('users', UserController::class);
 Route::put('users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
+Route::get('/users/create', 'UserController@create')->name('users.create');
+Route::post('/users', [UserController::class, 'store'])->name('users.store');
+Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::delete('/users/{id}', 'UserController@destroy')->name('users.destroy');

@@ -16,8 +16,8 @@
                         <input type="text" class="form-control" id="nama_user" name="nama_user" value="{{ $user->nama_user }}" required>
                     </div>
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" value="{{ $user->username }}" required>
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
                     </div>
                     <div class="form-group">
                         <label for="jabatan">Jabatan</label>
