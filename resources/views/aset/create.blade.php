@@ -81,7 +81,7 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label class="font-weight-bold">DESKRIPSI</label>
+                            <label class="font-weight-bold">KETERANGAN</label>
                             <textarea class="form-control @error('deskripsi') is-invalid @enderror" name="deskripsi" rows="5" placeholder="Masukkan deskripsi"></textarea>
                             @error('deskripsi')
                             <div class="alert alert-danger mt-2">

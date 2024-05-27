@@ -17,7 +17,7 @@
                     <p>Merek: {{ $aset->merek }}</p>
                     <p>Jumlah: {{ $aset->jumlah}}</p>
                     <p>Tahun: {{ $aset->years->tahun }}</p>
-                    <p>Deskripsi: {{ $aset->deskripsi }}</p>
+                    <p>Keterangan: {{ $aset->deskripsi }}</p>
                     <p>kondisi: {{ $aset->kondisi }}</p>
                     </p>
                     </p>
