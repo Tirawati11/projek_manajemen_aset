@@ -3,26 +3,34 @@
 @section('content')
 <style>
     .card-header-action {
-        padding: 4.8px, 12.8px; /* Gunakan titik (.) sebagai penghubung antara property dan nilai */
+        padding: 4.8px, 12.8px;
     }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        /* th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        } */
-        th {
-            background-color: #f2f2f2;
-        }
-        .nowrap {
-            white-space: nowrap;
-        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .nowrap {
+        white-space: nowrap;
+    }
+    /* CSS Terpisah */
+.pending-status {
+    background-color: yellow;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.approved-status {
+    background-color: green;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.5.2/css/bootstrap.min.css">
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Pengajuan Aset</h1>
@@ -43,42 +51,44 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped" id="table-1">
+                        <table class="table table-bordered table-md">
                             <thead>
                                 <tr>
                                     <th style="width: 50px;">No</th>
                                     <th class="nowrap" style="width: 150px;">Nama Barang</th>
                                     <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
-                                    <th style="width: 100px;">Status</th>
-                                    <th style="width: 100px;">Kategori</th>
+                                    <th style="text-align: center; width: 100px;">Status</th>
                                     <th style="width: 100px;">Jumlah</th>
-                                    <th style="width: 200px;">Catatan</th>
-                                    <th style="width: 300px;">Aksi</th>
+                                    <th style="text-align: center; width: 150px">Catatan</th>
+                                    <th style="text-align: center; width: 350px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($pengajuan as  $index => $item)
                                 <tr>
-                                    <td>{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
+                                    <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
                                     <td class="align-middle">{{ $item->nama_barang }}</td>
                                     <td class="align-middle">{{ $item->user_id }}</td>
-                                    <td class="align-middle">{{ $item->status }}</td>
-                                    {{-- <td class="align-middle">{{ $item->categories->nama }}</td> --}}
-                                    <td class="align-middle">{{ $item->jumlah}}</td>
-                                    <td class="align-middle">{{ $item->deskripsi}}</td>
+                                    <td class="align-middle">
+                                        <span class="{{ $item->status === 'pending' ? 'pending-status' : ($item->status === 'disetujui' ? 'approved-status' : '') }}">
+                                            {{ $item->status }}
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">{{ $item->jumlah }}</td>
+                                    <td class="align-middle">{{ $item->deskripsi }}</td>
                                     <td>
-                                        <a href="{{ url('pengajuan', $item->id) }}" class="btn btn-sm btn-dark">
-                                        <i class="far fa-eye"></i>
-                                            LIHAT
+                                        <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-sm btn-dark">
+                                            <i class="far fa-eye"></i>
+                                            SHOW
                                         </a>
-                                        <form onsubmit="return confirm('Apakah Anda Yakin ?');" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="d-inline">
-                                            <a href="{{ route('pengajuan.edit', $item->id) }}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-edit"></i>
-                                                EDIT
-                                            </a>
+                                        <a href="{{ route('pengajuan.edit', $item->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                            EDIT
+                                        </a>
+                                        <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="d-inline delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger delete-confirm" data-id="{{ $item->id }}">
+                                            <button type="submit" class="btn btn-sm btn-danger delete-confirm">
                                                 <i class="fas fa-trash-alt"></i>
                                                 HAPUS
                                             </button>
@@ -86,48 +96,42 @@
                                     </td>
                                 </tr>
                                 @empty
-                                  <div class="alert alert-danger">
-                                      Data Pengajuan belum Tersedia.
-                                  </div>
-                              @endforelse
+                                    <tr>
+                                        <td colspan="7" class="text-center">Data Pengajuan belum Tersedia.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-center">
-                        {{ $pengajuan->links() }}
-                    </div>
-                    </div>
-                </div>
-            </div>
+                    {{ $pengajuan->appends(['search' => $search])->links('pagination::bootstrap-5') }}
         </div>
-  </div>
+    </div>
 </section>
 @endsection
 
-@section('script')
+@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).on('click', '.delete-confirm', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
+   $(document).on('click', '.delete-confirm', function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
 
-        Swal.fire({
-            title: 'Hapus',
-            text: "Anda yakin akan menghapus ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus saja!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit(); // Submit form jika pengguna mengonfirmasi
-            }
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
-    });
-
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah menghapus
+// Session delete
     @if (session('delete'))
         Swal.fire({
             title: 'Berhasil',
@@ -136,8 +140,7 @@
             showConfirmButton: true
         });
     @endif
-
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah menyimpan
+// Session sukses
     @if (session('success'))
         Swal.fire({
             title: 'Berhasil',
@@ -146,17 +149,14 @@
             showConfirmButton: true
         });
     @endif
-
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah memperbarui
+// Session update
     @if (session('update'))
         Swal.fire({
             title: 'Berhasil',
-            text: 'Tag berhasil diperbarui',
+            text: 'Data berhasil diperbarui',
             icon: 'success',
             showConfirmButton: true
         });
     @endif
 </script>
 @endsection
-
-

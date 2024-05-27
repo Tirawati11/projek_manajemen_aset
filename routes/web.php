@@ -24,3 +24,5 @@ Route::get('/aset', function () {
 
 // Route pengajuan barang
 Route::resource('pengajuan', PengajuanBarangController::class);
+
+

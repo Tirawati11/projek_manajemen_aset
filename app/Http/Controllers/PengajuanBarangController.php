@@ -11,11 +11,27 @@ use Illuminate\Support\Facades\Auth;
 
 class PengajuanBarangController extends Controller
 {
-    public function index()
-    {
-        $pengajuan = PengajuanBarang::where('user_id', Auth::id(), 'categories')->latest()->paginate(1);
-        return view('pengajuan.index', compact('pengajuan'));
-    }
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $query = PengajuanBarang::query()
+        ->where('user_id', Auth::id())
+        ->when($search, function ($query, $search) {
+            return $query->where(function ($query) use ($search) {
+                $query->where('nama_barang', 'LIKE', "%{$search}%")
+                      ->orWhere('deskripsi', 'LIKE', "%{$search}%");
+            });
+        });
+
+    // Dapatkan hasil paginasi
+    $pengajuan = $query->latest()->paginate(1);
+
+    // Sertakan query pencarian dalam hasil pagination
+    $pengajuan->appends(['search' => $search]);
+
+    return view('pengajuan.index', compact('pengajuan', 'search'));
+}
 
     public function create()
     {
