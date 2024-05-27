@@ -25,7 +25,7 @@ class PengajuanBarangController extends Controller
         });
 
     // Dapatkan hasil paginasi
-    $pengajuan = $query->latest()->paginate(1);
+    $pengajuan = $query->latest()->paginate(5);
 
     // Sertakan query pencarian dalam hasil pagination
     $pengajuan->appends(['search' => $search]);
@@ -113,5 +113,49 @@ class PengajuanBarangController extends Controller
         $pengajuan->delete();
 
         return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dihapus.');
+    }
+    // public function approve(PengajuanBarang $pengajuan)
+    // {
+
+    //     $pengajuan->status = true;
+    //     $pengajuan->save();
+    //     return redirect()->route('pengajuan.index')->with('success', 'Pengajuan Disetujui.');
+    // }
+
+    // // Method untuk menolak pengguna
+    // public function reject(PengajuanBarang $pengajuan)
+    // {
+
+    //     $pengajuan->status = false;
+    //     $pengajuan->save();
+    //     return redirect()->route('pengajuan.index')->with('success', 'Pengajuan Ditolak.');
+    // }
+    public function approve($id)
+{
+    $pengajuan = PengajuanBarang::findOrFail($id);
+
+    if ($pengajuan->status === 'pending') {
+        $pengajuan->status = 'approved';
+        $pengajuan->save();
+
+        return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil disetujui.');
+    }
+
+    return redirect()->route('pengajuan.index')->with('error', 'Pengajuan tidak dapat disetujui.');
+    }
+
+    // Reject pengajuan barang
+    public function reject($id)
+    {
+        $pengajuan = PengajuanBarang::findOrFail($id);
+
+        if ($pengajuan->status === 'pending') {
+            $pengajuan->status = 'rejected';
+            $pengajuan->save();
+
+            return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil ditolak.');
+        }
+
+        return redirect()->route('pengajuan.index')->with('error', 'Pengajuan tidak dapat ditolak.');
     }
 }

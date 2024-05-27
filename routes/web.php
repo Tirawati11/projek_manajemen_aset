@@ -24,5 +24,8 @@ Route::get('/aset', function () {
 
 // Route pengajuan barang
 Route::resource('pengajuan', PengajuanBarangController::class);
+// Approved Pengajuan Barang
+Route::post('/pengajuan/{id}/approve', [PengajuanBarangController::class, 'approve'])->name('pengajuan.approve');
+Route::post('/pengajuan/{id}/reject', [PengajuanBarangController::class, 'reject'])->name('pengajuan.reject');
 
 
