@@ -126,7 +126,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    fetch(form.action, {
+                        method: form.method,
+                        body: new FormData(form),
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }).then(response => response.json()).then(data => {
+                        if (data.success) {
+                            Swal.fire('Berhasil!', data.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire('Gagal!', data.message, 'error');
+                        }
+                    }).catch(error => {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                    });
                 }
             });
         });
@@ -149,7 +165,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    fetch(form.action, {
+                        method: form.method,
+                        body: new FormData(form),
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }).then(response => response.json()).then(data => {
+                        if (data.success) {
+                            Swal.fire('Berhasil!', data.message, 'success').then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire('Gagal!', data.message, 'error');
+                        }
+                    }).catch(error => {
+                        Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                    });
                 }
             });
         });

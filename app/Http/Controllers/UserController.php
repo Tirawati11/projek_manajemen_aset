@@ -72,19 +72,28 @@ class UserController extends Controller
 }
 
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus');
+        $user = User::find($id);
+
+        if ($user) {
+            $user->delete();
+            return response()->json(['success' => true, 'message' => 'Pengguna berhasil dihapus.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
     }
-
     public function approve($id)
-    {   
-        $user = User::findOrFail($id);
-        $user->approved = true;
-        $user->save();
+    {
+        $user = User::find($id);
 
-        return redirect()->back()->with('success', 'User berhasil disetujui.');
+        if ($user) {
+            $user->approved = true;
+            $user->save();
+            return response()->json(['success' => true, 'message' => 'Pengguna berhasil disetujui.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
     }
 
 }
