@@ -34,16 +34,16 @@
                                         <td>
                                             <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary">Show</a>
                                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')">
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                                <button type="button" class="btn btn-sm btn-danger btn-delete">Hapus</button>
                                             </form>
                                             @if(!$user->approved)
-                                                <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui pengguna ini?')">
+                                                <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
                                                     @csrf
                                                     @method('PUT')
-                                                    <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                                                    <button type="button" class="btn btn-sm btn-success btn-approve">Approve</button>
                                                 </form>
                                             @endif
                                         </td>
@@ -101,4 +101,59 @@
         </div>
     </div>
 </div>
+
+<!-- SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Event handler untuk tombol hapus
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan aksi ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+
+    // Event handler untuk tombol approve
+    const approveButtons = document.querySelectorAll('.btn-approve');
+    approveButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda akan menyetujui pengguna ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, setujui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script>
 @endsection
