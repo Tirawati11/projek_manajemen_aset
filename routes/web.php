@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,6 @@ Route::get('/', function () {
 Route::get('/aset', function () {
     return view('layouts.main');
 });
+
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
