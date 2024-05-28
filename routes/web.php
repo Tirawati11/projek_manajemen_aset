@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\PeminjamanBarangController;
+use App\Http\Controllers\LocationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,3 +20,10 @@ Route::get('/', function () {
 Route::get('/aset', function () {
     return view('layouts.main');
 });
+// Route peminjaman barang
+Route::resource('peminjaman', PeminjamanBarangController::class);
+
+// Route Lokasi
+Route::resource('lokasi', LocationController::class);
+
+
