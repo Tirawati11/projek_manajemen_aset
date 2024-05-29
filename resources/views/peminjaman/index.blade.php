@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">DATA PEMINJAMAN</h1>
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">DATA PEMINJAMAN ASET</h1>
         <form action="" method="GET" class="form-inline ml-auto">
             <div class="input-group">
                 <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
@@ -70,9 +70,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="d-flex justify-content-center">
-                        {{ $peminjaman->links() }}
-                    </div>
+                    {{ $peminjaman->appends(['search' => $search])->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>

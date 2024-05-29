@@ -12,9 +12,20 @@ class PeminjamanBarangController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $peminjaman = PeminjamanBarang::with('location')->latest()->paginate(10);
+        $search = $request->input('search');
+    
+        // Query data peminjaman berdasarkan pencarian
+        $query = PeminjamanBarang::with('location')->latest();
+        if ($search) {
+            $query->where('nama_barang', 'LIKE', "%$search%");
+            // Ganti 'nama_field_yang_dicari' dengan nama field yang ingin Anda cari dalam tabel peminjaman
+            // Contoh: $query->where('nama_barang', 'LIKE', "%$search%");
+        }
+    
+        // Menggunakan paginate dengan 10 item per halaman
+        $peminjaman = $query->paginate(5);
     
         // Manipulasi tanggal menggunakan Carbon
         foreach ($peminjaman as $item) {
@@ -22,7 +33,7 @@ class PeminjamanBarangController extends Controller
             $item->tanggal_pengembalian = $item->tanggal_pengembalian ? Carbon::parse($item->tanggal_pengembalian)->format('d-m-Y') : null;
         }
     
-        return view('peminjaman.index', compact('peminjaman'));
+        return view('peminjaman.index', compact('peminjaman', 'search'));
     }
     /**
      * Show the form for creating a new resource.

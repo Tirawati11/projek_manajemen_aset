@@ -10,10 +10,20 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $locations = Location::paginate(10); // Menggunakan paginate dengan 10 item per halaman
-        return view('lokasi.index', compact('locations'));
+    $search = $request->input('search');
+
+    // Query data lokasi berdasarkan pencarian
+    $query = Location::query();
+    if ($search) {
+        $query->where('name', 'LIKE', "%$search%");
+    }
+
+    // Menggunakan paginate dengan 10 item per halaman
+    $locations = $query->paginate(5);
+
+    return view('lokasi.index', compact('locations', 'search'));
     }
 
     /**
@@ -42,9 +52,9 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Location $locations)
+    public function show(Location $location)
     {
-        return view('lokasi.show', compact('locations'));
+        return view('lokasi.show', compact('location'));
     }
 
     /**
@@ -58,28 +68,55 @@ class LocationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Location $location)
+    public function update(Request $request, string $id)
     {
+        // Validasi data input
         $validatedData = $request->validate([
-            'name' => 'required|string|unique:locations,name,' . $location->id,
+            'name' => 'required|string|max:255',
         ]);
-
-        $location->update($validatedData);
-
-        return redirect()->route('lokasi.index')
-            ->with('success', 'Location updated successfully.');
+    
+        try {
+            // Cari lokasi berdasarkan ID
+            $location = Location::findOrFail($id);
+    
+            // Update data lokasi
+            $location->update($validatedData);
+    
+            // Jika permintaan berasal dari AJAX, kembalikan respons JSON
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => 'Lokasi berhasil diperbarui!',
+                    'data' => $location
+                ], 200);
+            }
+    
+            // Jika bukan AJAX, arahkan kembali dengan pesan sukses
+            return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil diperbarui!');
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan, kembalikan respons JSON jika permintaan AJAX
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => 'Terjadi kesalahan saat memperbarui lokasi!',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+    
+            // Jika bukan AJAX, arahkan kembali dengan pesan error
+            return redirect()->route('lokasi.index')->with('error', 'Terjadi kesalahan saat memperbarui lokasi!');
+        }
     }
-
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Location $id)
+    public function destroy($id)
     {
-
-        $location = Location::findOrFail($id);
-        $location->delete();
-
-        return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil dihapus')
-            ->with('success', 'Location deleted successfully.');
-    }
+        $location = Location::find($id);
+    
+        if ($location) {
+            $location->delete();
+            return redirect()->route('lokasi.index')->with('success', 'Lokasi telah dihapus.');
+        } else {
+            return redirect()->route('lokasi.index')->with('error', 'Lokasi tidak ditemukan.');
+        }
+    }   
 }
