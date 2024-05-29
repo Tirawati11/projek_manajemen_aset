@@ -1,13 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PengajuanBarangController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AsetController;
-
-
 
 
 /*
@@ -28,6 +27,9 @@ Route::get('/aset', function () {
     return view('layouts.main');
 });
 
+
+// cetak laporan
+Route::get('/laporan', [LaporanController::class, 'laporan']);
 
 Route::resource('users', UserController::class);
 Route::put('users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
