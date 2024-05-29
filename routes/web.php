@@ -73,9 +73,9 @@ Route::resource('aset', AsetController::class);
 
 Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);
 
-Route::get('dashboard', function(){
-    return 'hallo';
-})->name('dashboard');
+// Route::get('dashboard', function(){
+//     return 'hallo';
+// })->name('dashboard');
 
 
 

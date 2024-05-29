@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Year;
 use App\Models\Code;
+use App\Models\Category;
 
 class Aset extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['gambar', 'code_id', 'nama_barang', 'merek', 'jumlah', 'status', 'year_id', 'deskripsi', 'lokasi', 'kondisi'];
+    protected $fillable = ['gambar', 'code_id', 'nama_barang', 'merek', 'jumlah', 'status', 'year_id', 'deskripsi', 'lokasi', 'kondisi', 'category_id'];
 
     // Relasi Many-to-One dengan Year
     public function years()
@@ -23,5 +24,9 @@ class Aset extends Model
     public function codes()
     {
         return $this->belongsTo(Code::class, 'code_id');
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
     }
 }
