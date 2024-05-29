@@ -28,11 +28,11 @@ Route::get('/aset', function () {
     return view('layouts.main');
 });
 
-
+//Route Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 // cetak laporan
 Route::get('/laporan', [LaporanController::class, 'laporan']);
-
+//Route User
 Route::resource('users', UserController::class);
 Route::put('users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
 Route::get('/users/create', 'UserController@create')->name('users.create');
@@ -41,7 +41,7 @@ Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')
 Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::delete('/users/{id}', 'UserController@destroy')->name('users.destroy');
 
-
+//Route Category
 Route::resource('categories', CategoryController::class);
 Route::get('/categories/{id}/edit', 'CategoryController@edit');
 // Route pengajuan barang
@@ -51,7 +51,7 @@ Route::post('/pengajuan/{id}/approve', [PengajuanBarangController::class, 'appro
 Route::post('/pengajuan/{id}/reject', [PengajuanBarangController::class, 'reject'])->name('pengajuan.reject');
 
 
-
+//Route LoginRegister
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -61,13 +61,4 @@ Route::delete('/logout', [AuthController::class, 'logout']);
 
 // Route Aset
 Route::resource('aset', AsetController::class);
-
 Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);
-
-Route::get('dashboard', function(){
-    return 'hallo';
-})->name('dashboard');
-
-
-
-
