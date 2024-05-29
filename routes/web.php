@@ -30,7 +30,7 @@ Route::get('/aset', function () {
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-=======
+
 // cetak laporan
 Route::get('/laporan', [LaporanController::class, 'laporan']);
 
