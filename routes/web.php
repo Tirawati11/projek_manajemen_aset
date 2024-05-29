@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PengajuanBarangController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AsetController;
+
 
 
 
@@ -51,6 +53,12 @@ Route::post('/register', [AuthController::class, 'registerPost'])->name('registe
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
 Route::delete('/logout', [AuthController::class, 'logout']);
+
+
+// Route Aset
+Route::resource('aset', AsetController::class);
+
+Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);
 
 Route::get('dashboard', function(){
     return 'hallo';
