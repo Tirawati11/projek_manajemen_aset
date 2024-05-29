@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
@@ -28,6 +29,8 @@ Route::get('/aset', function () {
 });
 
 
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+=======
 // cetak laporan
 Route::get('/laporan', [LaporanController::class, 'laporan']);
 
@@ -65,6 +68,7 @@ Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang'
 Route::get('dashboard', function(){
     return 'hallo';
 })->name('dashboard');
+
 
 
 
