@@ -60,11 +60,12 @@ class LocationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Location $location)
+    public function edit($id)
     {
+        $location = Location::find($id);
         return view('lokasi.edit', compact('location'));
     }
-
+    
     /**
      * Update the specified resource in storage.
      */

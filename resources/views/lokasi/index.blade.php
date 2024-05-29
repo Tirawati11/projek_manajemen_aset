@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">DATA LOKASI</h1>
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Lokasi</h1>
         <form action="{{ route('lokasi.index') }}" method="GET" class="form-inline ml-auto">
             <div class="input-group">
                 <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
@@ -34,9 +34,9 @@
                         <table class="table table-striped text-center">
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">No</th>
-                                    <th style="width: 100px;">Lokasi</th>
-                                    <th style="width: 50px;">Aksi</th>
+                                    <th>No</th>
+                                    <th>Lokasi</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -172,49 +172,48 @@
     });
 
       // Tampilkan modal edit dengan data lokasi
-    $('.btn-edit').click(function() {
-        var id = $(this).data('id');
-        var name = $(this).data('name');
-        $('#edit_name').val(name);
-        $('#form-edit-lokasi').attr('action', '/lokasi/' + id);
-        $('#modalEdit').modal('show');
-    });
+   // Tampilkan modal edit saat tombol edit diklik
+   $('.btn-edit').click(function() {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            $('#name{{$location->id}}').val(name); // Isi nilai input dengan nama lokasi yang akan diedit
+            $('#modalEdit{{$location->id}}').modal('show'); // Tampilkan modal edit
+        });
+        // Tangani form submit untuk update lokasi dengan AJAX
+        $('#formEdit{{$location->id}}').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var method = form.attr('method');
+            var data = form.serialize();
 
-    // Tangani form submit untuk update lokasi dengan AJAX
-$('#form-edit-lokasi').on('submit', function(e) {
-    e.preventDefault();
-    var form = $(this);
-    var url = form.attr('action');
-    var method = form.attr('method');
-    var data = form.serialize();
-
-    $.ajax({
-        url: url,
-        method: method,
-        data: data,
-        success: function(response) {
-            $('#modalEdit').modal('hide');
-            Swal.fire({
-                title: 'Berhasil',
-                text: response.message,
-                icon: 'success',
-                showConfirmButton: true
-            }).then((result) => {
-                // Perbarui baris tabel dengan data baru
-                var row = $('tr[data-id="' + response.data.id + '"]');
-                row.find('td:eq(1)').text(response.data.name); // Update nama lokasi
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                success: function(response) {
+                    $('#modalEdit{{$location->id}}').modal('hide'); // Sembunyikan modal edit setelah sukses update
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: response.message,
+                        icon: 'success',
+                        showConfirmButton: true
+                    }).then((result) => {
+                        // Tampilkan perubahan langsung setelah berhasil update
+                        var row = $('tr[data-id="' + response.data.id + '"]');
+                        row.find('td:eq(1)').text(response.data.name); // Update nama lokasi dalam tabel
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Gagal melakukan update.',
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
             });
-        },
-        error: function(xhr) {
-            Swal.fire({
-                title: 'Error',
-                text: 'Gagal melakukan update.',
-                icon: 'error',
-                showConfirmButton: true
-            });
-        }
+        });
     });
-});
-});
 </script>
 @endsection

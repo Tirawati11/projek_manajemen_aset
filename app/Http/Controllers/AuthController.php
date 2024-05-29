@@ -21,12 +21,14 @@ class AuthController extends Controller
             'nama_user'=> 'required|string|max:255',
             'email'=> 'required|string|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'jabatan'=> 'required|string|max:255',
         ]);
 
         User::create ([
             'nama_user'=> $request->nama_user,
             'email'=> $request->email,
             'password' => bcrypt($request->password),
+            'jabatan'=> $request->jabatan,
         ]);
 
         return redirect()->route('login')->with('success', 'Registerasi anda berhasil, silakan login!');
@@ -63,5 +65,11 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('login');
+    }
+    protected function authenticated(Request $request, $user)
+    {
+        $user->update([
+            'last_login_at' => now(),
+        ]);
     }
     }

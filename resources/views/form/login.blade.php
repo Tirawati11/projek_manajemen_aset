@@ -6,22 +6,22 @@
         justify-content: center;
         align-items: center;
         height: 50px;
-        margin-bottom: 10px; 
+        margin-bottom: 10px;
     }
     .card-body {
-        padding: 20px; 
+        padding: 20px;
     }
     .form-group label {
-        margin-bottom: 5px; 
+        margin-bottom: 5px;
     }
     .form-group {
-        margin-bottom: 15px; 
+        margin-bottom: 15px;
     }
     .btn-block {
-        margin-top: 10px; 
+        margin-top: 10px;
     }
     .alert {
-        margin-top: 10px; 
+        margin-top: 10px;
     }
     .alert-custom-blue {
         background-color: rgba(0, 123, 255, 0.5); /* Warna biru transparan */
@@ -82,6 +82,20 @@
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
+                @enderror
+            </div>
+            <div class="form-group">
+                <label class="font-weight-bold">Role</label>
+                <select class="form-control @error('jabatan') is-invalid @enderror" name="jabatan">
+                    <option value="">----</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                    <option value="HRD">HRD</option>
+                    </select>
+                @error('jabatan')
+                    <div class="alert alert-danger mt-2">
+                        {{ $message }}
+                    </div>
                 @enderror
             </div>
             <div class="form-group">

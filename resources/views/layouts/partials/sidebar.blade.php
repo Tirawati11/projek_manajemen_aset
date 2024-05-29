@@ -6,22 +6,34 @@
       <a href="index.html">TK</a>
     </div>
     <ul class="sidebar-menu">
-      <li class="menu-header">Dashboard</li>
-      <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+        <li class="menu-header">Dashboard</li>
+             <li class="{{ Request::Is('dashboard') ? 'active' : '' }}">
+                <a href="{{ url('dashboard') }}"><i class="fas fa-fire"></i><span>Dashboard</span></a>
+        </li>
+        <li class="menu-header">Pages</li>
+        <li class="{{ Request::routeIs('users.index') ? 'active' : '' }}">
+            <a href="{{ route('users.index') }}" class="nav-link"><i class="far fa-user"></i> <span>User</span></a>
+        </li>
+        <li class="menu-header">Aset</li>
+        <li class="dropdown {{ Request::routeIs('aset.*') ? 'active' : '' }}">
+        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Aset</span></a>
         <ul class="dropdown-menu">
-          <li><a class="nav-link" href="index-0.html">General Dashboard</a></li>
-          <li><a class="nav-link" href="index.html">Ecommerce Dashboard</a></li>
+            <li class="{{ Request::routeIs('aset.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('aset.index') }}">Inventaris</a></li>
+            <li class="{{ Request::routeIs('peminjaman.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('peminjaman.index') }}">Peminjaman Aset</a></li>
+            <li class="{{ Request::routeIs('pengajuan.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('pengajuan.index') }}">Pengajuan Aset</a></li>
         </ul>
-      </li>
-      <li class="menu-header">Starter</li>
-      <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Layout</span></a>
+        <li class="{{ Request::RouteIs('categories.index') ? 'active' : '' }}">
+            <a href="{{ route('categories.index') }}"><i class="fas fa-th"></i> <span>Kategori</span></a>
+            </li>
+            <li class="{{ Request::RouteIs('lokasi.index') ? 'active' : '' }}">
+                <a href="{{ route('lokasi.index') }}"><i class="fas fa-map-marker-alt"></i> <span>Lokasi</span></a>
+            </li>
+        <li class="{{ Request::Is('laporan') ? 'active' : '' }}">
+            <a href="{{ url('laporan') }}"><i class="far fa-file-alt"></i> <span>Laporan</span></a>
+        </li>
+        {{-- <li class="dropdown">
+        <a href="#" class="nav-link has-dropdown"><i class="fas fa-th"></i> <span>Bootstrap</span></a>
         <ul class="dropdown-menu">
-          <li><a class="nav-link" href="layout-default.html">Default Layout</a></li>
-          <li><a class="nav-link" href="layout-transparent.html">Transparent Sidebar</a></li>
-          <li><a class="nav-link" href="layout-top-navigation.html">Top Navigation</a></li>
-        </ul>
       </li>
       <li class=active><a class="nav-link" href="blank.html"><i class="far fa-square"></i> <span>Blank Page</span></a></li>
       <li class="dropdown">
@@ -59,15 +71,7 @@
           <li><a class="nav-link" href="components-table.html">Table</a></li>
           <li><a class="nav-link" href="components-user.html">User</a></li>                <li><a class="nav-link beep beep-sidebar" href="components-wizard.html">Wizard</a></li>              </ul>
       </li>
-      <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="far fa-file-alt"></i> <span>Forms</span></a>
-        <ul class="dropdown-menu">
-          <li><a class="nav-link" href="forms-advanced-form.html">Advanced Form</a></li>
-          <li><a class="nav-link" href="forms-editor.html">Editor</a></li>
-          <li><a class="nav-link" href="forms-validation.html">Validation</a></li>
-        </ul>
-      </li>
-      <li class="dropdown">
+          <li class="dropdown">
         <a href="#" class="nav-link has-dropdown"><i class="fas fa-map-marker-alt"></i> <span>Google Maps</span></a>
         <ul class="dropdown-menu">
           <li><a href="gmaps-advanced-route.html">Advanced Route</a></li>
@@ -96,16 +100,7 @@
           <li><a class="nav-link" href="modules-weather-icon.html">Weather Icon</a></li>
         </ul>
       </li>
-      <li class="menu-header">Pages</li>
-      <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Auth</span></a>
-        <ul class="dropdown-menu">
-          <li><a href="auth-forgot-password.html">Forgot Password</a></li>
-          <li><a href="auth-login.html">Login</a></li>
-          <li><a href="auth-register.html">Register</a></li>
-          <li><a href="auth-reset-password.html">Reset Password</a></li>
-        </ul>
-      </li>
+
       <li class="dropdown">
         <a href="#" class="nav-link has-dropdown"><i class="fas fa-exclamation"></i> <span>Errors</span></a>
         <ul class="dropdown-menu">
@@ -140,6 +135,6 @@
     <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
       <a href="https://getstisla.com/docs" class="btn btn-primary btn-lg btn-block btn-icon-split">
         <i class="fas fa-rocket"></i> Documentation
-      </a>
+      </a> --}}
     </div>        </aside>
 </div>

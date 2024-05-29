@@ -12,17 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('approved')->default(false);
+            $table->timestamp('last_login_at')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('approved');
+            $table->dropColumn('last_login_at');
         });
     }
 };

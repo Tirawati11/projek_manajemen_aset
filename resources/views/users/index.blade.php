@@ -17,10 +17,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama User</th>
-                                    <th>Email</th>
+                                    <th style="text-align: center;">Email</th>
                                     <th>Jabatan</th>
-                                    <th>Approved</th>
-                                    <th>Aksi</th>
+                                    <th style="text-align: center;">Approved</th>
+                                    <th style="text-align: center;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,20 +32,28 @@
                                         <td>{{ $user->jabatan }}</td>
                                         <td>{{ $user->approved ? 'Yes' : 'No' }}</td>
                                         <td>
-                                            <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-primary">Show</a>
-                                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-danger btn-delete">Hapus</button>
-                                            </form>
                                             @if(!$user->approved)
-                                                <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="button" class="btn btn-sm btn-success btn-approve">Approve</button>
-                                                </form>
-                                            @endif
+                                            <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit" class="btn btn-sm btn-primary btn-approve" title="Approve">
+                                                    <i class="far fa-thumbs-up"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-dark" title="Show">
+                                            <i class="far fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
                                         </td>
                                     </tr>
                                 @empty
@@ -94,8 +102,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Kembali</button>
                 </div>
             </form>
         </div>

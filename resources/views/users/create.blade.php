@@ -22,8 +22,8 @@
                         <label for="jabatan">Jabatan</label>
                         <input type="text" class="form-control" id="jabatan" name="jabatan" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
                     <a href="{{ route('users.index') }}" class="btn btn-danger">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
             </div>
         </div>
