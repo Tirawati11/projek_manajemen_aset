@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aset;
+use App\Models\Category;
 use App\Models\Year;
 use App\Models\Code;
 use App\Models\Item;
@@ -21,7 +22,7 @@ class AsetController extends Controller
         $search = $request->input('search');
 
         // Query untuk mendapatkan data aset dengan pencarian
-        $query = Aset::with('years', 'codes');
+        $query = Aset::with('years', 'codes', 'category');
 
         if ($search) {
             $query->where(function($q) use ($search) {
@@ -45,8 +46,9 @@ class AsetController extends Controller
         // Ambil data years dan codes
         $years = Year::all();
         $codes = Code::all();
+        $categories= Category::all();
 
-        return view('aset.index', compact('asets', 'years', 'codes', 'search'));
+        return view('aset.index', compact('asets', 'years', 'codes', 'search', 'categories'));
     }
 
     /**
@@ -56,7 +58,8 @@ class AsetController extends Controller
     {
         $years = Year::all();
         $codes = Code::all();
-        return view('aset.create', compact('years', 'codes'));
+        $categories = Category::all();
+        return view('aset.create', compact('years', 'codes', 'categories'));
     }
 
     /**
@@ -73,6 +76,7 @@ class AsetController extends Controller
             'merek' => 'required',
             'year_id' => 'required',
             'kondisi' => 'required',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
        //upload image
@@ -90,6 +94,7 @@ class AsetController extends Controller
         $aset->merek = $request->merek;
         $aset->year_id = $request->year_id;
         $aset->kondisi = $request->kondisi;
+        $aset->category_id = $request->category_id;
         $aset->save();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil disimpan.');
@@ -112,7 +117,8 @@ class AsetController extends Controller
         $aset = Aset::findOrFail($id);
         $years = Year::all();
         $codes = Code::all();
-        return view('aset.edit', compact('aset', 'years', 'codes'));
+        $categories = Category::all();
+        return view('aset.edit', compact('aset', 'years', 'codes', 'categories'));
     }
 
     /**
@@ -129,6 +135,7 @@ class AsetController extends Controller
         'merek' => 'required',
         'year_id' => 'required', // Ubah ini sesuai dengan nama field foreign key yang digunakan dalam model Aset
         'kondisi' => 'required',
+        'category_id' => 'required|exists:categories,id',
     ]);
 
     $aset = Aset::findOrFail($id);
@@ -156,6 +163,7 @@ class AsetController extends Controller
     $aset->merek = $request->merek;
     $aset->year_id = $request->year_id;
     $aset->kondisi = $request->kondisi;
+    $aset->category_id = $request->category_id;
     $aset->save();
 
     return redirect()->route('aset.index')->with('success', 'Data aset berhasil diperbarui.');

@@ -50,7 +50,7 @@
                             </thead>
                             <tbody>
                                 <?php $no = 1; ?>
-                                {{-- @forelse ($aset as $item)
+                                @forelse ($aset as $item)
                                     <tr>
                                         <td style="text-align: center;">{{ $no++ }}</td>
                                         <td>{{ $item->nama_barang }}</td>
@@ -62,7 +62,7 @@
                                     <tr>
                                         <td colspan="5" style="text-align: center;">Data tidak tersedia</td>
                                     </tr>
-                                @endforelse --}}
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

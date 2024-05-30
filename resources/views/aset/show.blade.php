@@ -15,6 +15,7 @@
                     <p>Nama Barang: {{ $aset->nama_barang }}</p>
                     <p>Kode: {{ $aset->codes->kode }}</p>
                     <p>Merek: {{ $aset->merek }}</p>
+                    <p>Kategori: {{ $aset->category->name }}</p>
                     <p>Jumlah: {{ $aset->jumlah}}</p>
                     <p>Tahun: {{ $aset->years->tahun }}</p>
                     <p>Keterangan: {{ $aset->deskripsi }}</p>

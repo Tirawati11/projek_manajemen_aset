@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\PeminjamanBarangController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserController;
@@ -28,8 +31,14 @@ Route::get('/aset', function () {
     return view('layouts.main');
 });
 
-//Route Dashboard
+// Route peminjaman barang
+Route::resource('peminjaman', PeminjamanBarangController::class);
+
+// Route Lokasi
+Route::resource('lokasi', LocationController::class);
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 // cetak laporan
 Route::get('/laporan', [LaporanController::class, 'laporan']);
 //Route User

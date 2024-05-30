@@ -22,6 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'jabatan',
-        'approved'
+        'approved',
+        'last_login_at'
+    ];
+    protected $dates = [
+        'last_login_at',
     ];
 }

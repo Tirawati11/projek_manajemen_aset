@@ -51,6 +51,20 @@
                             @enderror
                         </div>
                         <div class="form-group">
+                            <label class="font-weight-bold">KATEGORI</label>
+                            <select class="form-control @error('category_id') is-invalid @enderror" name="category_id">
+                                <option value=""></option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                            <div class="alert alert-danger mt-2">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label class="font-weight-bold">TAHUN</label>
                             <select class="form-control @error('year_id') is-invalid @enderror" name="year_id">
                                 <option value="">Pilih Tahun</option>

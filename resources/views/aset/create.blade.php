@@ -22,6 +22,20 @@
                             @enderror
                         </div>
                         <div class="form-group">
+                            <label class="font-weight-bold">KATEGORI</label>
+                            <select class="form-control @error('category_id') is-invalid @enderror" name="category_id">
+                                <option value=""></option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category_id')
+                            <div class="alert alert-danger mt-2">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label class="font-weight-bold">GAMBAR</label>
                             <input type="file" class="form-control @error('gambar') is-invalid @enderror" name="gambar">
                             @error('gambar')
