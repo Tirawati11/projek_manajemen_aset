@@ -65,19 +65,12 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label class="font-weight-bold">TAHUN</label>
-                            <select class="form-control @error('year_id') is-invalid @enderror" name="year_id">
-                                <option value="">Pilih Tahun</option>
-                                @foreach($years as $year)
-                                    <option value="{{ $year->id }}" {{ old('year_id', $aset->year_id) == $year->id ? 'selected' : '' }}>
-                                        {{ $year->tahun }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('year_id')
-                            <div class="alert alert-danger mt-2">
-                                {{ $message }}
-                            </div>
+                            <label class="font-weight-bold">Tanggal Masuk</label>
+                            <input type="date" class="form-control @error('tanggal_masuk') is-invalid @enderror" name="tanggal_masuk" value="{{ old('tanggal_masuk') ? date('Y-m-d', strtotime(old('tanggal_masuk', $aset->tanggal_masuk))) : '' }}" placeholder="Masukkan tanggal">
+                            @error('tanggal_masuk')
+                                <div class="alert alert-danger mt-2">
+                                    {{ $message }}
+                                </div>
                             @enderror
                         </div>
                         <div class="form-group">

@@ -26,7 +26,7 @@
                         <th style="text-align: center;">Gambar</th>
                         <th style="text-align: center;">Nama Barang</th>
                         <th style="text-align: center;">Merek</th>
-                        <th style="text-align: center;">Tahun</th>
+                        <th style="text-align: center;">Tanggal Masuk</th>
                         <th style="text-align: center;">Jumlah</th>
                         <th style="text-align: center; width:250px;">Aksi</th>
                     </tr>
@@ -41,7 +41,7 @@
                         </td>
                         <td>{{ $aset->nama_barang }}</td>
                         <td>{{ $aset->merek }}</td>
-                        <td>{{ $aset->years->first()->tahun ?? 'N/A' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</td>
                         <td>{{ $aset->jumlah }}</td>
                         <td>
                             <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark">

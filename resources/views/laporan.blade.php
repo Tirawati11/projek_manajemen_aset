@@ -33,7 +33,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center no-print">
-                <button onclick="window.print()" class="btn btn-primary no-print"><i class="bi bi-printer"></i> Cetak Laporan</button>
+                    <button onclick="window.print()" class="btn btn-primary no-print"><i class="bi bi-printer"></i> Cetak Laporan</button>
                 </div>
                 <div class="card-body printableArea">
                     <h4 style="text-align: center;" class="printableTitle">Laporan Aset</h4>
@@ -44,8 +44,9 @@
                                     <th style="text-align: center;">No</th>
                                     <th style="text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Jumlah</th>
-                                    <th style="text-align: center;">Stok</th>
+                                    <th style="text-align: center;">Tanggal masuk</th>
                                     <th style="text-align: center;">Kondisi</th>
+                                    <th style="text-align: center;">Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,16 +56,23 @@
                                         <td style="text-align: center;">{{ $no++ }}</td>
                                         <td>{{ $item->nama_barang }}</td>
                                         <td style="text-align: center;">{{ $item->jumlah }}</td>
-                                        <td style="text-align: center;">{{ $item->stok }}</td>
-                                        <td style="text-align: center;">{{ $item->deskripsi }}</td>
+                                        <td style="text-align: center;">
+                                            @if(isset($item->tanggal_masuk))
+                                                {{ \Carbon\Carbon::parse($item->tanggal_masuk)->format('d-m-Y') }}
+                                            @else
+                                                Tanggal Masuk Tidak Tersedia
+                                            @endif
+                                        </td>
+                                        <td style="text-align: center;">{{ $item->kondisi }}</td>
+                                        <td style="text-align: center;">{{ $item->deskripsi}}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" style="text-align: center;">Data tidak tersedia</td>
+                                        <td colspan="6" style="text-align: center;">Data aset tidak ditemukan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
-                        </table>
+                        </table>                                
                     </div>
                 </div>
             </div>
@@ -72,13 +80,3 @@
     </div>
 </section>
 @endsection
-
-<!-- Optional JavaScript; choose one of the two! -->
-<!-- Option 1: Bootstrap Bundle with Popper -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-<!-- Option 2: Separate Popper and Bootstrap JS -->
-<!--
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
--->
