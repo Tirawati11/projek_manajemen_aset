@@ -33,7 +33,7 @@
                         <h4>Total Aset</h4>
                     </div>
                     <div class="card-body">
-                        <h5>{{ $totalAsets }}</h5> 
+                        <h5>{{ $totalAsets }}</h5>
                     </div>
                 </div>
             </div>
