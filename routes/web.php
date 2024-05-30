@@ -37,7 +37,17 @@ Route::resource('peminjaman', PeminjamanBarangController::class);
 // Route Lokasi
 Route::resource('lokasi', LocationController::class);
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/dashboard', function () {
+        return view('layouts.dashboard.index');
+    })->name('dashboard');
+});
+
+// Route::get('/not-activated', function () {
+//     return view('form.not-activated');
+// })->name('not-activated');
+
 
 // cetak laporan
 Route::get('/laporan', [LaporanController::class, 'laporan']);
@@ -48,7 +58,7 @@ Route::get('/users/create', 'UserController@create')->name('users.create');
 Route::post('/users', [UserController::class, 'store'])->name('users.store');
 Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
 Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-Route::delete('/users/{id}', 'UserController@destroy')->name('users.destroy');
+Route::delete('/users/{id}', 'UserController@destroy')->name('users.delete');
 
 
 Route::resource('categories', CategoryController::class);
