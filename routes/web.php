@@ -48,9 +48,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);
 });
 
-<<<<<<< HEAD
 // Route Authentication
-=======
+
 // Route::get('/not-activated', function () {
 //     return view('form.not-activated');
 // })->name('not-activated');
@@ -78,20 +77,19 @@ Route::post('/pengajuan/{id}/reject', [PengajuanBarangController::class, 'reject
 
 
 //Route LoginRegister
->>>>>>> b97e0f4a60641e176267538664d9a067af4e2710
+
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
-<<<<<<< HEAD
+
 Route::post('/logout', [AuthController::class, 'logoutUser'])->name('logout');
 
 
-=======
+
 Route::delete('/logout', [AuthController::class, 'logout']);
 
 
 // Route Aset
 Route::resource('aset', AsetController::class);
 Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);
->>>>>>> b97e0f4a60641e176267538664d9a067af4e2710
