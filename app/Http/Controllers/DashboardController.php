@@ -6,12 +6,14 @@ use App\Models\Aset;
 use App\Models\User;
 use App\Models\PengajuanBarang;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+
 
 class DashboardController extends Controller
 {
     public function index()
     {
-
+        
         $totalAsets = Aset::count();
         $totalUsers = User::count();
         $totalPengajuanBarang = PengajuanBarang::count();

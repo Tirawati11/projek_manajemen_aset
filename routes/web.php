@@ -37,12 +37,12 @@ Route::resource('peminjaman', PeminjamanBarangController::class);
 // Route Lokasi
 Route::resource('lokasi', LocationController::class);
 
-// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-Route::group(['middleware' => 'auth'], function () {
-    Route::get('/dashboard', function () {
-        return view('layouts.dashboard.index');
-    })->name('dashboard');
-});
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Route::group(['middleware' => 'auth'], function () {
+//     Route::get('/dashboard', function () {
+//         return view('layouts.dashboard.index');
+//     })->name('dashboard');
+// });
 
 // Route::get('/not-activated', function () {
 //     return view('form.not-activated');
