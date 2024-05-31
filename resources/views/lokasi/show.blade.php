@@ -8,8 +8,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                {{-- <p><strong>ID:</strong> {{$location->id}}</p> --}}
-                <p><strong>Lokasi:</strong> {{$location->name}}</p>
+                 <p><strong>ID:</strong> {{$location->id}}</p>
+               <p><strong>Lokasi:</strong> {{$location->name}}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Tutup</button>
@@ -17,3 +17,4 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
