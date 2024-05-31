@@ -48,8 +48,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/get-nama-barang/{kode_id}', [AsetController::class, 'getNamaBarang']);
 });
 
+
 // Route Authentication
 //Route LoginRegister
+
+
+//Route LoginRegister
+
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
