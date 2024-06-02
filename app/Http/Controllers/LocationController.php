@@ -54,10 +54,21 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Location $location)
-    {
-        return view('lokasi.show', compact('location'));
-    }
+    // public function show(Location $location)
+    // {
+    //     return view('lokasi.show', compact('location'));
+    // }
+    public function show($id)
+{
+    // Mengambil data lokasi berdasarkan ID
+    $location = Location::findOrFail($id);
+
+    // Mengambil data peminjaman barang yang terkait dengan lokasi tersebut
+    $peminjamanBarangs = $location->peminjamanBarangs;
+
+    return view('lokasi.show', compact('location', 'peminjamanBarangs'));
+}
+
     /**
      * Show the form for editing the specified resource.
      */

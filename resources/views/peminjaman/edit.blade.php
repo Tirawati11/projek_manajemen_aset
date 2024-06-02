@@ -16,7 +16,15 @@
                         @method('PUT')
                         <div class="form-group">
                             <label class="font-weight-bold">Nama Barang</label>
-                            <input type="text" name="nama_barang" id="nama_barang" class="form-control" value="{{ old('nama_barang', $peminjaman->nama_barang) }}">
+                            <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
+                                <option value="">Pilih Nama Barang</option>
+                                @foreach($barangs as $barang)
+                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                @endforeach
+                            </select>
+                            @error('nama_barang_id')
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Penanggungjawab</label>
@@ -57,7 +65,7 @@
                                     {{ $message }}
                                 </div>
                             @enderror
-                        </div>                       
+                        </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Status</label>
                             <select class="form-control @error('status') is-invalid @enderror" name="status">

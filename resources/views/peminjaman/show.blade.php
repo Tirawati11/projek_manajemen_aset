@@ -13,7 +13,7 @@
                     </p>
                     <div class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
                         <p>Penanggungjawab : {{ $peminjaman->nama }}</p>
-                        <p>Nama Barang : {{ $peminjaman->nama_barang }}</p>
+                        <p>Nama Barang : {{ $peminjaman->barang->nama_barang }}</p>
                         <p>Jumlah : {{ $peminjaman->jumlah }}</p>
                         <p>Lokasi : {{ $peminjaman->location ? $peminjaman->location->name : 'Tidak diketahui' }}</p>
                         <p>Tanggal Peminjaman : {{ $peminjaman->tanggal_peminjaman }}</p>

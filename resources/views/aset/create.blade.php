@@ -7,7 +7,7 @@
                 <div class="card-body">
                     <form action="{{ route('aset.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label class="font-weight-bold">KODE</label>
                             <select class="form-control @error('kode') is-invalid @enderror" name="code_id">
                                 <option value=""></option>
@@ -15,6 +15,15 @@
                                     <option value="{{ $code->id }}">{{ $code->kode }}</option>
                                 @endforeach
                             </select>
+                            @error('kode')
+                            <div class="alert alert-danger mt-2">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div> --}}
+                        <div class="form-group">
+                            <label class="font-weight-bold">KODE</label>
+                            <input type="text" class="form-control @error('kode') is-invalid @enderror" name="kode" value="{{ old('kode') }}" placeholder="Masukkan kode barang">
                             @error('kode')
                             <div class="alert alert-danger mt-2">
                                 {{ $message }}
