@@ -34,6 +34,7 @@ class Aset extends Model
             // Simpan data ke tabel barang
             Barang::create([
                 'nama_barang' => $aset->nama_barang,
+                'jumlah' => $aset->jumlah
             // tambahkan kolom lainnya sesuai kebutuhan
             ]);
         });
