@@ -38,25 +38,23 @@
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Nama Barang</label>
-                            <input type="text" class="form-control @error('nama_barang') is-invalid @enderror" name="nama_barang" value="{{ old('nama_barang') }}" placeholder="Masukkan nama barang">
-                            @error('nama_barang')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
-                                </div>
+                            <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
+                                <option value="">Pilih Nama Barang</option>
+                                @foreach($barangs as $barang)
+                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                @endforeach
+                            </select>
+                            @error('nama_barang_id')
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Jumlah</label>
-                            <input type="number" class="form-control @error('jumlah') is-invalid @enderror" name="jumlah" value="{{ old('jumlah') }}" placeholder="Masukkan jumlah">
-                            @error('jumlah')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
-                                </div>
-                            @enderror
+                            <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" value="{{ old('jumlah') }}" required>
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Tanggal Peminjaman</label>
-                            <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman') ? date('Y-m-d', strtotime(old('tanggal_peminjaman'))) : '' }}" placeholder="Masukkan tanggal peminjaman">
+                            <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman') }}" placeholder="Masukkan tanggal peminjaman">
                             @error('tanggal_peminjaman')
                                 <div class="alert alert-danger mt-2">
                                     {{ $message }}
@@ -65,7 +63,7 @@
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Tanggal Pengembalian</label>
-                            <input type="date" class="form-control @error('tanggal_pengembalian') is-invalid @enderror" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') ? date('Y-m-d', strtotime(old('tanggal_pengembalian'))) : '' }}" placeholder="Masukkan tanggal pengembalian">
+                            <input type="date" class="form-control @error('tanggal_pengembalian') is-invalid @enderror" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') }}" placeholder="Masukkan tanggal pengembalian">
                             @error('tanggal_pengembalian')
                                 <div class="alert alert-danger mt-2">
                                     {{ $message }}

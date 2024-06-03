@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Location;
+use App\Models\PeminjamanBarang;
+
 
 class LocationController extends Controller
 {
@@ -52,10 +54,20 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Location $location)
-    {
-        return view('lokasi.show', compact('location'));
-    }
+    // public function show(Location $location)
+    // {
+    //     return view('lokasi.show', compact('location'));
+    // }
+    public function show($id)
+{
+    // Mengambil data lokasi berdasarkan ID
+    $location = Location::findOrFail($id);
+
+    // Mengambil data peminjaman barang yang terkait dengan lokasi tersebut
+    $peminjamanBarangs = $location->peminjamanBarangs;
+
+    return view('lokasi.show', compact('location', 'peminjamanBarangs'));
+}
 
     /**
      * Show the form for editing the specified resource.
@@ -65,7 +77,7 @@ class LocationController extends Controller
         $location = Location::find($id);
         return view('lokasi.edit', compact('location'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
@@ -75,14 +87,14 @@ class LocationController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
         ]);
-    
+
         try {
             // Cari lokasi berdasarkan ID
             $location = Location::findOrFail($id);
-    
+
             // Update data lokasi
             $location->update($validatedData);
-    
+
             // Jika permintaan berasal dari AJAX, kembalikan respons JSON
             if ($request->ajax()) {
                 return response()->json([
@@ -90,7 +102,7 @@ class LocationController extends Controller
                     'data' => $location
                 ], 200);
             }
-    
+
             // Jika bukan AJAX, arahkan kembali dengan pesan sukses
             return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil diperbarui!');
         } catch (\Exception $e) {
@@ -101,7 +113,7 @@ class LocationController extends Controller
                     'error' => $e->getMessage()
                 ], 500);
             }
-    
+
             // Jika bukan AJAX, arahkan kembali dengan pesan error
             return redirect()->route('lokasi.index')->with('error', 'Terjadi kesalahan saat memperbarui lokasi!');
         }
@@ -112,12 +124,12 @@ class LocationController extends Controller
     public function destroy($id)
     {
         $location = Location::find($id);
-    
+
         if ($location) {
             $location->delete();
             return redirect()->route('lokasi.index')->with('success', 'Lokasi telah dihapus.');
         } else {
             return redirect()->route('lokasi.index')->with('error', 'Lokasi tidak ditemukan.');
         }
-    }   
+    }
 }

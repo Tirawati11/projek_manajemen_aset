@@ -10,13 +10,7 @@
                         @method('PUT')
                         <div class="form-group">
                             <label class="font-weight-bold">KODE</label>
-                            <select class="form-control @error('kode') is-invalid @enderror" name="code_id">{{ old('kode', $aset->codes->kode) }}
-                                <option value=""></option>
-                                @foreach($codes as $code)
-                                <option value="{{ $code->id }}" {{ old('code_id', $aset->code_id) == $code->id ? 'selected' : '' }}>
-                                    {{ $code->kode }}
-                                @endforeach
-                            </select>
+                            <input type="text" class="form-control @error('kode') is-invalid @enderror" name="kode" value="{{ old('kode', $aset->kode) }}" placeholder="Masukkan kode barang">
                             @error('kode')
                             <div class="alert alert-danger mt-2">
                                 {{ $message }}
@@ -55,7 +49,9 @@
                             <select class="form-control @error('category_id') is-invalid @enderror" name="category_id">
                                 <option value=""></option>
                                 @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" {{ old('category_id', $aset->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('category_id')
@@ -65,19 +61,12 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label class="font-weight-bold">TAHUN</label>
-                            <select class="form-control @error('year_id') is-invalid @enderror" name="year_id">
-                                <option value="">Pilih Tahun</option>
-                                @foreach($years as $year)
-                                    <option value="{{ $year->id }}" {{ old('year_id', $aset->year_id) == $year->id ? 'selected' : '' }}>
-                                        {{ $year->tahun }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('year_id')
-                            <div class="alert alert-danger mt-2">
-                                {{ $message }}
-                            </div>
+                            <label class="font-weight-bold">Tanggal Masuk</label>
+                            <input type="date" class="form-control @error('tanggal_masuk') is-invalid @enderror" name="tanggal_masuk" value="{{ old('tanggal_masuk', $aset->tanggal_masuk ? $aset->tanggal_masuk : '') }}" placeholder="Masukkan tanggal">
+                            @error('tanggal_masuk')
+                                <div class="alert alert-danger mt-2">
+                                    {{ $message }}
+                                </div>
                             @enderror
                         </div>
                         <div class="form-group">

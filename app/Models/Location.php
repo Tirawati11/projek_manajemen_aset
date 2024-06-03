@@ -12,6 +12,6 @@ class Location extends Model
 
    public function peminjamanBarangs()
    {
-       return $this->hasMany(PeminjamanBarang::class, 'location_id');
+       return $this->hasMany(PeminjamanBarang::class);
    }
 }

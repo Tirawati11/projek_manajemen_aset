@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Peminjaman Aset</h1>
@@ -17,7 +18,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header-action">
-                    <a href="{{ route('peminjaman.create') }}" class="btn btn-primary">Buat Peminjaman</a>
+                    <a href="{{ route('peminjaman.create') }}" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Buat Peminjaman</a>
                 </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -39,7 +40,7 @@
                                 @forelse ($peminjaman as $index => $item)
                                 <tr>
                                     <td class="align-middle">{{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $index + 1 }}</td>
-                                    <td class="align-middle">{{ $item->nama_barang }}</td>
+                                    <td class="align-middle">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
                                     <td class="align-middle">{{ $item->nama }}</td>
                                     <td class="align-middle">{{ $item->jumlah }}</td>
                                     <td class="align-middle">{{ $item->location ? $item->location->name : 'Tidak diketahui' }}</td>

@@ -9,13 +9,9 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('years', function (Blueprint $table) {
-            $table->id();
-            $table->integer('tahun');
-            $table->timestamps();
-        });
+        //
     }
 
     /**
@@ -23,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('years');
+        //
     }
 };

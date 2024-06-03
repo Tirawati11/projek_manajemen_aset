@@ -89,7 +89,7 @@
                 <select class="form-control @error('jabatan') is-invalid @enderror" name="jabatan">
                     <option value="">----</option>
                     <option value="admin">Admin</option>
-                    <option value="user">User</option>
+                    <option value="user">Karyawan</option>
                     <option value="HRD">HRD</option>
                     </select>
                 @error('jabatan')

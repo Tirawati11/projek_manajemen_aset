@@ -8,22 +8,25 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('asets', function (Blueprint $table) {
-            $table->unsignedBigInteger('year_id')->after('merek')->required();
-            $table->foreign('year_id')->references('id')->on('years');
+            $table->date('tanggal_masuk')->after('merek')->nullable(); // Menambahkan kolom 'tanggal_masuk'
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::table('aset', function (Blueprint $table) {
-            //
+        Schema::table('asets', function (Blueprint $table) {
+            $table->dropColumn('tanggal_masuk'); // Menghapus kolom 'tanggal_masuk'
         });
     }
 };

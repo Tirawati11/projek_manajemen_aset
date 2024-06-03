@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Lokasi</h1>
@@ -17,7 +18,7 @@
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah">Tambah Lokasi</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i class="fa-solid fa-circle-plus"></i> Tambah Lokasi</button>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -47,10 +48,10 @@
                                     <td>
                                         <!-- Show Button -->
                                         <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modalShow{{$location->id}}" title="Show"> <i class="far fa-eye"></i></button>
-                            
+
                                         <!-- Edit Button -->
                                         <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="{{ $location->id }}" data-name="{{ $location->name }}" title="Edit"> <i class="fas fa-edit"></i></button>
-                            
+
                                         <!-- Delete Form -->
                                         <form action="{{ route('lokasi.destroy', $location->id) }}" method="POST" class="d-inline delete-form">
                                             @csrf
@@ -58,7 +59,7 @@
                                             <button type="button" class="btn btn-sm btn-danger delete-confirm" title="Hapus">
                                             <i class="fas fa-trash-alt"></i>
                                             </button>
-                                        </form>                                       
+                                        </form>
                                     </td>
                                 </tr>
                                 @empty
@@ -66,7 +67,7 @@
                                     <td colspan="3" class="text-center">Belum ada data lokasi.</td>
                                 </tr>
                                 @endforelse
-                            </tbody>                           
+                            </tbody>
                         </table>
                         {{ $locations->appends(['search' => $search])->links('pagination::bootstrap-5') }}
                     </div>
@@ -75,9 +76,7 @@
         </div>
     </div>
 </section>
-
-@include('lokasi.create') 
-
+@include('lokasi.create')
 @foreach($locations as $location)
     @include('lokasi.show', ['location' => $location])
     @include('lokasi.edit', ['location' => $location])
@@ -91,7 +90,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
 <script>
    $(document).ready(function() {
     // Code for handling modal form submit using AJAX for creating a new location
