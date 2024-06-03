@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
 <div class="section-header">
     <h1>Data Kategori</h1>
@@ -11,7 +12,7 @@
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori">Tambah Kategori</a>
+                <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
                 <div class="table-responsive">
                     <table class="table table-bordered table-md">
                         <thead>
@@ -27,9 +28,9 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Show</a>
-                                        <a href="#" class="btn btn-sm btn-warning btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Edit</a>
-                                        <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}">Hapus</button>
+                                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="far fa-eye" title="Show"></i></a>
+                                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}">  <i class="fas fa-edit" title="Edit"></i></a>
+                                        <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}"> <i class="fas fa-trash-alt" title="Hapus"></i></button>
                                     </td>
                                 </tr>
                             @empty
