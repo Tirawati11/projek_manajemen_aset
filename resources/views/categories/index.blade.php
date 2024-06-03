@@ -27,9 +27,19 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Show</a>
-                                        <a href="#" class="btn btn-sm btn-warning btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Edit</a>
-                                        <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}">Hapus</button>
+                                        <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Show">
+                                            <i class="far fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline form-delete">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @empty
