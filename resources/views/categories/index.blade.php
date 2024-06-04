@@ -28,7 +28,6 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>
-<<<<<<< HEAD
                                         <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Show">
                                             <i class="far fa-eye"></i>
                                         </a>
@@ -42,11 +41,6 @@
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
-=======
-                                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="far fa-eye" title="Show"></i></a>
-                                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}">  <i class="fas fa-edit" title="Edit"></i></a>
-                                        <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}"> <i class="fas fa-trash-alt" title="Hapus"></i></button>
->>>>>>> 706a80bde2c3e806334aa323072a4eab61c9a03e
                                     </td>
                                 </tr>
                             @empty
