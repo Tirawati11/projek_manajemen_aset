@@ -13,7 +13,7 @@
                     <img src="{{ asset('storage/aset/'.$aset->gambar) }}" class="w-100 rounded">
                     <hr>
                     <p>Nama Barang: {{ $aset->nama_barang }}</p>
-                    <p>Kode: {{ $aset->codes->kode }}</p>
+                    <p>Kode: {{ $aset->kode }}</p>
                     <p>Merek: {{ $aset->merek }}</p>
                     <p>Kategori: {{ $aset->category->name }}</p>
                     <p>Jumlah: {{ $aset->jumlah}}</p>
