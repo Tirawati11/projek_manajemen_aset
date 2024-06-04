@@ -171,47 +171,50 @@
 
       // Tampilkan modal edit dengan data lokasi
    // Tampilkan modal edit saat tombol edit diklik
-   $('.btn-edit').click(function() {
-            var id = $(this).data('id');
-            var name = $(this).data('name');
-            $('#name{{$location->id}}').val(name); // Isi nilai input dengan nama lokasi yang akan diedit
-            $('#modalEdit{{$location->id}}').modal('show'); // Tampilkan modal edit
-        });
-        // Tangani form submit untuk update lokasi dengan AJAX
-        $('#formEdit{{$location->id}}').on('submit', function(e) {
-            e.preventDefault();
-            var form = $(this);
-            var url = form.attr('action');
-            var method = form.attr('method');
-            var data = form.serialize();
+   $(document).on('click', '.btn-edit', function() {
+        var id = $(this).data('id');
+        var name = $(this).data('name');
 
-            $.ajax({
-                url: url,
-                method: method,
-                data: data,
-                success: function(response) {
-                    $('#modalEdit{{$location->id}}').modal('hide'); // Sembunyikan modal edit setelah sukses update
-                    Swal.fire({
-                        title: 'Berhasil',
-                        text: response.message,
-                        icon: 'success',
-                        showConfirmButton: true
-                    }).then((result) => {
-                        // Tampilkan perubahan langsung setelah berhasil update
-                        var row = $('tr[data-id="' + response.data.id + '"]');
-                        row.find('td:eq(1)').text(response.data.name); // Update nama lokasi dalam tabel
-                    });
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Gagal melakukan update.',
-                        icon: 'error',
-                        showConfirmButton: true
-                    });
-                }
-            });
+        // Gunakan template literal untuk menyisipkan variabel id
+        $(`#location${id}`).val(name); // Isi nilai input dengan nama lokasi yang akan diedit
+        $(`#modalEdit${id}`).modal('show'); // Tampilkan modal edit
+    });
+
+    // Tangani form submit untuk update lokasi dengan AJAX
+    $(document).on('submit', '[id^=formEdit]', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        var method = form.attr('method');
+        var data = form.serialize();
+
+        $.ajax({
+            url: url,
+            method: method,
+            data: data,
+            success: function(response) {
+                $(`#modalEdit${response.data.id}`).modal('hide'); // Sembunyikan modal edit setelah sukses update
+                Swal.fire({
+                    title: 'Berhasil',
+                    text: response.message,
+                    icon: 'success',
+                    showConfirmButton: true
+                }).then((result) => {
+                    // Tampilkan perubahan langsung setelah berhasil update
+                    var row = $('tr[data-id="' + response.data.id + '"]');
+                    row.find('td:eq(1)').text(response.data.name); // Update nama lokasi dalam tabel
+                });
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Gagal melakukan update.',
+                    icon: 'error',
+                    showConfirmButton: true
+                });
+            }
         });
     });
+});
 </script>
 @endsection
