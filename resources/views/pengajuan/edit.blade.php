@@ -43,11 +43,7 @@
                             <label class="font-weight-bold">Stok</label>
                             <input type="number" name="stok" id="stok" class="form-control" min="1"  value="{{ old('stok', $pengajuan->stok) }}" required>
                         </div>
-                        <div class="form-group">
-                            <label class="font-weight-bold">Status</label>
-                            <input type="hidden" name="status" id="status" class="form-control" min="1"  value="{{ old('status', $pengajuan->status) }}" required>
-                        </div>
-                        <div class="form-group">
+                            <div class="form-group">
                             <label class="font-weight-bold">Catatan</label>
                             <input type="text" name="deskripsi" id="deskripsi" class="form-control" value="{{ old('deskripsi', $pengajuan->deskripsi) }}">
                         </div>

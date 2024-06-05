@@ -85,8 +85,7 @@ class PengajuanBarangController extends Controller
              'jumlah' => 'required|integer|min:1',
              'deskripsi' => 'required|string',
              'stok' => 'required|integer|min:0',
-             'status' => 'required|string',
-         ]);
+            ]);
 
          try {
              // Update item pengajuan
@@ -95,8 +94,7 @@ class PengajuanBarangController extends Controller
                  'jumlah' => $request->jumlah,
                  'deskripsi' => $request->deskripsi,
                  'stok' => $request->stok,
-                 'status' => $request->status,
-             ]);
+                ]);
 
              // Redirect ke halaman index dengan pesan sukses
              return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil diperbarui.');
