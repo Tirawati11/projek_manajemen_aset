@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
     <div class="section-header">
         <h1>Data User</h1>
@@ -9,9 +10,10 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
-                <div class="card-body">
-                    <button class="btn btn-primary mb-3" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user"> <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna</button>
-                    <div class="table-responsive">
+                <div class="card-header-action">
+                    <button class="btn btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
+                        <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
+                    </button>
                         <table class="table table-bordered table-md">
                             <thead>
                                 <tr>
@@ -108,8 +110,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Kembali</button>
                 </div>
             </form>
         </div>
