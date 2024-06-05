@@ -2,23 +2,28 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .input-group .form-control {
+        border-radius: 50px;
+    }
+</style>
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Lokasi</h1>
-        <form action="{{ route('lokasi.index') }}" method="GET" class="form-inline ml-auto">
-            <div class="input-group">
-                <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
-                <div class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                </div>
-            </div>
-        </form>
     </div>
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i class="fa-solid fa-circle-plus"></i> Tambah Lokasi</button>
+                    <form action="{{ route('lokasi.index') }}" method="GET" class="form-inline">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
@@ -81,9 +86,6 @@
     @include('lokasi.show', ['location' => $location])
     @include('lokasi.edit', ['location' => $location])
 @endforeach
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')
@@ -169,9 +171,8 @@
         });
     });
 
-      // Tampilkan modal edit dengan data lokasi
-   // Tampilkan modal edit saat tombol edit diklik
-   $(document).on('click', '.btn-edit', function() {
+    // Tampilkan modal edit saat tombol edit diklik
+    $(document).on('click', '.btn-edit', function() {
         var id = $(this).data('id');
         var name = $(this).data('name');
 

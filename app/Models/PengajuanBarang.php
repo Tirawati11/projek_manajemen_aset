@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class PengajuanBarang extends Model
 {
-    protected $fillable = ['nama_barang', 'user_id', 'jumlah', 'deskripsi', 'status', 'stok'];
-}
+    protected $fillable = ['nama_barang', 'nama_pemohon', 'jumlah', 'deskripsi', 'status', 'stok'];
+
+    }

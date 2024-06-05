@@ -12,7 +12,7 @@
                         ID :  {{ $pengajuan->id }}
                     </p>
                     <div class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
-                        <p>Nama Pemohon : {{ $pengajuan->user_id }}</p>
+                        <p>Nama Pemohon : {{ $pengajuan->nama_pemohon }}</p>
                         <p>Nama Barang : {{ $pengajuan->nama_barang }}</p>
                         <p>Jumlah : {{ $pengajuan->jumlah }}</p>
                         <p>Stok : {{ $pengajuan->stok }}</p>

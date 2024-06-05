@@ -5,6 +5,7 @@
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Aset</h1>
+    </section>
         <form action="" method="GET" class="form-inline ml-auto">
             <div class="input-group">
                 <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
@@ -29,7 +30,7 @@
                         <th style="text-align: center;">Merek</th>
                         <th style="text-align: center;">Tanggal Masuk</th>
                         <th style="text-align: center;">Jumlah</th>
-                        <th style="text-align: center; width:250px;">Aksi</th>
+                        <th style="text-align: center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,20 +46,17 @@
                         <td>{{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</td>
                         <td>{{ $aset->jumlah }}</td>
                         <td>
-                            <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark">
+                            <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark" title="SHOW">
                                 <i class="far fa-eye"></i>
-                                SHOW
                             </a>
-                            <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary">
+                            <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary" title=" EDIT">
                                 <i class="fas fa-edit"></i>
-                                EDIT
                             </a>
                             <form id="delete-form-{{ $aset->id }}" action="{{ route('aset.destroy', $aset->id) }}" method="POST" class="d-inline delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger delete-confirm">
+                                <button type="submit" class="btn btn-sm btn-danger delete-confirm" title=" HAPUS">
                                     <i class="fas fa-trash-alt"></i>
-                                    HAPUS
                                 </button>
                             </form>
                         </td>
@@ -73,7 +71,6 @@
             {{ $asets->appends(['search' => $search])->links('pagination::bootstrap-4') }}
         </div>
     </div>
-</section>
 @endsection
 
 @section('scripts')

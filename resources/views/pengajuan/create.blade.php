@@ -17,23 +17,9 @@
                             <label class="font-weight-bold">Nama Barang</label>
                             <input type="text" name="nama_barang" id="nama_barang" class="form-control">
                         </div>
-                        {{-- <div class="form-group">
-                            <label class="font-weight-bold">KATEGORI</label>
-                            <select class="form-control @error('kategori_id') is-invalid @enderror" name="kategori_id">
-                                <option value=""></option>
-                                @foreach($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->nama }}</option>
-                                @endforeach
-                            </select>
-                            @error('kategori_id')
-                            <div class="alert alert-danger mt-2">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div> --}}
-                        <div class="form-group">
+                            <div class="form-group">
                             <label class="font-weight-bold">Nama Pemohon</label>
-                            <input type="text" name="user_id" id="user_id" class="form-control">
+                            <input type="text" name="nama_pemohon" id="nama_pemohon" class="form-control">
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Jumlah</label>
