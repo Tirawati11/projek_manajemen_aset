@@ -31,9 +31,28 @@
                                         <td>{{ $user->nama_user }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->jabatan }}</td>
-                                        <td>{{ $user->approved ? 'Yes' : 'No' }}</td>
                                         <td>
-                                            @if(!$user->approved)
+                                            @if($user->approved)
+                                            <span class="badge badge-success">Approved</span>
+                                        @else
+                                            <span class="badge badge-warning">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-dark btn-show" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" title="Show">
+                                            <i class="far fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                        @if(!$user->approved)
                                             <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
                                                 @csrf
                                                 @method('PUT')
@@ -41,20 +60,6 @@
                                                     <i class="far fa-thumbs-up"></i>
                                                 </button>
                                             </form>
-                                        @endif
-                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-dark" title="Show">
-                                            <i class="far fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger btn-delete" title="Hapus">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
                                         </td>
                                     </tr>
                                 @empty
@@ -118,6 +123,44 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Event handler untuk tombol show
+    const showButtons = document.querySelectorAll('.btn-show');
+    showButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            Swal.fire({
+                title: 'Detail Pengguna',
+                html: `ID: ${id}<br>Nama: ${name}`,
+                icon: 'info',
+                confirmButtonText: 'Close'
+            });
+        });
+    });
+
+    // Event handler untuk tombol edit
+    const editButtons = document.querySelectorAll('.btn-edit');
+    editButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            Swal.fire({
+                title: 'Edit Pengguna',
+                html: `ID: ${id}<br>Nama: ${name}`,
+                icon: 'info',
+                confirmButtonText: 'Edit',
+                showCancelButton: true,
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+    });
+
     // Event handler untuk tombol hapus
     const deleteButtons = document.querySelectorAll('.btn-delete');
     deleteButtons.forEach(button => {
@@ -182,7 +225,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     }).then(response => response.json()).then(data => {
                         if (data.success) {
-                            Swal.fire('Berhasil!', data.message, 'success').then(() => {
+                            Swal.fire('Berhasil!', data.message,
+                            'success').then(() => {
                                 location.reload();
                             });
                         } else {
@@ -192,6 +236,22 @@ document.addEventListener('DOMContentLoaded', function () {
                         Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
                     });
                 }
+            });
+        });
+    });
+
+    // Event handler untuk tombol detail
+    const detailButtons = document.querySelectorAll('.btn-detail');
+    detailButtons.forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            Swal.fire({
+                title: 'Detail Pengguna',
+                html: `ID: ${id}<br>Nama: ${name}`,
+                icon: 'info',
+                confirmButtonText: 'Close'
             });
         });
     });
