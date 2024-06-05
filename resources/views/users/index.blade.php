@@ -10,18 +10,19 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
-                <div class="card-body">
-                    <button class="btn btn-primary mb-3" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user"> <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna</button>
-                    <div class="table-responsive">
+                <div class="card-header-action">
+                    <button class="btn btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
+                        <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
+                    </button>
                         <table class="table table-bordered table-md">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Nama User</th>
-                                    <th style="text-align: center;">Email</th>
+                                    <th>Email</th>
                                     <th>Jabatan</th>
-                                    <th style="text-align: center;">Approved</th>
-                                    <th style="text-align: center;">Aksi</th>
+                                    <th>Approved</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,8 +61,9 @@
                                                     <i class="far fa-thumbs-up"></i>
                                                 </button>
                                             </form>
-                                        </td>
-                                    </tr>
+                                        @endif
+                                    </td>                                                                         
+                                </tr>
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center">Data Pengguna belum tersedia.</td>
