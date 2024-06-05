@@ -3,26 +3,31 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
-    <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Aset</h1>
+         <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;"> Data Aset</h1>
+        </div>
     </section>
-        <form action="" method="GET" class="form-inline ml-auto">
-            <div class="input-group">
-                <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
-                <div class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header-action" style="display: flex; justify-content: space-between; align-items: center;">
+                            <a href="{{ route('aset.create') }}" class="btn btn-primary" style="margin-right: 10px;">
+                                <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
+                            </a>
+                            <form action="{{ route('aset.index') }}" method="GET" class="form-inline">
+                            <div class="input-group">
+                            <input type="text" class="form-control" name="search" placeholder="Search" value="{{ $search ?? '' }}">
+                            <div class="input-group-btn">
+                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+                 </form>
             </div>
-        </form>
-    </div>
-    <div class="card-header-action">
-        <a href="{{ route('aset.create') }}" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Tambah Aset</a>
-    </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-md">
-                <thead>
-                    <tr>
+                 <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-md">
+                     <thead>
+                        <tr>
                         <th style="text-align: center; width:20px;">No</th>
                         <th style="text-align: center;">Kode</th>
                         <th style="text-align: center;">Gambar</th>
