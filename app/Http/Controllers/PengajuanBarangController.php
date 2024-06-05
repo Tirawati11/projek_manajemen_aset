@@ -16,8 +16,7 @@ class PengajuanBarangController extends Controller
     $search = $request->input('search');
 
     $query = PengajuanBarang::query()
-        ->where('user_id', Auth::id())
-        ->when($search, function ($query, $search) {
+            ->when($search, function ($query, $search) {
             return $query->where(function ($query) use ($search) {
                 $query->where('nama_barang', 'LIKE', "%{$search}%")
                       ->orWhere('deskripsi', 'LIKE', "%{$search}%");
@@ -32,7 +31,6 @@ class PengajuanBarangController extends Controller
 
     return view('pengajuan.index', compact('pengajuan', 'search'));
 }
-
     public function create()
     {
         // Mendapatkan semua barang untuk ditampilkan di form pengajuan
@@ -48,7 +46,7 @@ class PengajuanBarangController extends Controller
         ]);
 
         PengajuanBarang::create([
-            'user_id' => Auth::id(),
+            'nama_pemohon' => $request->nama_pemohon,
             'nama_barang' => $request->nama_barang,
             'jumlah' => $request->jumlah,
             'deskripsi' => $request->deskripsi,
@@ -82,6 +80,7 @@ class PengajuanBarangController extends Controller
          // Validasi input
          $request->validate([
              'nama_barang' => 'required|string',
+             'nama_pemohon' => 'required|string',
              'jumlah' => 'required|integer|min:1',
              'deskripsi' => 'required|string',
              'stok' => 'required|integer|min:0',
@@ -92,6 +91,7 @@ class PengajuanBarangController extends Controller
              // Update item pengajuan
              $pengajuan->update([
                  'nama_barang' => $request->nama_barang,
+                 'nama_pemohon' => $request->nama_pemohon,
                  'jumlah' => $request->jumlah,
                  'deskripsi' => $request->deskripsi,
                  'stok' => $request->stok,
@@ -114,22 +114,7 @@ class PengajuanBarangController extends Controller
 
         return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dihapus.');
     }
-    // public function approve(PengajuanBarang $pengajuan)
-    // {
-
-    //     $pengajuan->status = true;
-    //     $pengajuan->save();
-    //     return redirect()->route('pengajuan.index')->with('success', 'Pengajuan Disetujui.');
-    // }
-
-    // // Method untuk menolak pengguna
-    // public function reject(PengajuanBarang $pengajuan)
-    // {
-
-    //     $pengajuan->status = false;
-    //     $pengajuan->save();
-    //     return redirect()->route('pengajuan.index')->with('success', 'Pengajuan Ditolak.');
-    // }
+//   Aprove pengajuan
     public function approve($id)
 {
     $pengajuan = PengajuanBarang::findOrFail($id);

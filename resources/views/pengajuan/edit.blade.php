@@ -33,7 +33,7 @@
                         </div> --}}
                         <div class="form-group">
                             <label class="font-weight-bold">Nama Pemohon</label>
-                            <input type="text" name="user_id" id="user_id" class="form-control" value="{{ old('user_id', $pengajuan->user_id) }}">
+                            <input type="text" name="nama_pemohon" id="nama_pemohon" class="form-control" value="{{ old('nama_pemohon', $pengajuan->nama_pemohon) }}">
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Jumlah</label>
