@@ -26,16 +26,7 @@
                     </form>
                 </div>
                 <div class="card-body">
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-                    @if(session('error'))
-                        <div class="alert alert-danger">
-                            {{ session('error') }}
-                        </div>
-                    @endif
+                    <div id="alert-container"></div> <!-- Container untuk alert -->
                     <div class="table-responsive">
                         <table class="table table-striped text-center">
                             <thead>
@@ -92,10 +83,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script>
    $(document).ready(function() {
-    // Code for handling modal form submit using AJAX for creating a new location
-    $('#formTambah').on('submit', function(e) {
+      $('#formTambah').on('submit', function(e) {
         e.preventDefault();
         var form = $(this);
         var url = form.attr('action');
@@ -108,14 +99,10 @@
             data: data,
             success: function(response) {
                 $('#modalTambah').modal('hide');
-                Swal.fire({
-                    title: 'Berhasil',
-                    text: response.message,
-                    icon: 'success',
-                    showConfirmButton: true
-                }).then((result) => {
-                    location.reload();
-                });
+                $('.modal-backdrop').remove();
+
+                localStorage.setItem('saveSuccess', 'true');
+                location.reload();
             },
             error: function(xhr) {
                 Swal.fire({
@@ -128,7 +115,6 @@
         });
     });
 
-    // Code for handling delete confirmation
     $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
@@ -195,6 +181,7 @@
             data: data,
             success: function(response) {
                 $(`#modalEdit${response.data.id}`).modal('hide'); // Sembunyikan modal edit setelah sukses update
+                $('.modal-backdrop').remove();
                 Swal.fire({
                     title: 'Berhasil',
                     text: response.message,
@@ -216,6 +203,20 @@
             }
         });
     });
+
+    $('.modal').on('hidden.bs.modal', function () {
+        $('.modal-backdrop').remove();
+    });
+
+    if (localStorage.getItem('saveSuccess') === 'true') {
+        Swal.fire({
+            title: 'Berhasil',
+            text: 'Lokasi berhasil disimpan!',
+            icon: 'success',
+            showConfirmButton: true
+        });
+            localStorage.removeItem('saveSuccess');
+    }
 });
 </script>
 @endsection
