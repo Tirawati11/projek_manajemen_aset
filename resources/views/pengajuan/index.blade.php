@@ -77,7 +77,7 @@
                                 </button>
                             </form>
                             @endif
-                            <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-secondary mr-1" title="Show">
+                            <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-dark mr-1" title="Show">
                                 <i class="far fa-eye"></i>
                             </a>
                             <a href="{{ route('pengajuan.edit', $item->id) }}" class="btn btn-primary mr-1" title="Edit">

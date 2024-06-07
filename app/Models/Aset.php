@@ -12,12 +12,6 @@ class Aset extends Model
 {
     protected $fillable = ['gambar', 'kode', 'nama_barang', 'merek', 'jumlah', 'status', 'tanggal_masuk', 'deskripsi', 'lokasi', 'kondisi', 'category_id'];
 
-
-    // Relasi Many-to-One dengan Code
-    // public function codes()
-    // {
-    //     return $this->belongsTo(Code::class, 'code_id');
-    // }
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id');
@@ -35,9 +29,12 @@ class Aset extends Model
             Barang::create([
                 'nama_barang' => $aset->nama_barang,
                 'jumlah' => $aset->jumlah
-            // tambahkan kolom lainnya sesuai kebutuhan
             ]);
+        });
+
+        static::deleted(function ($aset) {
+            // Hapus data barang terkait
+            Barang::where('nama_barang', $aset->nama_barang)->delete();
         });
     }
 }
-
