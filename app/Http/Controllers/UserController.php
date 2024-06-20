@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\UserController;
+
 
 
 class UserController extends Controller
@@ -31,14 +31,14 @@ class UserController extends Controller
             'password' => 'required|min:5',
             'jabatan' => 'required',
         ]);
-   
+
         User::create([
             'nama_user' => $request->nama_user,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'jabatan' => $request->jabatan,
         ]);
-    
+
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
     }
 

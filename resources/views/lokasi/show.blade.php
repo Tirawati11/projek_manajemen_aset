@@ -9,7 +9,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p><strong>ID:</strong> {{$location->id}}</p>
                 <p><strong>Lokasi:</strong> {{$location->name}}</p>
 
                 <h5>Data Peminjaman Barang:</h5>

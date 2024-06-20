@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('content')
+@auth
 <section class="section">
     <div class="section-header">
         <h1>Detail Data User</h1>
@@ -23,10 +24,13 @@
                         <label for="jabatan">Jabatan</label>
                         <input type="text" class="form-control" id="jabatan" value="{{ $user->jabatan }}" readonly>
                     </div>
+                    @if(Auth::check() && Auth::user()->jabatan == 'admin')
                     <a href="{{ route('users.index') }}" class="btn btn-danger">Kembali</a>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endauth
 @endsection
