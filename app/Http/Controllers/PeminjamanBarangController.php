@@ -14,28 +14,30 @@ class PeminjamanBarangController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $search = $request->input('search');
+    {
+        $search = $request->input('search');
 
-    // Query data peminjaman berdasarkan pencarian
-    $query = PeminjamanBarang::with('location', 'barang')->latest();
-    if ($search) {
-        $query->whereHas('barang', function ($query) use ($search) {
-            $query->where('nama_barang_id', 'LIKE', "%$search%");
-        });
+        // Query data peminjaman berdasarkan pencarian
+        $query = PeminjamanBarang::with('location', 'barang')->latest();
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('nama_barang_id', 'LIKE', "%$search%")
+                      ->orWhere('nama', 'LIKE', "%$search%"); 
+            });
+        }
+
+        // Menggunakan paginate dengan 5 item per halaman
+        $peminjaman = $query->paginate(5);
+
+        // Manipulasi tanggal menggunakan Carbon
+        foreach ($peminjaman as $item) {
+            $item->tanggal_peminjaman = Carbon::parse($item->tanggal_peminjaman)->format('d-m-Y');
+            $item->tanggal_pengembalian = $item->tanggal_pengembalian ? Carbon::parse($item->tanggal_pengembalian)->format('d-m-Y') : null;
+        }
+
+        return view('peminjaman.index', compact('peminjaman', 'search'));
     }
 
-    // Menggunakan paginate dengan 10 item per halaman
-    $peminjaman = $query->paginate(5);
-
-    // Manipulasi tanggal menggunakan Carbon
-    foreach ($peminjaman as $item) {
-        $item->tanggal_peminjaman = Carbon::parse($item->tanggal_peminjaman)->format('d-m-Y');
-        $item->tanggal_pengembalian = $item->tanggal_pengembalian ? Carbon::parse($item->tanggal_pengembalian)->format('d-m-Y') : null;
-    }
-
-    return view('peminjaman.index', compact('peminjaman', 'search'));
-}
     /**
      * Show the form for creating a new resource.
      */
