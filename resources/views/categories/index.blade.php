@@ -109,7 +109,7 @@
     </div>
 </div>
 
-<!-- Modal Show Kategori -->
+{{-- Modal Show Kategori --}}
 <div class="modal fade" id="modal-show-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-show-kategori-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -123,6 +123,12 @@
                 <div class="form-group">
                     <label for="show_nama_kategori">Nama Kategori</label>
                     <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="show_aset_kategori">Data Aset</label>
+                    <ul id="aset-list" class="list-group">
+                        <!-- Data aset akan dimuat di sini -->
+                    </ul>
                 </div>
             </div>
         </div>
