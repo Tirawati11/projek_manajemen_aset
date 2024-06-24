@@ -40,9 +40,6 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-dark btn-show" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" title="Show">
-                                            <i class="far fa-eye"></i>
-                                        </a>
                                         <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -171,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const form = this.closest('form');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Anda tidak akan dapat mengembalikan aksi ini!",
+                text: "Anda tidak akan dapat mengembalikan aksi ini?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -210,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const form = this.closest('form');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Anda akan menyetujui pengguna ini!",
+                text: "Anda akan menyetujui pengguna ini?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
