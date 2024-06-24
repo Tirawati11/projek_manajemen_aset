@@ -21,6 +21,7 @@
                         <p>Status : {{ $peminjaman->status }}</p>
                     </div>
                     <div class="mt-4">
+                        <a href="{{ route('peminjaman.edit', $peminjaman->id) }}" class="btn btn-sm btn-primary">Edit</a>
                         <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </div>
                 </div>

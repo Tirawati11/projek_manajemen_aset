@@ -33,7 +33,7 @@ class AuthController extends Controller
             'jabatan' => $jabatan,
         ]);
 
-        return redirect()->route('login')->with('success', 'Registrasi Anda berhasil, silakan login!');
+        return redirect()->route('login')->with('success', 'Registrasi anda berhasil, silakan login!');
     }
 
     // Form Login
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
             return redirect()->route('dashboard');
         } else {
-            return redirect()->route('login')->with('error', 'Login gagal. Periksa kembali email dan password Anda.');
+            return redirect()->route('login')->with('error', 'Login gagal, periksa kembali email dan password Anda.');
         }
     }
 

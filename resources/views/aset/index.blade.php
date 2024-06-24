@@ -51,7 +51,7 @@
                         <td>{{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</td>
                         <td>{{ $aset->jumlah }}</td>
                         <td>
-                            <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark" title="SHOW">
+                            <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark" title="LIHAT">
                                 <i class="far fa-eye"></i>
                             </a>
                             <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary" title=" EDIT">

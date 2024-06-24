@@ -8,11 +8,13 @@
 </section>
 <div class="container mt-5 mb-5">
     <div class="row">
-        <div class="col-md-12">
+        <!-- Form 1: Informasi Peminjam -->
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <form action="{{ route('peminjaman.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('peminjaman.store') }}" method="POST">
                         @csrf
+                        <h4 class="font-weight-bold">Informasi Peminjam</h4>
                         <div class="form-group">
                             <label class="font-weight-bold">Nama Peminjam</label>
                             <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama">
@@ -36,6 +38,15 @@
                                 </div>
                             @enderror
                         </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form 2: Informasi Barang -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
+                    <h4 class="font-weight-bold">Informasi Barang</h4>
                         <div class="form-group">
                             <label class="font-weight-bold">Nama Barang</label>
                             <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">

@@ -3,23 +3,25 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1>Form Edit Peminjaman Barang</h1>
+        <h1>Edit Peminjaman Barang</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
     <div class="row">
-        <div class="col-md-12">
+        <!-- Form 1: Informasi Barang -->
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
                     <form action="{{ route('peminjaman.update', $peminjaman->id) }}" method="POST">
                         @csrf
                         @method('PUT')
+                        <h4 class="font-weight-bold">Informasi Barang</h4>
                         <div class="form-group">
                             <label class="font-weight-bold">Nama Barang</label>
                             <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
                                 <option value="">Pilih Nama Barang</option>
                                 @foreach($barangs as $barang)
-                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                    <option value="{{ $barang->id }}" {{ old('nama_barang_id', $peminjaman->nama_barang_id) == $barang->id ? 'selected' : '' }}>{{ $barang->nama_barang }}</option>
                                 @endforeach
                             </select>
                             @error('nama_barang_id')
@@ -48,6 +50,18 @@
                                 </div>
                             @enderror
                         </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form 2: Informasi Peminjaman -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
+                    <form action="{{ route('peminjaman.update', $peminjaman->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <h4 class="font-weight-bold">Informasi Peminjaman</h4>
                         <div class="form-group">
                             <label class="font-weight-bold">Tanggal Peminjaman</label>
                             <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman', $peminjaman->tanggal_peminjaman ? \Carbon\Carbon::parse($peminjaman->tanggal_peminjaman)->format('Y-m-d') : '') }}" placeholder="Masukkan tanggal peminjaman">
@@ -78,8 +92,8 @@
                                 </div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                        <a href="{{ route('peminjaman.index') }}" class="btn btn-danger">Kembali</a>
+                        <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </form>
                 </div>
             </div>

@@ -16,42 +16,43 @@ class AsetController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    // Ambil query pencarian dari request
-    $search = $request->input('search');
-    $dateSearch = $request->input('date_search');
+    {
+        // Ambil query pencarian dari request
+        $search = $request->input('search');
+        $dateSearch = $request->input('date_search');
 
-    // Query untuk mendapatkan data aset dengan pencarian
-    $query = Aset::with('category');
+        // Query untuk mendapatkan data aset dengan pencarian
+        $query = Aset::with('category');
 
-    if ($search) {
-        $query->where(function($q) use ($search) {
-            $q->where('nama_barang', 'like', '%' . $search . '%')
-              ->orWhere('merek', 'like', '%' . $search . '%');
-        });
-    }
-
-    // Tambahkan pencarian berdasarkan tanggal_masuk
-    if ($dateSearch) {
-        try {
-            $date = Carbon::createFromFormat('d-m-Y', $dateSearch);
-            $query->whereDate('tanggal_masuk', $date);
-        } catch (\Exception $e) {
-            // Handle exception jika format tanggal tidak valid
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('kode', 'like', '%' . $search . '%')
+                  ->orWhere('nama_barang', 'like', '%' . $search . '%')
+                  ->orWhere('merek', 'like', '%' . $search . '%');
+            });
         }
+
+        // Tambahkan pencarian berdasarkan tanggal_masuk
+        if ($dateSearch) {
+            try {
+                $date = Carbon::createFromFormat('d-m-Y', $dateSearch);
+                $query->whereDate('tanggal_masuk', $date);
+            } catch (\Exception $e) {
+                // Handle exception jika format tanggal tidak valid
+            }
+        }
+
+        // Dapatkan hasil paginasi
+        $asets = $query->latest()->paginate(5);
+
+        // Sertakan query pencarian dalam hasil pagination
+        $asets->appends(['search' => $search, 'date_search' => $dateSearch]);
+
+        // Ambil data categories
+        $categories = Category::all();
+
+        return view('aset.index', compact('asets', 'search', 'categories', 'dateSearch'));
     }
-
-    // Dapatkan hasil paginasi
-    $asets = $query->latest()->paginate(5);
-
-    // Sertakan query pencarian dalam hasil pagination
-    $asets->appends(['search' => $search, 'date_search' => $dateSearch]);
-
-    // Ambil data categories
-    $categories = Category::all();
-
-    return view('aset.index', compact('asets', 'search', 'categories', 'dateSearch'));
-}
 
     /**
      * Show the form for creating a new resource.
@@ -66,7 +67,7 @@ class AsetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
         $validated = $request->validate([
             'gambar' => 'required|image|mimes:jpeg,jpg,png|max:2048',
@@ -179,18 +180,5 @@ class AsetController extends Controller
         $aset->delete();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil dihapus.');
-    }
-    public function getNamaBarang($kode_id)
-    {
-        // Cari nama barang berdasarkan kode yang diberikan
-        $nama_barang = Item::where('code_id', $kode_id)->value('nama_barang');
-
-        // Pastikan nama barang ditemukan
-        if ($nama_barang) {
-            return response()->json(['nama_barang' => $nama_barang]);
-        } else {
-            // Jika nama barang tidak ditemukan, kirim respons error
-            return response()->json(['error' => 'Nama barang tidak ditemukan'], 404);
-        }
     }
 }

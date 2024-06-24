@@ -10,12 +10,6 @@
         <li class="{{ Request::Is('dashboard') ? 'active' : '' }}">
             <a href="{{ url('dashboard') }}"><i class="fas fa-fire"></i><span>Dashboard</span></a>
         </li>
-        @if(Auth::check() && Auth::user()->jabatan == 'admin')
-        <li class="menu-header">Pages</li>
-        <li class="{{ Request::routeIs('users.index') ? 'active' : '' }}">
-            <a href="{{ route('users.index') }}" class="nav-link"><i class="far fa-user"></i> <span>User</span></a>
-        </li>
-        @endif
         <li class="menu-header">Aset</li>
         @if(Auth::check() && Auth::user()->jabatan == 'admin')
         <li class="dropdown {{ Request::routeIs('aset.*') ? 'active' : '' }}">
@@ -47,6 +41,12 @@
         @if(Auth::check() && Auth::user()->jabatan == 'admin')
         <li class="{{ Request::RouteIs('lokasi.index') ? 'active' : '' }}">
             <a href="{{ route('lokasi.index') }}"><i class="fas fa-map-marker-alt"></i> <span>Lokasi</span></a>
+        </li>
+        @endif
+        @if(Auth::check() && Auth::user()->jabatan == 'admin')
+        <li class="menu-header">Pages</li>
+        <li class="{{ Request::routeIs('users.index') ? 'active' : '' }}">
+            <a href="{{ route('users.index') }}" class="nav-link"><i class="far fa-user"></i> <span>User</span></a>
         </li>
         @endif
     </ul>

@@ -15,10 +15,11 @@
                         <p>Nama Pemohon : {{ $pengajuan->nama_pemohon }}</p>
                         <p>Nama Barang : {{ $pengajuan->nama_barang }}</p>
                         <p>Jumlah : {{ $pengajuan->jumlah }}</p>
-                        <p>Stok : {{ $pengajuan->stok }}</p>
+                        <p>Stok Divisi : {{ $pengajuan->stok }}</p>
                         <p>Keterangan : {{ $pengajuan->deskripsi }}</p>
                     </div>
                     <div class="mt-4">
+                        <a href="{{ route('pengajuan.edit', $pengajuan->id) }}" class="btn btn-sm btn-primary">Edit</a>
                         <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </div>
                 </div>

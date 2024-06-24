@@ -3,12 +3,12 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1>Form Pengajuan Barang</h1>
+        <h1>Pengajuan Barang</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
                     <form action="{{ route('pengajuan.store') }}" method="POST">
@@ -23,10 +23,10 @@
                         </div>
                         <div class="form-group">
                             <label class="font-weight-bold">Jumlah</label>
-                            <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" required>
+                            <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" step="1" oninput="this.value = Math.abs(this.value)" required>
                         </div>
                         <div class="form-group">
-                            <label class="font-weight-bold">Stok</label>
+                            <label class="font-weight-bold">Stok Divisi</label>
                             <input type="number" name="stok" id="stok" class="form-control" min="1" required>
                         </div>
                         <div class="form-group">
