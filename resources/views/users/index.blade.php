@@ -40,36 +40,41 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                        @if(!$user->approved)
-                                            <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
-                                                @csrf
-                                                @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-primary btn-approve" title="Approve">
-                                                    <i class="far fa-thumbs-up"></i>
+                                        <div class="d-inline">
+                                            <div class="dropdown d-inline mr-2">
+                                                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownApproveButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="far fa-thumbs-up"></i> Approve
                                                 </button>
-                                            </form>
-                                        @endif
+                                                <div class="dropdown-menu" aria-labelledby="dropdownApproveButton">
+                                                    <a class="dropdown-item btn-approve" href="#" data-id="{{ $user->id }}"><i class="far fa-thumbs-up"></i> Approve</a>
+                                                </div>
+                                            </div>
+
+                                            <div class="dropdown d-inline mr-2">
+                                                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownActionsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fas fa-cogs"></i> Aksi
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownActionsButton">
+                                                    <a class="dropdown-item btn-show" href="#" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}"><i class="fa-solid fa-eye"></i> Show</a>
+                                                    <a class="dropdown-item btn-edit" href="#" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}"><i class="fa-solid fa-edit"></i> Edit</a>
+                                                    <a class="dropdown-item btn-delete" href="#" data-id="{{ $user->id }}"><i class="fa-solid fa-trash"></i> Hapus</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center">Data Pengguna belum tersedia.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                        {{ $users->links() }}
-                    </div>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div class="alert alert-danger">
+                                            Data Pengguna belum tersedia.
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
