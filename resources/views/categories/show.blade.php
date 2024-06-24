@@ -1,36 +1,18 @@
-@extends('layouts.main')
-
-@section('content')
-    <div class="row">
-        <div class="col-md-10 col-lg-10">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Detail Kategori</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="id">ID Kategori</label>
-                        <input type="text" class="form-control" id="id" name="id" value="{{ $category->id }}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="nama_kategori">Nama Kategori</label>
-                        <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" value="{{ $category->name }}" readonly>
-                    </div>
-                    <a href="{{ route('categories.index') }}" class="btn btn-primary">Back</a>
+<div class="modal fade" id="modal-show-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-show-kategori-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-show-kategori-title">Detail Kategori</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="show_nama_kategori">Nama Kategori</label>
+                    <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori" readonly>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            @if(session()->has('success'))
-                toastr.success('{{ session('success') }}', 'BERHASIL!');
-            @elseif(session()->has('error'))
-                toastr.error('{{ session('error') }}', 'GAGAL!');
-            @endif
-        });
-    </script>
-@endsection
+</div>
