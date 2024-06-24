@@ -19,7 +19,7 @@ class PengajuanBarangController extends Controller
             ->when($search, function ($query, $search) {
             return $query->where(function ($query) use ($search) {
                 $query->where('nama_barang', 'LIKE', "%{$search}%")
-                      ->orWhere('deskripsi', 'LIKE', "%{$search}%");
+                      ->orWhere('nama_pemohon', 'LIKE', "%{$search}%");
             });
         });
 

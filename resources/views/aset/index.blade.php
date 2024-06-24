@@ -12,7 +12,7 @@
                     <div class="card">
                         <div class="card-header-action" style="display: flex; justify-content: space-between; align-items: center;">
                             <a href="{{ route('aset.create') }}" class="btn btn-primary" style="margin-right: 10px;">
-                                <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
+                                <i class="fa-solid fa-circle-plus"></i> Tambah Aset
                             </a>
                             <form action="{{ route('aset.index') }}" method="GET" class="form-inline">
                             <div class="input-group">

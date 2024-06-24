@@ -63,6 +63,7 @@
                 <td class="align-middle">{{ $item->deskripsi }}</td>
                 <td>
                     <div class="btn-group" role="group">
+                        @if(Auth::check() && Auth::user()->jabatan == 'admin')
                         @if ($item->status === 'pending')
                             <form id="approvalForm{{ $item->id }}" action="{{ route('pengajuan.approve', $item->id) }}" method="POST" class="d-inline mr-1">
                                 @csrf
@@ -76,6 +77,7 @@
                                     <i class="far fa-thumbs-down"></i>
                                 </button>
                             </form>
+                            @endif
                             @endif
                             <a href="{{ route('pengajuan.show', $item->id) }}" class="btn btn-dark mr-1" title="Show">
                                 <i class="far fa-eye"></i>
