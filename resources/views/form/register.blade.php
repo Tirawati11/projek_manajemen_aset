@@ -5,7 +5,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 50px; 
+        height: 50px;
     }
 </style>
 <div class="card card-primary">
@@ -17,9 +17,9 @@
             @csrf
             <div class="form-group">
                 <label for="name">Name</label>
-                <input id="name" type="name" class="form-control @error('name') is-invalid @enderror"
-                    name="name" value="{{ old('name') }}" required>
-                @error('name')
+                <input id="nama_user" type="text" class="form-control @error('nama_user') is-invalid @enderror"
+                    name="nama_user" value="{{ old('nama_user') }}" required>
+                @error('nama_user')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>
@@ -56,6 +56,20 @@
                 @enderror
             </div>
             <div class="form-group">
+                <label class="font-weight-bold">Role</label>
+                <select class="form-control @error('jabatan') is-invalid @enderror" name="jabatan">
+                    <option value="">----</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">Karyawan</option>
+                    <option value="HRD">HRD</option>
+                    </select>
+                @error('jabatan')
+                    <div class="alert alert-danger mt-2">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-lg btn-block">
                     Register
                 </button>
@@ -67,4 +81,3 @@
     Already have a account? <a href="{{ route('login') }}">Sign In Now</a>
 </div>
 @endsection
-

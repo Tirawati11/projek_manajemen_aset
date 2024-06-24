@@ -6,22 +6,22 @@
         justify-content: center;
         align-items: center;
         height: 50px;
-        margin-bottom: 10px; 
+        margin-bottom: 10px;
     }
     .card-body {
-        padding: 20px; 
+        padding: 20px;
     }
     .form-group label {
-        margin-bottom: 5px; 
+        margin-bottom: 5px;
     }
     .form-group {
-        margin-bottom: 15px; 
+        margin-bottom: 15px;
     }
     .btn-block {
-        margin-top: 10px; 
+        margin-top: 10px;
     }
     .alert {
-        margin-top: 10px; 
+        margin-top: 10px;
     }
     .alert-custom-blue {
         background-color: rgba(0, 123, 255, 0.5); /* Warna biru transparan */
@@ -84,7 +84,7 @@
                 </div>
                 @enderror
             </div>
-            <div class="form-group">
+                <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-lg btn-block">
                     Login
                 </button>

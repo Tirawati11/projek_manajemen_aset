@@ -11,25 +11,29 @@ class AuthController extends Controller
     // Form Register
     public function register()
     {
-        return view ('form.register');
+        return view('form.register');
     }
 
     // Register Post
     public function registerPost(Request $request)
     {
         $request->validate([
-            'name'=> 'required|string|max:255',
-            'email'=> 'required|string|email|unique:users,email',
+            'nama_user' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
         ]);
 
-        User::create ([
-            'name'=> $request->name,
-            'email'=> $request->email,
+        // Logika untuk menentukan jabatan berdasarkan email
+        $jabatan = $this->determineJabatan($request->email);
+
+        User::create([
+            'nama_user' => $request->nama_user,
+            'email' => $request->email,
             'password' => bcrypt($request->password),
+            'jabatan' => $jabatan,
         ]);
 
-        return redirect()->route('login')->with('success', 'Registerasi anda berhasil, silakan login!');
+        return redirect()->route('login')->with('success', 'Registrasi anda berhasil, silakan login!');
     }
 
     // Form Login
@@ -46,15 +50,17 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-        if (!$user->approved){
-            Auth::logout();
-            return redirect()->route('login')->with('error', 'Akun anda belum disetujui admin');
-        }
-         return redirect()->route('dashboard');
+            if (!$user->approved) {
+                Auth::logout();
+                return redirect()->route('login')->with('error', 'Akun anda belum disetujui admin');
+            }
+
+            return redirect()->route('dashboard');
         } else {
-            return redirect()->route('login')->with('error', 'Login gagal. Periksa kembali email dan password Anda.');
+            return redirect()->route('login')->with('error', 'Login gagal, periksa kembali email dan password Anda.');
         }
     }
+
     // Log out
     public function logoutUser(Request $request)
     {
@@ -64,4 +70,23 @@ class AuthController extends Controller
 
         return redirect('login');
     }
+
+    protected function authenticated(Request $request, $user)
+    {
+        $user->update([
+            'last_login_at' => now(),
+        ]);
     }
+
+    private function determineJabatan($email)
+    {
+        // Logika untuk menentukan jabatan berdasarkan email
+        if (strpos($email, 'admin') !== false) {
+            return 'admin';
+        } elseif (strpos($email, 'hrd') !== false) {
+            return 'hrd';
+        } else {
+            return 'karyawan';
+        }
+    }
+}
