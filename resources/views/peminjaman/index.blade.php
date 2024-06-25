@@ -17,14 +17,14 @@
 <section class="section">
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Peminjaman Aset</h1>
-        <form action="" method="GET" class="form-inline ml-auto">
+        {{-- <form action="" method="GET" class="form-inline ml-auto">
             <div class="input-group">
                 <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
                 <div class="input-group-btn">
                     <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
                 </div>
             </div>
-        </form>
+        </form> --}}
     </div>
     <div class="row">
         <div class="col-12">
@@ -34,7 +34,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-md">
+                        <table class="table table-bordered table-md" id="table1">
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">No</th>
@@ -83,7 +83,7 @@
                             </tbody>
                         </table>
                     </div>
-                    {{ $peminjaman->appends(['search' => $search])->links('pagination::bootstrap-5') }}
+                    {{-- {{ $peminjaman->appends(['search' => $search])->links('pagination::bootstrap-5') }} --}}
                 </div>
             </div>
         </div>

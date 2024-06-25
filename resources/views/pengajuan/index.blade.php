@@ -2,6 +2,18 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .dropdown-item {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        color: #000;
+    }
+    .dropdown-item i {
+        font-family: FontAwesome, sans-serif;
+        font-size: inherit;
+        color: inherit;
+    }
+</style>
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Pengajuan Aset</h1>
@@ -15,17 +27,17 @@
                     <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
                 </a>
                 <form action="{{ route('pengajuan.index') }}" method="GET" class="form-inline">
-                    <div class="input-group">
+                    {{-- <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Search" value="{{ $search ?? '' }}">
                         <div class="input-group-btn">
                             <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                        </div>
+                        </div> --}}
                     </div>
                 </form>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
                                 <th style="width: 50px;"></th>
@@ -33,7 +45,7 @@
                                 <th class="nowrap" style="width: 150px;">Nama Barang</th>
                                 <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
                                 <th style="text-align: center; width: 100px;">Status</th>
-                                <th style="text-align: center; width: 300px;">Aksi</th>
+                                <th style="text-align: center; width: 200px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,13 +58,13 @@
                                 </td>
                                 <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
                                 <td class="align-middle">{{ $item->nama_barang }}</td>
-                                <td class="align-middle">{{ $item->nama_pemohon}}</td>
+                                <td class="align-middle">{{ $item->nama_pemohon }}</td>
                                 <td class="align-middle">
                                     <span class="{{ $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : '')) }}">
                                         {{ $item->status }}
                                     </span>
                                 </td>
-                                    <td>
+                                <td>
                                     <div class="btn-group" role="group">
                                         @if(Auth::check() && Auth::user()->jabatan == 'admin')
                                         @if ($item->status === 'pending')
@@ -61,14 +73,12 @@
                                                 <i class="far fa-thumbs-up"></i> Approve
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
-                                                <form id="approvalForm{{ $item->id }}" action="{{ route('pengajuan.approve', $item->id) }}" method="POST" class="dropdown-item">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item"><i class="far fa-thumbs-up"></i> Approve</button>
-                                                </form>
-                                                <form id="rejectForm{{ $item->id }}"  method="POST" class="dropdown-item">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item"><i class="far fa-thumbs-down"></i> Reject</button>
-                                                </form>
+                                                <button type="button" class="dropdown-item approve-button" data-id="{{ $item->id }}">
+                                                    <i class="far fa-thumbs-up"></i> Approve
+                                                </button>
+                                                <button type="button" class="dropdown-item reject-button" data-id="{{ $item->id }}">
+                                                    <i class="far fa-thumbs-down"></i> Reject
+                                                </button>
                                             </div>
                                         </div>
                                         @endif
@@ -84,15 +94,14 @@
                                                 <a href="{{ route('pengajuan.edit', $item->id) }}" class="dropdown-item">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <form id="delete-form-{{ $item->id }}" method="POST" class="dropdown-item delete-confirm">
+                                                <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="dropdown-item" style="cursor:pointer;">
+                                                    <button type="submit" class="dropdown-item delete-confirm" style="cursor:pointer;">
                                                         <i class="fas fa-trash-alt"></i> Hapus
                                                     </button>
                                                 </form>
                                             </div>
-                                        </div>                                        
                                         </div>
                                     </div>
                                 </td>
@@ -105,7 +114,7 @@
                         </tbody>
                     </table>
                 </div>
-                {{ $pengajuan->appends(['search' => $search])->links('pagination::bootstrap-5') }}
+                {{-- {{ $pengajuan->appends(['search' => $search])->links('pagination::bootstrap-5') }} --}}
             </div>
         </div>
     </div>
@@ -114,6 +123,7 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
@@ -161,5 +171,43 @@
         showConfirmButton: true
     });
     @endif
+
+    $(document).on('click', '.approvalButton', function(e) {
+        e.preventDefault();
+        var pengajuanId = $(this).data('pengajuanid');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan menyetujui pengajuan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, setujui!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#approvalForm' + pengajuanId).submit();
+            }
+        });
+    });
+
+    $(document).on('click' function(e) {
+        e.preventDefault();
+        var pengajuanId = $(this).data('pengajuanid');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan menolak pengajuan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, tolak!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#rejectForm' + pengajuanId).submit();
+            }
+        });
+    });
 </script>
 @endsection

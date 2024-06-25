@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1>Edit Aset</h1>
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333; text-align: center;">Edit Aset</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
@@ -109,8 +109,8 @@
                                     </div>
                                     @enderror
                                 <br>
-                                <button type="submit" class="btn btn-md btn-primary">Simpan</button>
-                                <a href="{{ route('aset.index') }}" class="btn btn-danger">Kembali</a>
+                                <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                                <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                             </div>
                         </div>
                     </form>

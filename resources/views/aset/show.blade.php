@@ -2,7 +2,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1>Detail Aset</h1>
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333; text-align: center;">Detail Aset</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
@@ -21,8 +21,8 @@
                     <p>Keterangan: {{ $aset->deskripsi }}</p>
                     <p>kondisi: {{ $aset->kondisi }}</p>
                     <div>
-                        <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-primary">Edit</a>
-                        <a href="{{ route('aset.index') }}" class="btn btn-danger">Kembali</a>
+                        <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </div>
                 </div>
             </div>

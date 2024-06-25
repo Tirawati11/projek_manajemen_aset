@@ -44,7 +44,7 @@
         </li>
         @endif
         @if(Auth::check() && Auth::user()->jabatan == 'admin')
-        <li class="menu-header">Pages</li>
+        <li class="menu-header">Konfigurasi</li>
         <li class="{{ Request::routeIs('users.index') ? 'active' : '' }}">
             <a href="{{ route('users.index') }}" class="nav-link"><i class="far fa-user"></i> <span>User</span></a>
         </li>
