@@ -95,5 +95,14 @@ class UserController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
     }
+        public function reject(User $user)
+    {
+        $user->update(['rejected' => true]); // Assuming you have a 'rejected' column in your users table
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User rejected successfully.'
+        ]);
+    }
 
 }

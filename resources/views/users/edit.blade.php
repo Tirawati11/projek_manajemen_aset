@@ -1,33 +1,32 @@
-@extends('layouts.main')
-
-@section('content')
-<div class="row">
-    <div class="col-md-10 col-lg-10">
-        <div class="card">
-            <div class="card-header">
-                <h4>Edit Pengguna</h4>
+<!-- Modal Edit User -->
+<div class="modal fade" id="modal-edit-user" tabindex="-1" role="dialog" aria-labelledby="modal-edit-user-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-edit-user-title">Edit Pengguna</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="card-body">
-                <form action="{{ route('users.update', $user->id) }}" method="POST">
+            <div class="modal-body">
+                <form id="form-edit-user" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
-                        <label for="nama_user">Nama User</label>
-                        <input type="text" class="form-control" id="nama_user" name="nama_user" value="{{ $user->nama_user }}" required>
+                        <label for="edit_nama_user">Nama User</label>
+                        <input type="text" class="form-control" id="edit_nama_user" name="nama_user" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
+                        <label for="edit_email">Email</label>
+                        <input type="email" class="form-control" id="edit_email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="jabatan">Jabatan</label>
-                        <input type="text" class="form-control" id="jabatan" name="jabatan" value="{{ $user->jabatan }}" required>
+                        <label for="edit_jabatan">Jabatan</label>
+                        <input type="text" class="form-control" id="edit_jabatan" name="jabatan" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                    <a href="{{ route('users.index') }}" class="btn btn-danger">Kembali</a>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-@endsection
