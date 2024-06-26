@@ -25,6 +25,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        
         $request->validate([
             'nama_user' => 'required',
             'email' => 'required|email|unique:users',
@@ -74,35 +75,25 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
-
-        if ($user) {
-            $user->delete();
-            return response()->json(['success' => true, 'message' => 'Pengguna berhasil dihapus.']);
-        }
-
-        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
+        $user = User::findOrFail($id);
+        $user->delete();
+        return response()->json(['success' => true, 'message' => 'Pengguna berhasil dihapus.']);
     }
-    public function approve($id)
+
+        public function approve($id)
     {
-        $user = User::find($id);
-
-        if ($user) {
-            $user->approved = true;
-            $user->save();
-            return response()->json(['success' => true, 'message' => 'Pengguna berhasil disetujui.']);
-        }
-
-        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
+        $user = User::findOrFail($id);
+        $user->approved = true;
+        $user->save();
+        return response()->json(['success' => true, 'message' => 'Pengguna berhasil disetujui.']);
     }
-        public function reject(User $user)
-    {
-        $user->update(['rejected' => true]); // Assuming you have a 'rejected' column in your users table
 
-        return response()->json([
-            'success' => true,
-            'message' => 'User rejected successfully.'
-        ]);
+    public function reject($id)
+    {
+        $user = User::findOrFail($id);
+        $user->rejected = true;
+        $user->save();
+        return response()->json(['success' => true, 'message' => 'Pengguna berhasil ditolak.']);
     }
 
 }

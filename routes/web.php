@@ -80,8 +80,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.delete');
         Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-        Route::put('/users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
-        Route::put('/users/{id}/reject', [UserController::class, 'reject'])->name('users.reject');
+        Route::put('users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
+        Route::put('users/{user}/reject', [UserController::class, 'reject'])->name('users.reject');
         
 
 

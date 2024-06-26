@@ -23,56 +23,60 @@
                                 <th>Nama User</th>
                                 <th>Email</th>
                                 <th>Jabatan</th>
-                                <th>Status</th>
+                                <th>Approved</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($users as $user)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $user->nama_user }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>{{ $user->jabatan }}</td>
-                                    <td>
-                                        @if($user->approved)
-                                            <span class="badge badge-success">Approved</span>
-                                        @elseif($user->rejected)
-                                            <span class="badge badge-danger">Rejected</span>
-                                        @else
-                                            <span class="badge badge-warning">Pending</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-jabatan="{{ $user->jabatan }}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete">
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $user->nama_user }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ $user->jabatan }}</td>
+                                <td>
+                                    @if($user->approved)
+                                        <span class="badge badge-success">Approved</span>
+                                    @elseif($user->rejected)
+                                        <span class="badge badge-danger">Rejected</span>
+                                    @else
+                                        <span class="badge badge-warning">Pending</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-jabatan="{{ $user->jabatan }}" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('users.delete', $user->id) }}" method="POST" class="d-inline form-delete">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                    @if(!$user->approved && !$user->rejected)
+                                        <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
                                             @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                        <form id="approvalForm{{ $user->id }}" action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline mr-1">
-                                            @csrf
-                                            <button type="button" class="btn btn-sm btn-primary approvalButton" data-userid="{{ $user->id }}" title="Approve">
+                                            @method('PUT')
+                                            <button type="button" class="btn btn-sm btn-primary btn-approve" data-id="{{ $user->id }}" title="Approve">
                                                 <i class="far fa-thumbs-up"></i>
                                             </button>
                                         </form>
-                                        <form id="rejectForm{{ $user->id }}" action="{{ route('users.reject', $user->id) }}" method="POST" class="d-inline mr-1">
+                                        <form action="{{ route('users.reject', $user->id) }}" method="POST" class="d-inline form-reject">
                                             @csrf
-                                            <button type="button" class="btn btn-sm btn-danger rejectButton" data-userid="{{ $user->id }}" title="Reject">
+                                            @method('PUT')
+                                            <button type="button" class="btn btn-sm btn-danger btn-reject" data-id="{{ $user->id }}" title="Reject">
                                                 <i class="far fa-thumbs-down"></i>
                                             </button>
                                         </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center">Data Pengguna belum tersedia.</td>
-                                </tr>
-                            @endforelse
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center">Data Pengguna belum tersedia.</td>
+                            </tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -81,8 +85,80 @@
     </div>
 </div>
 
-@include('users.create')
-@include('users.edit')
+<!-- Modal Tambah Pengguna -->
+<div class="modal fade" id="modal-tambah-user" tabindex="-1" role="dialog" aria-labelledby="modal-tambah-user-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-tambah-user-label">Tambah Pengguna</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('users.store') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nama_user">Nama User</label>
+                        <input type="text" class="form-control" id="nama_user" name="nama_user" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="jabatan">Jabatan</label>
+                        <input type="text" class="form-control" id="jabatan" name="jabatan" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Pengguna -->
+<div class="modal fade" id="modal-edit-user" tabindex="-1" role="dialog" aria-labelledby="modal-edit-user-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-edit-user-label">Edit Pengguna</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form-edit-user" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit_nama_user">Nama User</label>
+                        <input type="text" class="form-control" id="edit_nama_user" name="nama_user" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_email_user">Email</label>
+                        <input type="email" class="form-control" id="edit_email_user" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_jabatan_user">Jabatan</label>
+                        <input type="text" class="form-control" id="edit_jabatan_user" name="jabatan" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- SweetAlert CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
@@ -90,157 +166,83 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    $(document).ready(function() {
         // Event handler untuk tombol edit
-        const editButtons = document.querySelectorAll('.btn-edit');
-        editButtons.forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-                const email = this.dataset.email;
-                const jabatan = this.dataset.jabatan;
-                const formEditUser = document.getElementById('form-edit-user');
+        $('.btn-edit').click(function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            var email = $(this).data('email');
+            var jabatan = $(this).data('jabatan');
+            $('#edit_nama_user').val(name);
+            $('#edit_email_user').val(email);
+            $('#edit_jabatan_user').val(jabatan);
+            $('#form-edit-user').attr('action', '/users/' + id);
+            $('#modal-edit-user').modal('show');
+        });
 
-                // Set form action URL dynamically
-                formEditUser.action = `/users/${id}`;
-
-                // Populate form fields with user data
-                document.getElementById('edit_nama_user').value = name;
-                document.getElementById('edit_email').value = email;
-                document.getElementById('edit_jabatan').value = jabatan;
-
-                // Show modal
-                $('#modal-edit-user').modal('show');
+        // Event handler untuk tombol hapus
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Pengguna akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form hapus
+                    $('.form-delete[data-id="' + id + '"]').submit();
+                }
             });
         });
 
-       // Event handler untuk tombol approve
-const approveButtons = document.querySelectorAll('.approvalButton');
-approveButtons.forEach(button => {
-    button.addEventListener('click', function (e) {
-        e.preventDefault();
-        const form = this.closest('form');
-        const action = form.action;
-        const formData = new FormData(form);
+        // Event handler untuk tombol approve
+        $('.btn-approve').click(function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Pengguna akan disetujui!",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, setujui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form approve
+                    $('.form-approve[data-id="' + id + '"]').submit();
+                }
+            });
+        });
 
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda akan menyetujui pengguna ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, setujui!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(action, {
-                    method: 'PUT',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': formData.get('_token'),
-                    },
-                }).then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Disetujui!', 'Pengguna telah disetujui.', 'success').then(() => {
-                                // Sembunyikan tombol approve
-                                form.querySelector('.approvalButton').style.display = 'none';
-                                // Sembunyikan tombol reject
-                                form.querySelector('.rejectButton').style.display = 'none';
-                            });
-                        } else {
-                            Swal.fire('Error!', 'Terjadi kesalahan.', 'error');
-                        }
-                    });
-            }
+        // Event handler untuk tombol reject
+        $('.btn-reject').click(function(e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Pengguna akan ditolak!",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, tolak!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit form reject
+                    $('.form-reject[data-id="' + id + '"]').submit();
+                }
+            });
         });
     });
-});
-
-// Event handler untuk tombol reject
-const rejectButtons = document.querySelectorAll('.rejectButton');
-rejectButtons.forEach(button => {
-    button.addEventListener('click', function (e) {
-        e.preventDefault();
-        const form = this.closest('form');
-        const action = form.action;
-        const formData = new FormData(form);
-
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda akan menolak pengguna ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, tolak!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(action, {
-                    method: 'PUT',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': formData.get('_token'),
-                    },
-                }).then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Ditolak!', 'Pengguna telah ditolak.', 'success').then(() => {
-                                // Sembunyikan tombol approve
-                                form.querySelector('.approvalButton').style.display = 'none';
-                                // Sembunyikan tombol reject
-                                form.querySelector('.rejectButton').style.display = 'none';
-                            });
-                        } else {
-                            Swal.fire('Error!', 'Terjadi kesalahan.', 'error');
-                        }
-                    });
-            }
-        });
-    });
-});
-
-// Event handler untuk tombol hapus
-const deleteButtons = document.querySelectorAll('.btn-delete');
-deleteButtons.forEach(button => {
-    button.addEventListener('click', function (e) {
-        e.preventDefault();
-        const form = this.closest('form');
-
-        // Tampilkan SweetAlert konfirmasi penghapusan
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda akan menghapus pengguna ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(form.action, {
-                    method: 'DELETE',
-                    body: new FormData(form),
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    },
-                }).then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire('Berhasil!', data.message, 'success').then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire('Gagal!', data.message, 'error');
-                        }
-                    });
-            }
-        });
-    });
-});
 </script>
 @endsection

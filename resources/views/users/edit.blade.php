@@ -1,32 +1,34 @@
-<!-- Modal Edit User -->
-<div class="modal fade" id="modal-edit-user" tabindex="-1" role="dialog" aria-labelledby="modal-edit-user-title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<!-- Modal Tambah User -->
+<div class="modal fade" id="modal-tambah-user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-edit-user-title">Edit Pengguna</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="form-edit-user" method="POST">
-                    @csrf
-                    @method('PUT')
+            <form action="{{ route('users.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Tambah Pengguna</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="edit_nama_user">Nama User</label>
-                        <input type="text" class="form-control" id="edit_nama_user" name="nama_user" required>
+                        <label for="nama_user">Nama User</label>
+                        <input type="text" class="form-control" id="nama_user" name="nama_user" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit_email">Email</label>
-                        <input type="email" class="form-control" id="edit_email" name="email" required>
+                        <label for="email_user">Email</label>
+                        <input type="email" class="form-control" id="email_user" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit_jabatan">Jabatan</label>
-                        <input type="text" class="form-control" id="edit_jabatan" name="jabatan" required>
+                        <label for="jabatan_user">Jabatan</label>
+                        <input type="text" class="form-control" id="jabatan_user" name="jabatan" required>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
