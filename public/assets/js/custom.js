@@ -7,8 +7,7 @@
 
 "use strict";
 
-//  Data Table
-
+//  Data Tables
 $(document).ready(function() {
     $('#table1').DataTable();
 });

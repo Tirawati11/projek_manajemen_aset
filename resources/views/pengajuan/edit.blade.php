@@ -34,7 +34,7 @@
                             <label class="font-weight-bold">Catatan</label>
                             <input type="text" name="deskripsi" id="deskripsi" class="form-control" value="{{ old('deskripsi', $pengajuan->deskripsi) }}">
                         </div>
-                        <button type="submit" class="btn btn-sm btn-primary">Ajukan</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                         <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </form>
                 </div>

@@ -17,18 +17,17 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i class="fa-solid fa-circle-plus"></i> Tambah Lokasi</button>
                     <form action="{{ route('lokasi.index') }}" method="GET" class="form-inline">
-                        <div class="input-group">
+                        {{-- <div class="input-group">
                             <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
                             <div class="input-group-btn">
                                 <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
                             </div>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
                 <div class="card-body">
-                    <div id="alert-container"></div> <!-- Container untuk alert -->
                     <div class="table-responsive">
-                        <table class="table table-striped text-center">
+                        <table class="table table-striped" id="table1">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -65,7 +64,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {{ $locations->appends(['search' => $search])->links('pagination::bootstrap-5') }}
+                        {{-- {{ $locations->appends(['search' => $search])->links('pagination::bootstrap-5') }} --}}
                     </div>
                 </div>
             </div>
@@ -77,12 +76,13 @@
     @include('lokasi.show', ['location' => $location])
     @include('lokasi.edit', ['location' => $location])
 @endforeach
+
 @endsection
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+{{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script>
    $(document).ready(function() {

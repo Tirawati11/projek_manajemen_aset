@@ -4,6 +4,9 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
+
 <style>
     @media print {
         body * {
@@ -40,6 +43,42 @@
         .btn-primary {
             padding: 0.375rem 0.75rem; /* Atur padding agar tombol tidak terlalu besar */
         }
+
+        /* Penyesuaian untuk cetak hanya tabel */
+        .card-header,
+        .section-header,
+        .section-title,
+        .printableTitle,
+        .dataTables_filter,
+        .dataTables_length,
+        .dataTables_info,
+        .dataTables_paginate,
+        .sorting:before,
+        .sorting:after,
+        .sorting_asc:before,
+        .sorting_asc:after,
+        .sorting_desc:before,
+        .sorting_desc:after {
+            display: none !important; /* Sembunyikan elemen DataTables dan ikon panah saat cetak */
+        }
+
+        .card-body {
+            padding-top: 0; /* Hapus padding atas pada card-body */
+        }
+
+        .btn {
+            display: none; /* Sembunyikan semua tombol saat cetak */
+        }
+
+        /* Mengatur margin kertas saat cetak */
+        @page {
+            size: auto;  /* auto is the current printer page size */
+            margin: 10mm; /* Sesuaikan margin sesuai kebutuhan Anda */
+        }
+    }
+
+    .hide-during-print {
+        display: none;
     }
 </style>
 
@@ -50,7 +89,7 @@
     </div>
     <div class="card card-primary">
         <div class="card-body">
-            <form action="{{ url('/laporan') }}" method="GET">
+            <form action="{{ url('/laporan/inventaris') }}" method="GET">
                 <div class="row">
                     <div class="col-md-6">
                         <label for="bulan" class="form-label">Pilih Bulan</label>
@@ -91,10 +130,13 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center no-print">
-                    <button onclick="window.print()" class="btn btn-primary no-print"><i class="bi bi-printer"></i> Cetak Laporan</button>
+                    <div>
+                        <button onclick="prepareForPrint()" class="btn btn-primary"><i class="bi bi-printer"></i> Cetak Laporan</button>
+                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Ekspor ke Excel</button>
+                    </div>
                 </div>
                 <div class="card-body printableArea">
-                    <h4 style="text-align: center;" class="printableTitle">Laporan Aset</h4>
+                    <h4 id="tableTitle" style="text-align: center;">Laporan Inventaris</h4>
                     <div class="table-responsive">
                         <table class="table table-striped" id="table-1">
                             <thead>
@@ -102,7 +144,7 @@
                                     <th style="text-align: center;">No</th>
                                     <th style="text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Jumlah</th>
-                                    <th style="text-align: center;">Tanggal masuk</th>
+                                    <th class="hide-during-print" style="text-align: center;">Tanggal masuk</th>
                                     <th style="text-align: center;">Kondisi</th>
                                     <th style="text-align: center;">Keterangan</th>
                                 </tr>
@@ -114,7 +156,7 @@
                                     <td style="text-align: center;">{{ $no++ }}</td>
                                     <td>{{ $item->nama_barang }}</td>
                                     <td style="text-align: center;">{{ $item->jumlah }}</td>
-                                    <td style="text-align: center;">
+                                    <td class="hide-during-print" style="text-align: center;">
                                         @if(isset($item->tanggal_masuk))
                                         {{ \Carbon\Carbon::parse($item->tanggal_masuk)->format('d-m-Y') }}
                                         @else
@@ -122,7 +164,7 @@
                                         @endif
                                     </td>
                                     <td style="text-align: center;">{{ $item->kondisi }}</td>
-                                    <td style="text-align: center;">{{ $item->deskripsi}}</td>
+                                    <td style="text-align: center;">{{ $item->deskripsi }}</td>
                                 </tr>
                                 @empty
                                 <tr>
@@ -137,4 +179,46 @@
         </div>
     </div>
 </section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<script>
+    function prepareForPrint() {
+        // Sembunyikan kolom dan judul tertentu saat mencetak
+        document.querySelectorAll('.hide-during-print').forEach(el => el.style.display = 'none');
+        window.print();
+        document.querySelectorAll('.hide-during-print').forEach(el => el.style.display = '');
+    }
+
+    function exportToExcel() {
+        const tableTitle = document.getElementById('tableTitle').innerText;
+        const table = document.getElementById('table-1'); // ID tabel Anda
+        const ws = XLSX.utils.table_to_sheet(table);
+
+        // Menambahkan judul di atas tabel
+        XLSX.utils.sheet_add_aoa(ws, [[tableTitle]], {origin: {r: 0, c: Math.floor((ws['!ref'].split(":")[1].charCodeAt(0) - 65) / 2)}});
+
+        // Menambahkan border ke tabel
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for(let R = range.s.r; R <= range.e.r; ++R) {
+            for(let C = range.s.c; C <= range.e.c; ++C) {
+                const cell_address = {c:C, r:R};
+                const cell_ref = XLSX.utils.encode_cell(cell_address);
+                if(!ws[cell_ref]) ws[cell_ref] = {};
+                ws[cell_ref].s = {
+                    border: {
+                        top: { style: "thin", color: { auto: 1 } },
+                        right: { style: "thin", color: { auto: 1 } },
+                        bottom: { style: "thin", color: { auto: 1 } },
+                        left: { style: "thin", color: { auto: 1 } }
+                    }
+                };
+            }
+        }
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'Laporan Inventaris.xlsx'); // Nama file Excel yang dihasilkan
+    }
+</script>
+
 @endsection

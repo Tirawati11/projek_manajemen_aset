@@ -6,19 +6,13 @@
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;"> Data Aset</h1>
     </div>
-</section>
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header-action" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="card-header-action">
                 <a href="{{ route('aset.create') }}" class="btn btn-primary" style="margin-right: 10px;">
                     <i class="fa-solid fa-circle-plus"></i> Tambah Aset
                 </a>
-                <div class="btn-group">
-                    <button type="button" data-toggle="dropdown" class="btn btn-info btn-sm dropdown-toggle"><i class="ion-android-download"></i>Simpan <span class="caret"></span></button>
-                    <ul class="dropdown-menu pull-right">
-                        <li><a href="javascript:void(0)" id="print"><i class="ion-printer"></i>&nbsp;&nbsp;Print</a></li>
-                        <li><a href="javascript:void(0)" id="save_to_excel"><i class="ion-android-document">Simpan Excel</a></li>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -75,99 +69,58 @@
         </div>
     </div>
 </div>
+</section>
 @endsection
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).on('click', '.delete-confirm', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
+        $(document).on('click', '.delete-confirm', function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
 
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda tidak dapat mengembalikan ini!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
-    });
 
-    // Session delete
-    @if (session('delete'))
-        Swal.fire({
-            title: 'Berhasil',
-            text: '{{ session('delete') }}',
-            icon: 'success',
-            showConfirmButton: true
-        });
-    @endif
+        // Display success messages based on session status
+        @if (session('delete'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: '{{ session('delete') }}',
+                icon: 'success',
+                showConfirmButton: true
+            });
+        @endif
 
-    // Session sukses
-    @if (session('success'))
-        Swal.fire({
-            title: 'Berhasil',
-            text: '{{ session('success') }}',
-            icon: 'success',
-            showConfirmButton: true
-        });
-    @endif
+        @if (session('success'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                showConfirmButton: true
+            });
+        @endif
 
-    // Session update
-    @if (session('update'))
-        Swal.fire({
-            title: 'Berhasil',
-            text: 'Data berhasil diperbarui',
-            icon: 'success',
-            showConfirmButton: true
-        });
-    @endif
-
-    function performAction() {
-        var action = document.getElementById("actionDropdown").value;
-        if (action === "print") {
-            window.print();
-        } else if (action === "export") {
-            exportToExcel();
-        }
-    }
-
-    function exportToExcel() {
-        /* Assuming the table has an id of "table1" */
-        var table = document.getElementById("table1");
-        var wb = XLSX.utils.table_to_book(table, {sheet: "Sheet JS"});
-        var wbout = XLSX.write(wb, {bookType: "xlsx", bookSST: true, type: "binary"});
-
-        function s2ab(s) {
-            var buf = new ArrayBuffer(s.length);
-            var view = new Uint8Array(buf);
-            for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-            return buf;
-        }
-
-        var blob = new Blob([s2ab(wbout)], {type: "application/octet-stream"});
-        var fileName = "export.xlsx";
-        if (navigator.msSaveBlob) { // IE 10+
-            navigator.msSaveBlob(blob, fileName);
-        } else {
-            var link = document.createElement("a");
-            if (link.download !== undefined) { // Feature detection
-                var url = URL.createObjectURL(blob);
-                link.setAttribute("href", url);
-                link.setAttribute("download", fileName);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
-        }
-    }
+        @if (session('update'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: 'Data berhasil diperbarui',
+                icon: 'success',
+                showConfirmButton: true
+            });
+        @endif
 </script>
 @endsection

@@ -97,6 +97,7 @@
                             @enderror
                         </div>
                         <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </form>
                 </div>
             </div>

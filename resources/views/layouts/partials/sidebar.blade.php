@@ -34,9 +34,16 @@
         </li>
         @endif
         @if(Auth::check() && Auth::user()->jabatan == 'admin')
-        <li class="{{ Request::Is('laporan') ? 'active' : '' }}">
+        <li class="dropdown {{ Request::routeIs('laporan.*') ? 'active' : '' }}">
+            <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="far fa-file-alt"></i> <span>Laporan</span></a>
+            <ul class="dropdown-menu">
+                <li class="{{ Request::routeIs('laporan.inventaris') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.inventaris') }}">Laporan Inventaris</a></li>
+                <li class="{{ Request::routeIs('laporan.peminjaman') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.peminjaman') }}">Laporan Peminjaman Aset</a></li>
+                <li class="{{ Request::routeIs('laporan.pengajuan') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.pengajuan') }}">Laporan Pengajuan Aset</a></li>
+            </ul>
+        {{-- <li class="{{ Request::Is('laporan') ? 'active' : '' }}">
             <a href="{{ url('laporan') }}"><i class="far fa-file-alt"></i> <span>Laporan</span></a>
-        </li>
+        </li> --}}
         @endif
         @if(Auth::check() && Auth::user()->jabatan == 'admin')
         <li class="{{ Request::RouteIs('lokasi.index') ? 'active' : '' }}">
