@@ -50,7 +50,7 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        return view('users.edit', compact('user'));
+        return view('users.index', compact('user'));
     }
 
     public function update(Request $request, User $user): RedirectResponse
@@ -76,24 +76,24 @@ class UserController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
-        return response()->json(['success' => true, 'message' => 'Pengguna berhasil dihapus.']);
+        $user->destroy();
+        return redirect()->route('users.index')->with('success', 'Pengajuan berhasil dihapus.');
     }
 
-        public function approve($id)
-    {
+    public function approve($id) {
         $user = User::findOrFail($id);
-        $user->approved = true;
+        $user->status = 'approved';
         $user->save();
-        return response()->json(['success' => true, 'message' => 'Pengguna berhasil disetujui.']);
+    
+        return redirect()->route('user.index')->with('success', 'User approved successfully.');
     }
-
-    public function reject($id)
-    {
+    
+    public function reject($id) {
         $user = User::findOrFail($id);
-        $user->rejected = true;
+        $user->status = 'rejected';
         $user->save();
-        return response()->json(['success' => true, 'message' => 'Pengguna berhasil ditolak.']);
+    
+        return redirect()->route('user.index')->with('success', 'User rejected successfully.');
     }
 
 }

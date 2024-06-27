@@ -78,11 +78,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.delete');
-        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-        Route::put('users/{user}/approve', [UserController::class, 'approve'])->name('users.approve');
-        Route::put('users/{user}/reject', [UserController::class, 'reject'])->name('users.reject');
-        
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{id}', 'UserController@destroy')->name('users.destroy');
+        Route::put('/users/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
+        Route::put('/users/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
+
+                
 
 
         // Route Categories

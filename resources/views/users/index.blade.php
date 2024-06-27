@@ -1,11 +1,14 @@
 @extends('layouts.main')
+
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="anonymous" referrerpolicy="no-referrer" />
+
 <section class="section">
     <div class="section-header">
         <h1>Data User</h1>
     </div>
 </section>
+
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-12">
@@ -47,36 +50,24 @@
                                     <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-jabatan="{{ $user->jabatan }}" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('users.delete', $user->id) }}" method="POST" class="d-inline form-delete">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                     @if(!$user->approved && !$user->rejected)
-                                        <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="button" class="btn btn-sm btn-primary btn-approve" data-id="{{ $user->id }}" title="Approve">
-                                                <i class="far fa-thumbs-up"></i>
-                                            </button>
-                                        </form>
-                                        <form action="{{ route('users.reject', $user->id) }}" method="POST" class="d-inline form-reject">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="button" class="btn btn-sm btn-danger btn-reject" data-id="{{ $user->id }}" title="Reject">
-                                                <i class="far fa-thumbs-down"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn btn-sm btn-primary btn-approve" data-id="{{ $user->id }}" title="Approve">
+                                            <i class="far fa-thumbs-up"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger btn-reject" data-id="{{ $user->id }}" title="Reject">
+                                            <i class="far fa-thumbs-down"></i>
+                                        </button>
                                     @endif
                                 </td>
                             </tr>
-                        @empty
+                            @empty
                             <tr>
                                 <td colspan="6" class="text-center">Data Pengguna belum tersedia.</td>
                             </tr>
-                        @endforelse
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -160,8 +151,9 @@
     </div>
 </div>
 
-<!-- SweetAlert CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.min.css">
+@endsection
+
+@section('scripts')
 <!-- SweetAlert JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 
@@ -181,68 +173,81 @@
             $('#modal-edit-user').modal('show');
         });
 
+        $(document).ready(function() {
         // Event handler untuk tombol hapus
         $('.btn-delete').click(function(e) {
             e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Pengguna akan dihapus permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit form hapus
-                    $('.form-delete[data-id="' + id + '"]').submit();
-                }
-            });
+            var userId = $(this).data('id');
+            deleteConfirmation(userId);
         });
 
         // Event handler untuk tombol approve
         $('.btn-approve').click(function(e) {
             e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Pengguna akan disetujui!",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, setujui!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit form approve
-                    $('.form-approve[data-id="' + id + '"]').submit();
-                }
-            });
+            var userId = $(this).data('id');
+            approveConfirmation(userId);
         });
 
         // Event handler untuk tombol reject
         $('.btn-reject').click(function(e) {
             e.preventDefault();
-            var id = $(this).data('id');
+            var userId = $(this).data('id');
+            rejectConfirmation(userId);
+        });
+
+        function deleteConfirmation(userId) {
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Pengguna akan ditolak!",
+                text: "Anda tidak dapat mengembalikan ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var deleteForm = $('.form-delete[data-id="' + userId + '"]');
+                    deleteForm.submit();
+                }
+            });
+        }
+
+        function approveConfirmation(userId) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda ingin menyetujui pengguna ini?",
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, tolak!',
+                confirmButtonText: 'Ya, approve!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Submit form reject
-                    $('.form-reject[data-id="' + id + '"]').submit();
+                    var approveForm = $('.form-approve[data-id="' + userId + '"]');
+                    approveForm.submit();
                 }
             });
-        });
+        }
+
+        function rejectConfirmation(userId) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda ingin menolak pengguna ini?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, reject!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var rejectForm = $('.form-reject[data-id="' + userId + '"]');
+                    rejectForm.submit();
+                }
+            });
+        }
     });
 </script>
 @endsection
