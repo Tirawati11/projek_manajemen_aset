@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Location;
 use App\Models\Barang;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanBarangController extends Controller
 {
@@ -59,7 +60,6 @@ class PeminjamanBarangController extends Controller
     public function store(Request $request)
 {
     $validatedData = $request->validate([
-        'nama' => 'required|string',
         'nama_barang_id' => 'required|exists:barangs,id',
         'jumlah' => 'required|integer|min:1',
         'location_id' => 'required|exists:locations,id',
@@ -67,6 +67,9 @@ class PeminjamanBarangController extends Controller
         'tanggal_pengembalian' => 'nullable|date|after:tanggal_peminjaman',
         'status' => 'required|in:dipinjam,kembali',
     ]);
+
+     // Tambahkan user_id dari pengguna yang sedang login
+     $validatedData['user_id'] = Auth::id();
 
     // Simpan data ke database
     PeminjamanBarang::create($validatedData);
@@ -80,17 +83,14 @@ class PeminjamanBarangController extends Controller
      */
     public function show($id)
     {
-    $peminjaman = PeminjamanBarang::findOrFail($id);
+        $peminjaman = PeminjamanBarang::with(['user', 'barang', 'location'])->findOrFail($id);
 
-    // Ubah format tanggal menggunakan Carbon
-    $peminjaman->tanggal_peminjaman = Carbon::parse($peminjaman->tanggal_peminjaman)->format('d-m-Y');
-    $peminjaman->tanggal_pengembalian = $peminjaman->tanggal_pengembalian ? Carbon::parse($peminjaman->tanggal_pengembalian)->format('d-m-Y') : null;
+        // Ubah format tanggal menggunakan Carbon
+        $peminjaman->tanggal_peminjaman = Carbon::parse($peminjaman->tanggal_peminjaman)->format('d-m-Y');
+        $peminjaman->tanggal_pengembalian = $peminjaman->tanggal_pengembalian ? Carbon::parse($peminjaman->tanggal_pengembalian)->format('d-m-Y') : null;
 
-    $location = Location::all();
-    $barang = Barang::all();
-    return view('peminjaman.show', compact('peminjaman', 'location', 'barang'));
+        return view('peminjaman.show', compact('peminjaman'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -107,7 +107,6 @@ class PeminjamanBarangController extends Controller
     public function update(Request $request, PeminjamanBarang $peminjaman)
     {
         $validatedData = $request->validate([
-            'nama' => 'required|string',
             'nama_barang_id' => 'required|exists:barangs,id',
             'jumlah' => 'required|integer|min:1',
             'location_id' => 'required|exists:locations,id',
@@ -115,6 +114,8 @@ class PeminjamanBarangController extends Controller
             'tanggal_pengembalian' => 'nullable|date|after:tanggal_peminjaman',
             'status' => 'required|in:dipinjam,kembali',
         ]);
+          // Tambahkan user_id dari pengguna yang sedang login
+        $validatedData['user_id'] = Auth::id();
 
         $peminjaman->update($validatedData);
 

@@ -12,7 +12,7 @@
                         ID :  {{ $peminjaman->id }}
                     </p>
                     <div class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
-                        <p>Penanggungjawab : {{ $peminjaman->nama }}</p>
+                        <p>Penanggungjawab : {{ $peminjaman->user ? $peminjaman->user->nama_user : 'Tidak diketahui' }}</p>
                         <p>Nama Barang : {{ $peminjaman->barang->nama_barang }}</p>
                         <p>Jumlah : {{ $peminjaman->jumlah }}</p>
                         <p>Lokasi : {{ $peminjaman->location ? $peminjaman->location->name : 'Tidak diketahui' }}</p>

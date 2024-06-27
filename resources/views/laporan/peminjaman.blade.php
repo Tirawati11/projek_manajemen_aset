@@ -72,7 +72,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center no-print">
                     <div>
                         <button onclick="prepareForPrint()" class="btn btn-primary"><i class="bi bi-printer"></i> Cetak Laporan</button>
-                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Ekspor ke Excel</button>
+                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Simpan ke Excel</button>
                     </div>
                 </div>
                 <div class="card-body printableArea">
@@ -93,7 +93,7 @@
                                 @forelse ($peminjaman as $index => $item)
                                     <tr>
                                         <td class="align-middle" style="text-align: center;">{{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $index + 1 }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->nama }}</td>
+                                        <td class="align-middle" style="text-align: center;">{{ $item->barang ? $item->user->nama_user : 'User tidak tersedia'  }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->jumlah }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->tanggal_peminjaman }}</td>
@@ -107,9 +107,9 @@
                             </tbody>
                         </table>
                         <!-- Pagination links -->
-                        <div class="d-flex justify-content-center">
+                        {{-- <div class="d-flex justify-content-center">
                             {{ $peminjaman->links() }}
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -120,19 +120,64 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script>
     function prepareForPrint() {
-        // Hide DataTables elements for printing
-        $('.dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate').remove();
+        // Clone the table to keep original untouched
+        const tableToPrint = document.getElementById('table1').cloneNode(true);
 
-        // Remove DataTables sorting classes
-        $('#table1').removeClass('dataTable').removeAttr('role');
+        // Remove DataTables classes and attributes from cloned table
+        tableToPrint.classList.remove('dataTable', 'no-footer');
+        tableToPrint.removeAttribute('role');
 
-        window.print();
+        // Adjust styles if needed for printing
+        tableToPrint.style.width = '100%'; // Example: Adjust width for better printing
+
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Laporan Peminjaman</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+                <style>
+                    /* Optional: Add custom styles for printing */
+                    body {
+                        padding: 20px;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    th, td {
+                        border: 1px solid #dddddd;
+                        text-align: left;
+                        padding: 8px;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                </style>
+            </head>
+            <body>
+                <h4 style="text-align: center;">Laporan Peminjaman</h4>
+        `);
+        printWindow.document.write(tableToPrint.outerHTML);
+        printWindow.document.write(`
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+        // Call print function after content is loaded
+        printWindow.onload = function() {
+            printWindow.print();
+            printWindow.close();
+        };
     }
 
     function exportToExcel() {
         const table = document.getElementById('table1');
-        const workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
-        const worksheet = workbook.Sheets["Sheet JS"];
+        const workbook = XLSX.utils.table_to_book(table, { sheet: "Laporan Peminjaman" });
+        const worksheet = workbook.Sheets["Laporan Peminjaman"];
 
         // Apply border styles to all cells
         const range = XLSX.utils.decode_range(worksheet['!ref']);

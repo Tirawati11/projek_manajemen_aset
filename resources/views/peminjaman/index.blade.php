@@ -51,7 +51,13 @@
                                     <tr>
                                         <td class="align-middle">{{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $index + 1 }}</td>
                                         <td class="align-middle">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
-                                        <td class="align-middle">{{ $item->nama }}</td>
+                                        <td class="align-middle">
+                                            @if (auth()->check())
+                                                {{ auth()->user()->nama_user }}
+                                            @else
+                                                Pengguna Tidak Ditemukan
+                                            @endif
+                                        </td>
                                         <td class="align-middle">{{ $item->tanggal_peminjaman }}</td>
                                         <td class="align-middle">{{ $item->tanggal_pengembalian }}</td>
                                         <td class="align-middle">

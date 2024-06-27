@@ -9,20 +9,22 @@
 </section>
 <div class="container mt-5 mb-5">
     <div class="row">
-        <!-- Form 1: Informasi Peminjam -->
+    <form action="{{ route('peminjaman.store') }}" method="POST">
+        @csrf
+        </div>
         <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <form action="{{ route('peminjaman.store') }}" method="POST">
-                        @csrf
-                        <h4 class="font-weight-bold">Informasi Peminjam</h4>
-                        <div class="form-group">
-                            <label class="font-weight-bold">Nama Peminjam</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama">
-                            @error('nama')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
-                                </div>
+                    <div class="form-group">
+                            <label class="font-weight-bold">Nama Barang</label>
+                            <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
+                                <option value="">Pilih Nama Barang</option>
+                                @foreach($barangs as $barang)
+                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                @endforeach
+                            </select>
+                            @error('nama_barang_id')
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-group">
@@ -37,27 +39,6 @@
                                 <div class="alert alert-danger mt-2">
                                     {{ $message }}
                                 </div>
-                            @enderror
-                        </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Form 2: Informasi Barang -->
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm rounded">
-                <div class="card-body">
-                    <h4 class="font-weight-bold">Informasi Barang</h4>
-                        <div class="form-group">
-                            <label class="font-weight-bold">Nama Barang</label>
-                            <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
-                                <option value="">Pilih Nama Barang</option>
-                                @foreach($barangs as $barang)
-                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
-                                @endforeach
-                            </select>
-                            @error('nama_barang_id')
-                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-group">

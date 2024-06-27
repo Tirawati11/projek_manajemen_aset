@@ -9,7 +9,7 @@ use App\Models\Barang;
 
 class PeminjamanBarang extends Model
 {
-   protected $fillable = ['nama_barang_id', 'nama', 'location_id', 'jumlah', 'tanggal_peminjaman', 'tanggal_pengembalian', 'status'];
+   protected $fillable = ['nama_barang_id', 'user_id', 'location_id', 'jumlah', 'tanggal_peminjaman', 'tanggal_pengembalian', 'status'];
 
    public function location()
     {
@@ -18,5 +18,10 @@ class PeminjamanBarang extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'nama_barang_id');
+    }
+    // relasi
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

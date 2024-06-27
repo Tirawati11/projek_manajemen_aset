@@ -17,7 +17,7 @@
                         <li>
                             <strong>Nama Barang:</strong> {{ $peminjamanBarang->barang ? $peminjamanBarang->barang->nama_barang : 'Barang tidak ditemukan' }}
                             <br>
-                            <strong>Penanggungjawab:</strong> {{ $peminjamanBarang->nama }}
+                            <strong>Penanggungjawab:</strong> {{ $peminjamanBarang->user->nama_user }}
                             <br>
                             <strong>Jumlah:</strong> {{ $peminjamanBarang->jumlah }}
                         </li>

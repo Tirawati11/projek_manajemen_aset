@@ -7,7 +7,7 @@
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
 
-<style>
+{{-- <style>
     @media print {
         .table-print th, .table-print td {
         border: 1px solid black !important; /* Gaya border tabel saat cetak */
@@ -101,7 +101,7 @@
         padding: 8px;
         text-align: center;
     }
-</style>
+</style> --}}
 
 @section('content')
 <section class="section">
@@ -115,7 +115,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center no-print">
                     <div>
                         <button onclick="prepareForPrint()" class="btn btn-primary"><i class="bi bi-printer"></i> Cetak Laporan</button>
-                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Ekspor ke Excel</button>
+                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Simpan ke Excel</button>
                     </div>
                 </div>
                 <div class="card-body printableArea">
@@ -166,101 +166,86 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script>
     function prepareForPrint() {
-        // Menampilkan area yang dapat dicetak
-        const printableArea = document.querySelector('.printableArea');
-        printableArea.classList.add('d-print-block');
+        // Clone the table to keep original untouched
+        const tableToPrint = document.getElementById('table1').cloneNode(true);
 
-        // Menghilangkan elemen yang tidak perlu dicetak
-        const noPrintElements = document.querySelectorAll('.no-print');
-        noPrintElements.forEach(element => {
-            element.style.display = 'none';
-        });
+        // Remove DataTables classes and attributes from cloned table
+        tableToPrint.classList.remove('dataTable', 'no-footer');
+        tableToPrint.removeAttribute('role');
 
-        // Memanggil fungsi bawaan browser untuk mencetak
-        window.print();
+        // Adjust styles if needed for printing
+        tableToPrint.style.width = '100%'; // Example: Adjust width for better printing
 
-        // Mengembalikan tampilan seperti semula setelah selesai mencetak
-        printableArea.classList.remove('d-print-block');
-        noPrintElements.forEach(element => {
-            element.style.display = 'block';
-        });
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Laporan Inventaris</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+                <style>
+                    /* Optional: Add custom styles for printing */
+                    body {
+                        padding: 20px;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                    }
+                    th, td {
+                        border: 1px solid #dddddd;
+                        text-align: left;
+                        padding: 8px;
+                    }
+                    th {
+                        background-color: #f2f2f2;
+                    }
+                </style>
+            </head>
+            <body>
+                <h4 style="text-align: center;">Laporan Inventaris</h4>
+        `);
+        printWindow.document.write(tableToPrint.outerHTML);
+        printWindow.document.write(`
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+
+        // Call print function after content is loaded
+        printWindow.onload = function() {
+            printWindow.print();
+            printWindow.close();
+        };
     }
-
+    // eksport data ke excel
     function exportToExcel() {
-    const tableTitle = 'Laporan Inventaris'; // Judul tabel untuk Excel
+        const table = document.getElementById('table1');
+        const workbook = XLSX.utils.table_to_book(table, { sheet: "Laporan Inventaris" });
+        const worksheet = workbook.Sheets["Laporan Inventaris"];
 
-    // Mendefinisikan kolom yang akan diekspor
-    const columns = [
-        { header: 'No', key: 'No' },
-        { header: 'Nama Barang', key: 'Nama Barang' },
-        { header: 'Jumlah', key: 'Jumlah' },
-        { header: 'Tanggal masuk', key: 'Tanggal masuk' },
-        { header: 'Kondisi', key: 'Kondisi' },
-        { header: 'Keterangan', key: 'Keterangan' }
-    ];
-
-    // Mengambil data dari tabel dan menyusunnya dalam format Excel
-    const data = [];
-    const table = document.getElementById('table1');
-    const rows = table.querySelectorAll('tbody tr');
-
-    // Loop untuk setiap baris data dalam tabel
-    rows.forEach((row, rowIndex) => {
-        let rowData = {};
-        const cells = row.querySelectorAll('td');
-        cells.forEach((cell, cellIndex) => {
-            const key = columns[cellIndex].key;
-            rowData[key] = cell.textContent.trim();
-        });
-        data.push(rowData);
-    });
-
-    // Menggunakan XLSX untuk membuat workbook dan sheet baru
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(data, { header: columns.map(column => column.header) });
-
-    // Menambahkan judul di atas tabel
-    XLSX.utils.sheet_add_aoa(ws, [[tableTitle]], { origin: 'A3' });
-
-    // Menambahkan border ke setiap sel dalam tabel Excel
-    const range = XLSX.utils.decode_range(ws['!ref']);
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-            const cell_address = { c: C, r: R };
-            const cell_ref = XLSX.utils.encode_cell(cell_address);
-            if (!ws[cell_ref]) ws[cell_ref] = {};
-            if (!ws[cell_ref].s) ws[cell_ref].s = {};
-            ws[cell_ref].s.border = {
-                top: { style: "thin", color: { auto: 1 } },
-                right: { style: "thin", color: { auto: 1 } },
-                bottom: { style: "thin", color: { auto: 1 } },
-                left: { style: "thin", color: { auto: 1 } }
-            };
+        // Apply border styles to all cells
+        const range = XLSX.utils.decode_range(worksheet['!ref']);
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cell_address = { c: C, r: R };
+                const cell_ref = XLSX.utils.encode_cell(cell_address);
+                if (!worksheet[cell_ref]) worksheet[cell_ref] = {};
+                if (!worksheet[cell_ref].s) worksheet[cell_ref].s = {};
+                worksheet[cell_ref].s.border = {
+                    top: { style: "thin", color: { auto: 1 } },
+                    right: { style: "thin", color: { auto: 1 } },
+                    bottom: { style: "thin", color: { auto: 1 } },
+                    left: { style: "thin", color: { auto: 1 } }
+                };
+            }
         }
+
+        // Export the workbook
+        XLSX.writeFile(workbook, 'Laporan Inventaris.xlsx');
     }
-
-    // Menambahkan style khusus untuk judul
-    ws['A1'].s = {
-        font: {
-            bold: true,
-            sz: 14
-        },
-        alignment: {
-            horizontal: "center",
-            vertical: "center"
-        },
-        border: {
-            top: { style: "thin", color: { auto: 1 } },
-            right: { style: "thin", color: { auto: 1 } },
-            bottom: { style: "thin", color: { auto: 1 } },
-            left: { style: "thin", color: { auto: 1 } }
-        }
-    };
-
-    // Mengunduh file Excel
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'Laporan Inventaris.xlsx');
-}
 </script>
 @endsection
+
 

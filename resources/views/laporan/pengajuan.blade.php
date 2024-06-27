@@ -5,7 +5,31 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
 <style>
-    /* Custom styles can be added here */
+   .table th {
+    white-space: nowrap;
+    text-align: center;
+}
+
+.table th.no-wrap {
+    white-space: nowrap;
+}
+
+.table th.width-50 {
+    width: 50px;
+}
+
+.table th.width-200 {
+    width: 200px;
+}
+
+.table th.width-150 {
+    width: 150px;
+}
+
+.table th.width-100 {
+    width: 100px;
+}
+
     /* Ensure CSS rules are properly structured and organized */
 </style>
 
@@ -21,7 +45,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center no-print">
                     <div>
                         <button onclick="prepareForPrint()" class="btn btn-primary"><i class="bi bi-printer"></i> Cetak Laporan</button>
-                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Ekspor ke Excel</button>
+                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Simpan ke Excel</button>
                     </div>
                 </div>
                 <div class="card-body printableArea">
@@ -31,20 +55,20 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px;">No</th>
-                                    <th class="nowrap" style="width: 150px;">Nama Barang</th>
-                                    <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
-                                    <th class="nowrap" style="width: 150px;">Jumlah Permintaan</th>
-                                    <th class="nowrap" style="width: 150px;">Stok Divisi</th>
+                                    <th class="nowrap" style="width: 200px;">Nama Barang</th>
+                                    <th class="nowrap" style="width: 200px;">Nama Pemohon</th>
+                                    <th class="nowrap" style="width: 200px;">Jumlah Permintaan</th>
+                                    <th class="nowrap" style="text-center width: 200px;">Stok Divisi</th>
                                     <th class="nowrap" style="width: 150px;">Catatan</th>
-                                    <th style="text-align: center; width: 100px;">Status</th>
+                                    <th style="text-align: center; width: 50px;">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($pengajuan as $index => $item)
                                 <tr>
-                                    <td class="align-middle">{{ $loop->iteration }}</td>
-                                    <td class="align-middle">{{ $item->nama_barang }}</td>
-                                    <td class="align-middle">{{ $item->nama_pemohon }}</td>
+                                    <td class="align-middle text-center">{{ $loop->iteration }}</td>
+                                    <td class="align-middle text-center">{{ $item->nama_barang }}</td>
+                                    <td class="align-middle text-center">{{ $item->nama_pemohon }}</td>
                                     <td class="align-middle text-center">{{ $item->jumlah }}</td>
                                     <td class="align-middle text-center">{{ $item->stok }}</td>
                                     <td class="align-middle">{{ $item->deskripsi }}</td>
@@ -89,7 +113,7 @@
         printWindow.document.write(`
             <html>
             <head>
-                <title>Cetak Laporan</title>
+                <title>Laporan Pengajuan</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
                 <style>
                     /* Optional: Add custom styles for printing */
@@ -111,7 +135,7 @@
                 </style>
             </head>
             <body>
-                <h4 style="text-align: center;">Laporan Inventaris</h4>
+                <h4 style="text-align: center;">Laporan Pengajuan</h4>
         `);
         printWindow.document.write(tableToPrint.outerHTML);
         printWindow.document.write(`
@@ -129,8 +153,8 @@
 // eksport data ke excel
     function exportToExcel() {
         const table = document.getElementById('table1');
-        const workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet JS" });
-        const worksheet = workbook.Sheets["Sheet JS"];
+        const workbook = XLSX.utils.table_to_book(table, { sheet: "Laporan Pengajuan" });
+        const worksheet = workbook.Sheets["Laporan Pengajuan"];
 
         // Apply border styles to all cells
         const range = XLSX.utils.decode_range(worksheet['!ref']);
