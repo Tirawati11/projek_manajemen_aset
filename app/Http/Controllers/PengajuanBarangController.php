@@ -12,29 +12,34 @@ use Illuminate\Support\Facades\Auth;
 class PengajuanBarangController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->input('search');
-
-    $query = PengajuanBarang::query()
+    {
+        $search = $request->input('search');
+    
+        // Query untuk mendapatkan data PengajuanBarang dengan relasi User
+        $query = PengajuanBarang::query()
             ->when($search, function ($query, $search) {
-            return $query->where(function ($query) use ($search) {
-                $query->where('nama_barang', 'LIKE', "%{$search}%")
-                      ->orWhere('nama_pemohon', 'LIKE', "%{$search}%");
+                return $query->where(function ($query) use ($search) {
+                    $query->where('nama_barang', 'LIKE', "%{$search}%")
+                          ->orWhereHas('user', function ($query) use ($search) {
+                              $query->where('username', 'LIKE', "%{$search}%");
+                          });
+                });
             });
-        });
-
-    // Dapatkan hasil paginasi
-    $pengajuan = $query->latest()->paginate(5);
-
-    // Sertakan query pencarian dalam hasil pagination
-    $pengajuan->appends(['search' => $search]);
-
-    return view('pengajuan.index', compact('pengajuan', 'search'));
-}
+    
+        // Dapatkan hasil paginasi dengan menyertakan query pencarian
+        $pengajuan = $query->latest()->paginate(5);
+    
+        // Sertakan query pencarian dalam hasil pagination
+        $pengajuan->appends(['search' => $search]);
+    
+        return view('pengajuan.index', compact('pengajuan', 'search'));
+    }
+    
     public function create()
     {
         // Mendapatkan semua barang untuk ditampilkan di form pengajuan
         // $category= Categories::all();
+     
         return view('pengajuan.create');
     }
 
@@ -44,9 +49,11 @@ class PengajuanBarangController extends Controller
             'nama_barang' => 'required',
             'jumlah' => 'required|integer|min:1',
         ]);
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
 
         PengajuanBarang::create([
-            'nama_pemohon' => $request->nama_pemohon,
+            'nama_pemohon' => $user->nama_user,
             'nama_barang' => $request->nama_barang,
             'jumlah' => $request->jumlah,
             'deskripsi' => $request->deskripsi,
@@ -67,8 +74,10 @@ class PengajuanBarangController extends Controller
     public function edit($id)
     {
         $pengajuan = PengajuanBarang::findOrFail($id);
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
         // $category= Categories::all();
-        return view('pengajuan.edit', compact('pengajuan'));
+        return view('pengajuan.edit', compact('pengajuan', 'user'));
     }
 
      // Update pengajuan
@@ -80,17 +89,18 @@ class PengajuanBarangController extends Controller
          // Validasi input
          $request->validate([
              'nama_barang' => 'required|string',
-             'nama_pemohon' => 'required|string',
              'jumlah' => 'required|integer|min:1',
              'deskripsi' => 'required|string',
              'stok' => 'required|integer|min:0',
             ]);
 
          try {
+            // Mendapatkan pengguna yang sedang login
+            $user = Auth::user();
              // Update item pengajuan
              $pengajuan->update([
                  'nama_barang' => $request->nama_barang,
-                 'nama_pemohon' => $request->nama_pemohon,
+                 'nama_pemohon' => $user->nama_user,
                  'jumlah' => $request->jumlah,
                  'deskripsi' => $request->deskripsi,
                  'stok' => $request->stok,
@@ -142,13 +152,14 @@ class PengajuanBarangController extends Controller
         return redirect()->route('pengajuan.index')->with('error', 'Pengajuan tidak dapat ditolak.');
     }
     public function bulkDelete(Request $request)
-{
-    $ids = $request->input('ids');
+    {
+        $ids = $request->ids;
 
-    // Perform validation if necessary
-    PengajuanBarang::whereIn('id', $ids)->delete();
-
-    return response()->json(['message' => 'SBerhasil di hapus']);
-}
-
+        if (!empty($ids) && is_array($ids)) {
+            PengajuanBarang::whereIn('id', $ids)->delete();
+            return response()->json(['success' => 'Pengajuan deleted successfully.']);
+        } else {
+            return response()->json(['error' => 'Invalid request.'], 400);
+        }
+    }
 }

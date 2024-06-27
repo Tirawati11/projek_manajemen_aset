@@ -34,9 +34,9 @@
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary" style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
                     </a>
-                    <a href="#" class="btn btn-sm btn-danger" id="delete-selected" method="POST">
+                    <button style="margin-bottom: 10px" class="btn btn-sm btn-danger delete_all" data-url="{{ route('pengajuan.bulk-delete') }}">
                         <i class="fas fa-trash-alt"></i> Hapus Terpilih
-                    </a>
+                    </button>
                     @csrf
                     @method('DELETE')
                 </div>
@@ -46,10 +46,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">
-                                        <div class="custom-checkbox custom-control">
-                                          <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input" id="checkbox-all">
-                                          <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
-                                        </div>
+                                        <input type="checkbox" id="master">
                                     </th>
                                     <th style="width: 50px;">No</th>
                                     <th class="nowrap" style="width: 150px;">Nama Barang</th>
@@ -62,14 +59,17 @@
                                 @forelse ($pengajuan as $index => $item)
                                 <tr>
                                     <td>
-                                        <div class="custom-checkbox custom-control">
-                                            <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1">
-                                            <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
-                                          </div>
+                                        <input type="checkbox" class="sub_chk" data-id="{{ $item->id }}" name="selected_ids[]" value="{{ $item->id }}">
                                     </td>
                                     <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
                                     <td class="align-middle">{{ $item->nama_barang }}</td>
-                                    <td class="align-middle">{{ $item->nama_pemohon }}</td>
+                                    <td class="align-middle">
+                                        @if (auth()->check())
+                                            {{ auth()->user()->nama_user }}
+                                        @else
+                                            Pengguna Tidak Ditemukan
+                                        @endif
+                                    </td>
                                     <td class="align-middle text-center">
                                         <span class="{{ $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : '')) }}">
                                             {{ $item->status }}
@@ -78,57 +78,55 @@
                                     <td class="align-middle">
                                         <div class="dropdown d-inline mr-2">
                                             @if(Auth::check() && Auth::user()->jabatan == 'admin' && $item->status === 'pending')
-                                                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="far fa-thumbs-up"></i> Approve
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
-                                                    <form id="approvalForm{{ $item->id }}" action="{{ route('pengajuan.approve', $item->id) }}" method="POST" class="dropdown-item">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-link text-primary approvalButton" data-pengajuanid="{{ $item->id }}" title="Approve">
-                                                            <i class="far fa-thumbs-up"></i> Approve
-                                                        </button>
-                                                    </form>
-                                                    <form id="rejectForm{{ $item->id }}" action="{{ route('pengajuan.reject', $item->id) }}" method="POST" class="dropdown-item">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-link text-danger rejectButton" data-pengajuanid="{{ $item->id }}" title="Reject">
-                                                            <i class="far fa-thumbs-down"></i> Reject
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="far fa-thumbs-up"></i> Approve
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                                                <form id="approvalForm{{ $item->id }}" action="{{ route('pengajuan.approve', $item->id) }}" method="POST" class="dropdown-item">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-link text-primary approvalButton" data-pengajuanid="{{ $item->id }}" title="Approve">
+                                                        <i class="far fa-thumbs-up"></i> Approve
+                                                    </button>
+                                                </form>
+                                                <form id="rejectForm{{ $item->id }}" action="{{ route('pengajuan.reject', $item->id) }}" method="POST" class="dropdown-item">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-link text-danger rejectButton" data-pengajuanid="{{ $item->id }}" title="Reject">
+                                                        <i class="far fa-thumbs-down"></i> Reject
+                                                    </button>
+                                                </form>
+                                            </div>
                                             @endif
-                                             </div>
-                                                <div class="dropdown d-inline">
-                                                <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton3{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fas fa-cogs"></i> Aksi
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3{{ $item->id }}">
-                                                    <a href="{{ route('pengajuan.show', $item->id) }}" class="dropdown-item">
-                                                        <i class="far fa-eye"></i> Lihat
-                                                    </a>
-                                                    <a href="{{ route('pengajuan.edit', $item->id) }}" class="dropdown-item">
-                                                        <i class="fas fa-edit"></i> Edit
-                                                    </a>
-                                                    <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="d-inline">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item delete-confirm" style="cursor:pointer;">
-                                                            <i class="fas fa-trash-alt"></i> Hapus
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                        </div>
+                                        <div class="dropdown d-inline">
+                                            <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton3{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-cogs"></i> Aksi
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3{{ $item->id }}">
+                                                <a href="{{ route('pengajuan.show', $item->id) }}" class="dropdown-item">
+                                                    <i class="far fa-eye"></i> Lihat
+                                                </a>
+                                                <a href="{{ route('pengajuan.edit', $item->id) }}" class="dropdown-item">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item delete-confirm" style="cursor:pointer;">
+                                                        <i class="fas fa-trash-alt"></i> Hapus
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">Data Pengajuan belum Tersedia.</td>
+                                    <td colspan="6" class="text-center">Data Pengajuan belum Tersedia.</td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                    {{-- {{ $pengajuan->appends(['search' => $search])->links('pagination::bootstrap-5') }} --}}
                 </div>
             </div>
         </div>
@@ -138,10 +136,73 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
 <script>
-      $(document).on('click', '.approvalButton', function(e) {
+$(document).ready(function() {
+    $('#master').on('click', function(e) {
+        if ($(this).is(':checked')) {
+            $(".sub_chk").prop('checked', true);
+        } else {
+            $(".sub_chk").prop('checked', false);
+        }
+    });
+
+    $('.delete_all').on('click', function(e) {
+        var allVals = [];
+        $(".sub_chk:checked").each(function() {
+            allVals.push($(this).val());
+        });
+        if (allVals.length <= 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Tidak ada item yang terpilih',
+                text: 'Silakan pilih item untuk dihapus',
+            });
+            return;
+        }
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: 'Anda akan menghapus ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("pengajuan.bulk-delete") }}',
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        ids: allVals
+                    },
+                    success: function(response) {
+                        console.log('Success:', response);
+                        Swal.fire(
+                            'Terhapus!',
+                            'Berhasil dihapus',
+                            'success'
+                        ).then(function() {
+                            location.reload(); // Refresh the page
+                        });
+                    },
+
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            'Gagal menghapus item',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+
+    $(document).on('click', '.approvalButton', function(e) {
         e.preventDefault();
         var pengajuanId = $(this).data('pengajuanid');
         Swal.fire({
@@ -179,7 +240,7 @@
         });
     });
 
-     $(document).on('click', '.delete-confirm', function(e) {
+    $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
 
@@ -199,6 +260,7 @@
         });
     });
 
+    // Show success messages if available
     @if (session('delete'))
     Swal.fire({
         title: 'Berhasil',
@@ -225,67 +287,6 @@
         showConfirmButton: true
     });
     @endif
-
-    $(document).ready(function() {
-    $('#delete-selected').click(function(e) {
-        e.preventDefault(); // Prevent default anchor behavior
-
-        var selectedIds = [];
-
-        $('.checkbox-item:checked').each(function() {
-            selectedIds.push($(this).data('pengajuanid'));
-        });
-
-        if (selectedIds.length === 0) {
-            Swal.fire({
-                icon: 'info',
-                title: 'No items selected',
-                text: 'Please select items to delete.',
-            });
-            return;
-        }
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '{{ route("pengajuan.bulk-delete") }}',
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        ids: selectedIds
-                    },
-                    success: function(response) {
-                        console.log('Success:', response);
-                        Swal.fire(
-                            'Deleted!',
-                            'Selected items have been deleted.',
-                            'success'
-                        ).then(function() {
-                            location.reload(); // Refresh the page
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                        Swal.fire(
-                            'Error!',
-                            'An error occurred while deleting items.',
-                            'error'
-                        );
-                    }
-                });
-            }
-        });
-    });
 });
 </script>
 @endsection

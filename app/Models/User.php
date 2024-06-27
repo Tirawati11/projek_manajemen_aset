@@ -30,4 +30,8 @@ class User extends Authenticatable
         'last_login_at',
     ];
 
+    public function pengajuanBarang()
+    {
+        return $this->hasMany(PengajuanBarang::class, 'user_id');
+    }
   }

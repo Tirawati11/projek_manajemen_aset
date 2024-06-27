@@ -18,11 +18,7 @@
                             <label class="font-weight-bold">Nama Barang</label>
                             <input type="text" name="nama_barang" id="nama_barang" class="form-control" value="{{ old('nama_barang', $pengajuan->nama_barang) }}">
                         </div>
-                            <div class="form-group">
-                            <label class="font-weight-bold">Nama Pemohon</label>
-                            <input type="text" name="nama_pemohon" id="nama_pemohon" class="form-control" value="{{ old('nama_pemohon', $pengajuan->nama_pemohon) }}">
-                        </div>
-                        <div class="form-group">
+                          <div class="form-group">
                             <label class="font-weight-bold">Jumlah</label>
                             <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" step="1" oninput="this.value = Math.abs(this.value)" value="{{ old('jumlah', $pengajuan->jumlah) }}" required>
                         </div>
