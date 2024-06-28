@@ -41,7 +41,7 @@
                                     @if($user->approved)
                                         <span class="badge badge-success">Approved</span>
                                     @elseif($user->rejected)
-                                        <span class="badge badge-danger">Rejected</span>
+                                        {{-- <span class="badge badge-danger">Rejected</span> --}}
                                     @else
                                         <span class="badge badge-warning">Pending</span>
                                     @endif
@@ -50,16 +50,28 @@
                                     <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-jabatan="{{ $user->jabatan }}" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $user->id }}" title="Hapus">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
+                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete" data-id="{{ $user->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-sm btn-danger btn-delete" title="Hapus">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
                                     @if(!$user->approved && !$user->rejected)
-                                        <button class="btn btn-sm btn-primary btn-approve" data-id="{{ $user->id }}" title="Approve">
-                                            <i class="far fa-thumbs-up"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-danger btn-reject" data-id="{{ $user->id }}" title="Reject">
-                                            <i class="far fa-thumbs-down"></i>
-                                        </button>
+                                        <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve" data-id="{{ $user->id }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="button" class="btn btn-sm btn-primary btn-approve" title="Approve">
+                                                <i class="far fa-thumbs-up"></i>
+                                            </button>
+                                        </form>
+                                        {{-- <form action="{{ route('users.reject', $user->id) }}" method="POST" class="d-inline form-reject" data-id="{{ $user->id }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="button" class="btn btn-sm btn-danger btn-reject" title="Reject">
+                                                <i class="far fa-thumbs-down"></i>
+                                            </button>
+                                        </form> --}}
                                     @endif
                                 </td>
                             </tr>
@@ -174,80 +186,65 @@
         });
 
         $(document).ready(function() {
-        // Event handler untuk tombol hapus
-        $('.btn-delete').click(function(e) {
-            e.preventDefault();
-            var userId = $(this).data('id');
-            deleteConfirmation(userId);
+    // Event handler for delete button
+    $('.btn-delete').click(function(e) {
+        e.preventDefault();
+        var form = $(this).closest('form');
+        var id = $(this).closest('form').data('id');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
         });
+    });
+});
+
 
         // Event handler untuk tombol approve
         $('.btn-approve').click(function(e) {
             e.preventDefault();
-            var userId = $(this).data('id');
-            approveConfirmation(userId);
-        });
-
-        // Event handler untuk tombol reject
-        $('.btn-reject').click(function(e) {
-            e.preventDefault();
-            var userId = $(this).data('id');
-            rejectConfirmation(userId);
-        });
-
-        function deleteConfirmation(userId) {
+            var form = $(this).closest('form');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Anda tidak dapat mengembalikan ini?",
+                text: "Apakah Anda ingin menyetujui pengguna ini?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Ya, setujui!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var deleteForm = $('.form-delete[data-id="' + userId + '"]');
-                    deleteForm.submit();
+                    form.submit();
                 }
             });
-        }
+        });
 
-        function approveConfirmation(userId) {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Anda ingin menyetujui pengguna ini?",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, approve!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var approveForm = $('.form-approve[data-id="' + userId + '"]');
-                    approveForm.submit();
-                }
-            });
-        }
-
-        function rejectConfirmation(userId) {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Anda ingin menolak pengguna ini?",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, reject!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var rejectForm = $('.form-reject[data-id="' + userId + '"]');
-                    rejectForm.submit();
-                }
-            });
-        }
+        // // Event handler untuk tombol reject
+        // $('.btn-reject').click(function(e) {
+        //     e.preventDefault();
+        //     var form = $(this).closest('form');
+        //     Swal.fire({
+        //         title: 'Apakah Anda yakin?',
+        //         text: "Apakah Anda ingin menolak pengguna ini?",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'Ya, tolak!'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             form.submit();
+        //         }
+        //     });
+        // });
     });
 </script>
 @endsection

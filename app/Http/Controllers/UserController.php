@@ -75,25 +75,27 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->destroy();
-        return redirect()->route('users.index')->with('success', 'Pengajuan berhasil dihapus.');
+        User::destroy($id);
+
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 
     public function approve($id) {
         $user = User::findOrFail($id);
-        $user->status = 'approved';
+        $user->approved = true;
+        // $user->rejected = false; // Reset rejected status
         $user->save();
-    
-        return redirect()->route('user.index')->with('success', 'User approved successfully.');
+
+        return redirect()->route('users.index')->with('success', 'User approved successfully.');
     }
-    
-    public function reject($id) {
-        $user = User::findOrFail($id);
-        $user->status = 'rejected';
-        $user->save();
-    
-        return redirect()->route('user.index')->with('success', 'User rejected successfully.');
-    }
+
+    // public function reject($id)
+    // {
+    //     $user = User::findOrFail($id);
+    //     $user->approved = false;
+    //     $user->save();
+
+    //     return redirect()->route('users.index')->with('success', 'User rejected successfully.');
+    // }
 
 }
