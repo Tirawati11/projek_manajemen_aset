@@ -4,7 +4,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Buat Peminjaman</h1>
+        <h1 class="section-title">Buat Peminjaman</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">

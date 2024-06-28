@@ -14,4 +14,14 @@ class Location extends Model
    {
        return $this->hasMany(PeminjamanBarang::class);
    }
+//    lokasi tidak terhapus ketika berelasi
+public static function boot(){
+    parent::boot();
+
+        static::deleting(function ($location) {
+            if ($location->peminjamanBarangs()->count() > 0) {
+                throw new \Exception('Location cannot be deleted because it is being used in peminjaman barangs.');
+            }
+        });
+}
 }

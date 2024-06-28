@@ -9,21 +9,13 @@
 </style>
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Lokasi</h1>
+        <h1 class="section-title">Data Lokasi</h1>
     </div>
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i class="fa-solid fa-circle-plus"></i> Tambah Lokasi</button>
-                    <form action="{{ route('lokasi.index') }}" method="GET" class="form-inline">
-                        {{-- <div class="input-group">
-                            <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
-                            <div class="input-group-btn">
-                                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                            </div>
-                        </div> --}}
-                    </form>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -47,14 +39,20 @@
                                         <!-- Edit Button -->
                                         <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="{{ $location->id }}" data-name="{{ $location->name }}" title="Edit"> <i class="fas fa-edit"></i></button>
 
-                                        <!-- Delete Form -->
+                                        <!-- Delete Button -->
+                                        @if (!$location->has_related_data)
                                         <form action="{{ route('lokasi.destroy', $location->id) }}" method="POST" class="d-inline delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-sm btn-danger delete-confirm" title="Hapus">
-                                            <i class="fas fa-trash-alt"></i>
+                                                <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
+                                        @else
+                                        <button type="button" class="btn btn-sm btn-danger" disabled>
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty
@@ -64,13 +62,13 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {{-- {{ $locations->appends(['search' => $search])->links('pagination::bootstrap-5') }} --}}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 @include('lokasi.create')
 @foreach($locations as $location)
     @include('lokasi.show', ['location' => $location])
@@ -81,41 +79,39 @@
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
-{{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script>
-   $(document).ready(function() {
-      $('#formTambah').on('submit', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var url = form.attr('action');
-        var method = form.attr('method');
-        var data = form.serialize();
+    $(document).ready(function() {
+        $('#formTambah').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var method = form.attr('method');
+            var data = form.serialize();
 
-        $.ajax({
-            url: url,
-            method: method,
-            data: data,
-            success: function(response) {
-                $('#modalTambah').modal('hide');
-                $('.modal-backdrop').remove();
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                success: function(response) {
+                    $('#modalTambah').modal('hide');
+                    $('.modal-backdrop').remove();
 
-                localStorage.setItem('saveSuccess', 'true');
-                location.reload();
-            },
-            error: function(xhr) {
-                Swal.fire({
-                    title: 'Error',
-                    text: xhr.responseJSON.message,
-                    icon: 'error',
-                    showConfirmButton: true
-                });
-            }
+                    localStorage.setItem('saveSuccess', 'true');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: xhr.responseJSON.message,
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
+            });
         });
-    });
 
-    $(document).on('click', '.delete-confirm', function(e) {
+        $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
 
@@ -145,79 +141,86 @@
                         });
                     },
                     error: function(xhr) {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Data gagal dihapus.',
-                            icon: 'error',
-                            showConfirmButton: true
-                        });
+                        if (xhr.status === 422) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: xhr.responseJSON.error,
+                                icon: 'error',
+                                showConfirmButton: true
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat menghapus data.',
+                                icon: 'error',
+                                showConfirmButton: true
+                            });
+                        }
                     }
                 });
             }
         });
     });
+  // Tampilkan modal edit saat tombol edit diklik
+        $(document).on('click', '.btn-edit', function() {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
 
-    // Tampilkan modal edit saat tombol edit diklik
-    $(document).on('click', '.btn-edit', function() {
-        var id = $(this).data('id');
-        var name = $(this).data('name');
-
-        // Gunakan template literal untuk menyisipkan variabel id
-        $(`#location${id}`).val(name); // Isi nilai input dengan nama lokasi yang akan diedit
-        $(`#modalEdit${id}`).modal('show'); // Tampilkan modal edit
-    });
-
-    // Tangani form submit untuk update lokasi dengan AJAX
-    $(document).on('submit', '[id^=formEdit]', function(e) {
-        e.preventDefault();
-        var form = $(this);
-        var url = form.attr('action');
-        var method = form.attr('method');
-        var data = form.serialize();
-
-        $.ajax({
-            url: url,
-            method: method,
-            data: data,
-            success: function(response) {
-                $(`#modalEdit${response.data.id}`).modal('hide'); // Sembunyikan modal edit setelah sukses update
-                $('.modal-backdrop').remove();
-                Swal.fire({
-                    title: 'Berhasil',
-                    text: response.message,
-                    icon: 'success',
-                    showConfirmButton: true
-                }).then((result) => {
-                    // Tampilkan perubahan langsung setelah berhasil update
-                    var row = $('tr[data-id="' + response.data.id + '"]');
-                    row.find('td:eq(1)').text(response.data.name); // Update nama lokasi dalam tabel
-                });
-            },
-            error: function(xhr) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Gagal melakukan update.',
-                    icon: 'error',
-                    showConfirmButton: true
-                });
-            }
+            $(`#location${id}`).val(name); // Isi nilai input dengan nama lokasi yang akan diedit
+            $(`#modalEdit${id}`).modal('show'); // Tampilkan modal edit
         });
-    });
 
-    $('.modal').on('hidden.bs.modal', function () {
-        $('.modal-backdrop').remove();
-    });
+        // Tangani form submit untuk update lokasi dengan AJAX
+        $(document).on('submit', '[id^=formEdit]', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var method = form.attr('method');
+            var data = form.serialize();
 
-    if (localStorage.getItem('saveSuccess') === 'true') {
-        Swal.fire({
-            title: 'Berhasil',
-            text: 'Lokasi berhasil disimpan!',
-            icon: 'success',
-            showConfirmButton: true
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                success: function(response) {
+                    $(`#modalEdit${response.data.id}`).modal('hide'); // Sembunyikan modal edit setelah sukses update
+                    $('.modal-backdrop').remove();
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: response.message,
+                        icon: 'success',
+                        showConfirmButton: true
+                    }).then((result) => {
+                        // Tampilkan perubahan langsung setelah berhasil update
+                        var row = $('tr[data-id="' + response.data.id + '"]');
+                        row.find('td:eq(1)').text(response.data.name); // Update nama lokasi dalam tabel
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Gagal melakukan update.',
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
+            });
         });
+
+        $('.modal').on('hidden.bs.modal', function() {
+            $('.modal-backdrop').remove();
+        });
+
+        // Tampilkan pesan sukses jika lokasi berhasil disimpan
+        if (localStorage.getItem('saveSuccess') === 'true') {
+            Swal.fire({
+                title: 'Berhasil',
+                text: 'Lokasi berhasil disimpan!',
+                icon: 'success',
+                showConfirmButton: true
+            });
             localStorage.removeItem('saveSuccess');
-    }
-});
+        }
+    });
 </script>
 @endsection
-

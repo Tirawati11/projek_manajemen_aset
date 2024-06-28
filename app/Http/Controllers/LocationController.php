@@ -123,13 +123,15 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-        $location = Location::find($id);
+        $location = Location::findOrFail($id);
 
-        if ($location) {
-            $location->delete();
-            return redirect()->route('lokasi.index')->with('success', 'Lokasi telah dihapus.');
-        } else {
-            return redirect()->route('lokasi.index')->with('error', 'Lokasi tidak ditemukan.');
+        // Check if the location is still related to any peminjamanBarangs
+        if ($location->peminjamanBarangs()->exists()) {
+            return response()->json(['error' => 'Lokasi masih digunakan dalam peminjaman barang. Tidak dapat dihapus.'], 422);
         }
+
+        $location->delete();
+
+        return response()->json(['message' => 'Lokasi berhasil dihapus.']);
     }
 }

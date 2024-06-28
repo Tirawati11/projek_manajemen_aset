@@ -36,7 +36,7 @@
 @section('content')
 <section class="section">
     <div class="section-header no-print">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Laporan Pengajuan</h1>
+        <h1 class="section-title">Data Laporan Pengajuan</h1>
     </div>
 
     <div class="row mt-4">

@@ -14,7 +14,7 @@ class PengajuanBarangController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-    
+
         // Query untuk mendapatkan data PengajuanBarang dengan relasi User
         $query = PengajuanBarang::query()
             ->when($search, function ($query, $search) {
@@ -25,21 +25,21 @@ class PengajuanBarangController extends Controller
                           });
                 });
             });
-    
+
         // Dapatkan hasil paginasi dengan menyertakan query pencarian
         $pengajuan = $query->latest()->paginate(5);
-    
+
         // Sertakan query pencarian dalam hasil pagination
         $pengajuan->appends(['search' => $search]);
-    
+
         return view('pengajuan.index', compact('pengajuan', 'search'));
     }
-    
+
     public function create()
     {
         // Mendapatkan semua barang untuk ditampilkan di form pengajuan
         // $category= Categories::all();
-     
+
         return view('pengajuan.create');
     }
 
@@ -151,15 +151,13 @@ class PengajuanBarangController extends Controller
 
         return redirect()->route('pengajuan.index')->with('error', 'Pengajuan tidak dapat ditolak.');
     }
+    // Penghapusan dengan checxkbox
     public function bulkDelete(Request $request)
-    {
-        $ids = $request->ids;
+{
+    $ids = $request->ids;
 
-        if (!empty($ids) && is_array($ids)) {
-            PengajuanBarang::whereIn('id', $ids)->delete();
-            return response()->json(['success' => 'Pengajuan deleted successfully.']);
-        } else {
-            return response()->json(['error' => 'Invalid request.'], 400);
-        }
-    }
+    PengajuanBarang::whereIn('id', $ids)->delete();
+
+    return response()->json(['success' => "Items berhasil dihapus."]);
+}
 }

@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('nama');
             $table->string('jumlah');
             $table->string('nama_barang');
-            // $table->unsignedBigInteger('location_id'); // Gunakan unsignedBigInteger untuk foreign key
-            // $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->unsignedBigInteger('location_id'); // Tambahkan kolom foreign key
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('restrict'); // Definisikan constraint foreign key
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_pengembalian')->nullable();
-            $table->string('status')->default('dipinjam'); // 'dipinjam' or 'dikembalikan'
+            $table->string('status')->default('dipinjam'); // 'dipinjam' atau 'dikembalikan'
             $table->timestamps();
         });
     }

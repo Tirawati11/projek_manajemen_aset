@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333; text-align: center;">Pengajuan Barang</h1>
+        <h1 class="section-title">Pengajuan Barang</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">

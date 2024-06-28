@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;"> Data Inventaris</h1>
+        <h1 class="section-title"> Data Inventaris</h1>
     </div>
 <div class="row">
     <div class="col-12">

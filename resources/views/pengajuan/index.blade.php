@@ -25,7 +25,7 @@
 </style>
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Pengajuan Aset</h1>
+        <h1 class="section-title">Pengajuan Aset</h1>
     </div>
     <div class="row">
         <div class="col-12">
@@ -34,20 +34,12 @@
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary" style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
                     </a>
-                    <button style="margin-bottom: 10px" class="btn btn-sm btn-danger delete_all" data-url="{{ route('pengajuan.bulk-delete') }}">
-                        <i class="fas fa-trash-alt"></i> Hapus Terpilih
-                    </button>
-                    @csrf
-                    @method('DELETE')
-                </div>
+                    </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped" id="table1">
                             <thead>
                                 <tr>
-                                    <th class="text-center">
-                                        <input type="checkbox" id="master">
-                                    </th>
                                     <th style="width: 50px;">No</th>
                                     <th class="nowrap" style="width: 150px;">Nama Barang</th>
                                     <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
@@ -58,9 +50,6 @@
                             <tbody>
                                 @forelse ($pengajuan as $index => $item)
                                 <tr>
-                                    <td>
-                                        <input type="checkbox" class="sub_chk" data-id="{{ $item->id }}" name="selected_ids[]" value="{{ $item->id }}">
-                                    </td>
                                     <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
                                     <td class="align-middle">{{ $item->nama_barang }}</td>
                                     <td class="align-middle">
@@ -138,70 +127,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-    $('#master').on('click', function(e) {
-        if ($(this).is(':checked')) {
-            $(".sub_chk").prop('checked', true);
-        } else {
-            $(".sub_chk").prop('checked', false);
-        }
-    });
+    $('#table1').DataTable(); // Initialize DataTables
 
-    $('.delete_all').on('click', function(e) {
-        var allVals = [];
-        $(".sub_chk:checked").each(function() {
-            allVals.push($(this).val());
-        });
-        if (allVals.length <= 0) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Tidak ada item yang terpilih',
-                text: 'Silakan pilih item untuk dihapus',
-            });
-            return;
-        }
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: 'Anda akan menghapus ini?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '{{ route("pengajuan.bulk-delete") }}',
-                    type: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        ids: allVals
-                    },
-                    success: function(response) {
-                        console.log('Success:', response);
-                        Swal.fire(
-                            'Terhapus!',
-                            'Berhasil dihapus',
-                            'success'
-                        ).then(function() {
-                            location.reload(); // Refresh the page
-                        });
-                    },
-
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                        Swal.fire(
-                            'Error!',
-                            'Gagal menghapus item',
-                            'error'
-                        );
-                    }
-                });
-            }
-        });
-    });
-
+    // SweetAlert Confirmation untuk aksi Approve dan Reject
     $(document).on('click', '.approvalButton', function(e) {
         e.preventDefault();
         var pengajuanId = $(this).data('pengajuanid');
@@ -240,13 +168,14 @@ $(document).ready(function() {
         });
     });
 
+    // SweetAlert Confirmation untuk aksi delete tunggal
     $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
 
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Anda tidak dapat mengembalikan ini?",
+            text: "Anda tidak dapat mengembalikan ini setelah dihapus",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -260,7 +189,7 @@ $(document).ready(function() {
         });
     });
 
-    // Show success messages if available
+    // Menampilkan pesan sukses jika ada
     @if (session('delete'))
     Swal.fire({
         title: 'Berhasil',

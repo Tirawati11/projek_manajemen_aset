@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <h4 class="mb-4" style="font-family: 'Roboto', sans-serif; color: #333; text-align: center;">Detail Peminjaman Aset</h4>
+                    <h4 class="mb-4">Detail Peminjaman Aset</h4>
                     <hr>
                     <p class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
                         ID :  {{ $peminjaman->id }}
