@@ -34,12 +34,14 @@
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary" style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
                     </a>
+                        <button class="btn  btn-sm btn-danger" id="btn-delete-selected"> <i class="fas fa-trash-alt"></i> Hapus Terpilih</button>
                     </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped" id="table1">
                             <thead>
                                 <tr>
+                                    <th style="width: 30px;"><input type="checkbox" id="select-all"></th>
                                     <th style="width: 50px;">No</th>
                                     <th class="nowrap" style="width: 150px;">Nama Barang</th>
                                     <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
@@ -50,14 +52,15 @@
                             <tbody>
                                 @forelse ($pengajuan as $index => $item)
                                 <tr>
+                                    <td><input type="checkbox" class="checkbox-input" value="{{ $item->id }}"></td>
                                     <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
                                     <td class="align-middle">{{ $item->nama_barang }}</td>
-                                    <td class="align-middle">
-                                        @if (auth()->check())
+                                    <td class="align-middle">{{ $item->nama_pemohon }}
+                                        {{-- @if (auth()->check())
                                             {{ auth()->user()->nama_user }}
                                         @else
                                             Pengguna Tidak Ditemukan
-                                        @endif
+                                        @endif --}}
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="{{ $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : '')) }}">
@@ -129,6 +132,92 @@
 $(document).ready(function() {
     $('#table1').DataTable(); // Initialize DataTables
 
+    // Memilih semua checkbox
+    $('#select-all').click(function(event) {
+        if (this.checked) {
+            // Checkbox dipilih
+            $('.checkbox-input').each(function() {
+                this.checked = true;
+            });
+        } else {
+            // Checkbox tidak dipilih
+            $('.checkbox-input').each(function() {
+                this.checked = false;
+            });
+        }
+    });
+
+    // Menghapus terpilih
+    $('#btn-delete-selected').click(function() {
+        var selectedItems = [];
+
+        // Mengumpulkan id dari item yang dipilih
+        $('.checkbox-input:checked').each(function() {
+            selectedItems.push($(this).val());
+        });
+
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                title: 'Pilih Setidaknya Satu Item',
+                text: 'Anda harus memilih setidaknya satu item untuk dihapus.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            // Tampilkan pesan konfirmasi sebelum menghapus
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda akan menghapus item terpilih?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Lakukan penghapusan dengan AJAX
+                    $.ajax({
+                        url: '/pengajuan/bulk-delete',
+                        type: 'POST',
+                        data: {
+                            ids: selectedItems,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Item terpilih berhasil dihapus.',
+                                    icon: 'success',
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'OK'
+                                    }).then(function() {
+                                    location.reload(); // Refresh halaman setelah penghapusan
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Gagal menghapus item terpilih.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat menghapus item terpilih.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
+
     // SweetAlert Confirmation untuk aksi Approve dan Reject
     $(document).on('click', '.approvalButton', function(e) {
         e.preventDefault();
@@ -190,31 +279,31 @@ $(document).ready(function() {
     });
 
     // Menampilkan pesan sukses jika ada
-    @if (session('delete'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: '{{ session('delete') }}',
-        icon: 'success',
-        showConfirmButton: true
-    });
+    @if(session()->has('delete'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: '{{ session('delete') }}',
+            icon: 'success',
+            showConfirmButton: true
+        });
     @endif
 
-    @if (session('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: '{{ session('success') }}',
-        icon: 'success',
-        showConfirmButton: true
-    });
+    @if(session()->has('success'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            showConfirmButton: true
+        });
     @endif
 
-    @if (session('update'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: 'Data berhasil diperbarui',
-        icon: 'success',
-        showConfirmButton: true
-    });
+    @if(session()->has('update'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: 'Data berhasil diperbarui',
+            icon: 'success',
+            showConfirmButton: true
+        });
     @endif
 });
 </script>

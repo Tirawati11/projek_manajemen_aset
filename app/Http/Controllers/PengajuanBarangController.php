@@ -154,10 +154,16 @@ class PengajuanBarangController extends Controller
     // Penghapusan dengan checxkbox
     public function bulkDelete(Request $request)
 {
-    $ids = $request->ids;
+    $ids = $request->ids; // Ambil id-item yang akan dihapus dari request
 
-    PengajuanBarang::whereIn('id', $ids)->delete();
+    foreach ($ids as $id) {
+        // Lakukan penghapusan satu per satu, sesuai kebutuhan aplikasi Anda
+        $item = PengajuanBarang::find($id);
+        if ($item) {
+            $item->delete();
+        }
+    }
 
-    return response()->json(['success' => "Items berhasil dihapus."]);
+    return response()->json(['success' => true]);
 }
 }

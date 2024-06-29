@@ -9,7 +9,7 @@ use App\Models\Barang;
 
 class PeminjamanBarang extends Model
 {
-   protected $fillable = ['nama_barang_id', 'user_id', 'location_id', 'jumlah', 'tanggal_peminjaman', 'tanggal_pengembalian', 'status'];
+   protected $fillable = ['nama_barang_id', 'user_id', 'nama_peminjam', 'location_id', 'jumlah', 'tanggal_peminjaman', 'tanggal_pengembalian', 'status'];
 
    public function location()
     {

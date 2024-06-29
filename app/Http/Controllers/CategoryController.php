@@ -35,9 +35,13 @@ public function store(Request $request)
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-public function show(Category $category)
+public function show(Category $id)
 {
-    return view('categories.show', compact('category'));
+    $category = Category::findOrFail($id);
+
+    // Mengambil data peminjaman barang yang terkait dengan lokasi tersebut
+    $aset = $category->aset;
+    return view('categories.show', compact('category', 'aset'));
 }
 
 public function edit(Category $category)
@@ -57,15 +61,20 @@ public function update(Request $request, Category $category)
     return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
 }
 
-    public function destroy($id)
+public function destroy($id)
     {
-        $category = Category::find($id);
+        try {
+            $category = Category::findOrFail($id);
 
-        if ($category) {
+            if ($category->aset()->count() > 0) {
+                return response()->json(['success' => false, 'message' => 'Kategori tidak bisa dihapus karena masih berelasi dengan aset.']);
+            }
+
             $category->delete();
-            return response()->json(['success' => true, 'message' => 'Kategori telah dihapus.']);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Kategori tidak ditemukan.']);
+
+            return response()->json(['success' => true, 'message' => 'Kategori berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus kategori.']);
         }
     }
 }

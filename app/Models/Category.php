@@ -15,4 +15,16 @@ class Category extends Model
     {
         return $this->hasMany(Aset::class);
     }
+    // Konfigurasi relasi
+    public function delete()
+    {
+        // Check if the category has any related Aset records
+        if ($this->aset()->count() > 0) {
+            // Optionally, you can throw an exception or return a response here
+            throw new \Exception('Category cannot be deleted because it is still related to assets.');
+        }
+
+        // If no related Aset records, proceed with deletion
+        return parent::delete();
+    }
 }

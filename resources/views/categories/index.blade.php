@@ -2,48 +2,51 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 <section class="section">
-<div class="section-header">
-    <h1>Data Kategori</h1>
-</div>
+    <div class="section-header">
+        <h1 class="section-title">Data Kategori</h1>
+    </div>
 </section>
+
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-md">
-                        <thead>
-                            <tr>
-                                <th class="col-no">No</th>
-                                <th class="col-name">Kategori</th>
-                                <th class="col-action">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($categories as $category)
+                    <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-md" id="table1">
+                            <thead>
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $category->name }}</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="far fa-eye" title="Show"></i></a>
-                                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}">  <i class="fas fa-edit" title="Edit"></i></a>
-                                        <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}"> <i class="fas fa-trash-alt" title="Hapus"></i></button>
-                                    </td>
+                                    <th class="col-no">No</th>
+                                    <th class="col-name">Kategori</th>
+                                    <th class="col-action">Aksi</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center">
-                                        <div class="alert alert-danger">
-                                            Data Kategori belum Tersedia.
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @forelse ($categories as $category)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $category->name }}</td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="far fa-eye" title="Show"></i></a>
+                                            <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="fas fa-edit" title="Edit"></i></a>
+                                            <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}"><i class="fas fa-trash-alt" title="Hapus"></i></button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <div class="alert alert-danger">
+                                                Data Kategori belum Tersedia.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,7 +95,7 @@
                         <label for="edit_nama_kategori">Nama Kategori</label>
                         <input type="text" class="form-control" id="edit_nama_kategori" name="nama_kategori" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
             </div>
         </div>
@@ -110,10 +113,28 @@
                 </button>
             </div>
             <div class="modal-body">
+                <p><strong>Kategori:</strong><span id="show_kategori_name">{{$category->name}}</span></p>
+                <ul id="aset_list"> </p>
+                    <ul>
+                    @forelse ($category->aset as $item)
+                        <li>
+                            <strong>Nama Barang:</strong> {{ $item->nama_barang }}
+                            <br>
+                            <strong>Jumlah:</strong> {{ $item->jumlah }}
+                        </li>
+                    @empty
+                        <li>Tidak ada data peminjaman barang di lokasi ini.</li>
+                    @endforelse
+                </ul>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {{-- <div class="modal-body">
                 <div class="form-group">
                     <label for="show_nama_kategori">Nama Kategori</label>
                     <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori" readonly>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -187,7 +208,7 @@
                         error: function(xhr, status, error) {
                             Swal.fire(
                                 'Gagal!',
-                                'Kategori gagal dihapus.',
+                                'Terjadi kesalahan saat menghapus kategori.',
                                 'error'
                             );
                         }
@@ -196,5 +217,22 @@
             });
         });
     });
+    @if (session('success'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                showConfirmButton: true
+            });
+        @endif
+
+        @if (session('update'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: 'Data berhasil diperbarui',
+                icon: 'success',
+                showConfirmButton: true
+            });
+        @endif
 </script>
 @endsection

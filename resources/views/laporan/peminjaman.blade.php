@@ -93,7 +93,7 @@
                                 @forelse ($peminjaman as $index => $item)
                                     <tr>
                                         <td class="align-middle" style="text-align: center;">{{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $index + 1 }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->barang ? $item->user->nama_user : 'User tidak tersedia'  }}</td>
+                                        <td class="align-middle" style="text-align: center;">{{ $item->nama_peminjam  }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->jumlah }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->tanggal_peminjaman }}</td>

@@ -69,11 +69,10 @@ class PeminjamanBarangController extends Controller
     ]);
 
      // Tambahkan user_id dari pengguna yang sedang login
-     $validatedData['user_id'] = Auth::id();
+     $validatedData['nama_peminjam'] = Auth::user()->nama_user;
 
     // Simpan data ke database
     PeminjamanBarang::create($validatedData);
-
     return redirect()->route('peminjaman.index')
         ->with('success', 'Peminjaman barang berhasil ditambahkan.');
 }
@@ -98,7 +97,8 @@ class PeminjamanBarangController extends Controller
     {
         $locations = Location::select('id', 'name')->get();
         $barangs = Barang::all();
-        return view('peminjaman.edit', compact('peminjaman', 'locations', 'barangs'));
+        $user = Auth::user();
+        return view('peminjaman.edit', compact('peminjaman', 'locations', 'barangs', 'user'));
     }
 
     /**

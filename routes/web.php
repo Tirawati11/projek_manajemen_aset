@@ -64,7 +64,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('pengajuan', PengajuanBarangController::class);
     Route::post('/pengajuan/{id}/approve', [PengajuanBarangController::class, 'approve'])->name('pengajuan.approve')->middleware('jabatan:admin');
     Route::post('/pengajuan/{id}/reject', [PengajuanBarangController::class, 'reject'])->name('pengajuan.reject')->middleware('jabatan:admin');
-    Route::delete('/pengajuan/bulk-delete', [PengajuanBarangController::class, 'bulkDelete'])->name('pengajuan.bulkDelete')->middleware('jabatan:admin');
+    Route::post('/pengajuan/bulk-delete', [PengajuanBarangController::class, 'bulkDelete'])->name('pengajuan.bulk-delete')->middleware('jabatan:admin');
 
     // Route Peminjaman Barang
     Route::resource('peminjaman', PeminjamanBarangController::class);
