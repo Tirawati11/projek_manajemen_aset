@@ -17,6 +17,9 @@
                     <button class="btn btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
                     </button>
+                    <button class="btn btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
+                        <i class="fa-solid fa-file-import"></i> Import
+                    </button>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-md">
@@ -163,6 +166,32 @@
     </div>
 </div>
 
+<!-- Modal Import Excel -->
+<div class="modal fade" id="modal-import-excel" tabindex="-1" role="dialog" aria-labelledby="modal-import-excel-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-import-excel-label">Import File</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="file">File (CSV, TXT, XLS, XLSX)</label>
+                        <input type="file" class="form-control-file" id="file" name="file" accept=".csv, .txt, .xls, .xlsx" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -196,9 +225,11 @@
             text: "Data yang dihapus tidak dapat dikembalikan!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!'
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
@@ -219,7 +250,9 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, setujui!'
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

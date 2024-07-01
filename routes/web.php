@@ -83,6 +83,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::put('/users/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
         // Route::put('/users/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
+        Route::post('users/import', [UserController::class, 'import'])->name('users.import');
+
 
                 
 

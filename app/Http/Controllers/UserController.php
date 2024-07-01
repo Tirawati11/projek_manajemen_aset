@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UsersImport;
 
 
 
@@ -98,4 +101,16 @@ class UserController extends Controller
     //     return redirect()->route('users.index')->with('success', 'User rejected successfully.');
     // }
 
+    public function import(Request $request)
+    {
+        // Tambahkan log untuk memastikan file diterima
+        \Log::info('File yang diunggah:', [$request->file('file')]);
+
+        // Lakukan import dan tambahkan log untuk melihat prosesnya
+        Excel::import(new UsersImport, $request->file('file'));
+
+        \Log::info('Import selesai.');
+
+        return redirect()->back()->with('success', 'Data user berhasil diimport.');
+    }
 }
