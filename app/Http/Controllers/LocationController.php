@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Location;
 use App\Models\PeminjamanBarang;
+use Yajra\DataTables\Facades\Datatables;
 
 
 class LocationController extends Controller
@@ -23,7 +24,7 @@ class LocationController extends Controller
     }
 
     // Menggunakan paginate dengan 10 item per halaman
-    $locations = $query->paginate(5);
+    $locations = $query->paginate(10);
 
     return view('lokasi.index', compact('locations', 'search'));
     }

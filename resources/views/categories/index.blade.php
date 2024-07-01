@@ -113,7 +113,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p><strong>Kategori:</strong><span id="show_kategori_name">{{$category->name}}</span></p>
+                <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori">
                 <ul id="aset_list"> </p>
                     <ul>
                     @forelse ($category->aset as $item)

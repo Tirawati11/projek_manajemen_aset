@@ -8,41 +8,51 @@ use App\Models\Category;
 use App\Models\PengajuanBarang;
 use Illuminate\Support\Facades\Auth;
 
-
 class PengajuanBarangController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->input('search');
+{
+    $search = $request->input('search');
+    $user = Auth::user();
 
-        // Query untuk mendapatkan data PengajuanBarang dengan relasi User
-        $query = PengajuanBarang::query()
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($query) use ($search) {
-                    $query->where('nama_barang', 'LIKE', "%{$search}%")
-                          ->orWhereHas('user', function ($query) use ($search) {
-                              $query->where('username', 'LIKE', "%{$search}%");
-                          });
-                });
+    // Query untuk mendapatkan data PengajuanBarang dengan relasi User
+    $query = PengajuanBarang::query();
+
+    // Jika user adalah admin, tampilkan semua data
+    if ($user->jabatan == 'admin') {
+        $query->when($search, function ($query, $search) {
+            return $query->where(function ($query) use ($search) {
+                $query->where('nama_barang', 'LIKE', "%{$search}%")
+                      ->orWhereHas('user', function ($query) use ($search) {
+                          $query->where('nama_user', 'LIKE', "%{$search}%");
+                      });
             });
-
-        // Dapatkan hasil paginasi dengan menyertakan query pencarian
-        $pengajuan = $query->latest()->paginate(5);
-
-        // Sertakan query pencarian dalam hasil pagination
-        $pengajuan->appends(['search' => $search]);
-
-        return view('pengajuan.index', compact('pengajuan', 'search'));
+        });
+    } else {
+        // Jika user bukan admin, filter hanya untuk data mereka sendiri
+        $query->where('nama_pemohon', $user->nama_user)
+              ->when($search, function ($query, $search) {
+                  return $query->where(function ($query) use ($search) {
+                      $query->where('nama_barang', 'LIKE', "%{$search}%");
+                  });
+              });
     }
 
+    // Dapatkan hasil paginasi dengan menyertakan query pencarian
+    $pengajuan = $query->latest()->paginate(5);
+
+    $pengajuan->appends(['search' => $search]);
+
+    return view('pengajuan.index', compact('pengajuan', 'search'));
+    }
+
+    // Create Pengajuan
     public function create()
     {
-        // Mendapatkan semua barang untuk ditampilkan di form pengajuan
-        // $category= Categories::all();
-
         return view('pengajuan.create');
     }
 
+    // Fungsi untuk menyimpan hasil input
     public function store(Request $request)
     {
         $request->validate([
@@ -64,6 +74,7 @@ class PengajuanBarangController extends Controller
         return redirect()->route('pengajuan.index')->with('success', 'Pengajuan berhasil dibuat.');
     }
 
+    // Fungsi Untuk Menampilkan Detail Data
     public function show($id)
     {
         $pengajuan = PengajuanBarang::findOrFail($id);
@@ -124,7 +135,7 @@ class PengajuanBarangController extends Controller
     }
 //   Aprove pengajuan
     public function approve($id)
-{
+    {
     $pengajuan = PengajuanBarang::findOrFail($id);
 
     if ($pengajuan->status === 'pending') {
@@ -153,7 +164,7 @@ class PengajuanBarangController extends Controller
     }
     // Penghapusan dengan checxkbox
     public function bulkDelete(Request $request)
-{
+    {
     $ids = $request->ids; // Ambil id-item yang akan dihapus dari request
 
     foreach ($ids as $id) {
@@ -165,5 +176,23 @@ class PengajuanBarangController extends Controller
     }
 
     return response()->json(['success' => true]);
+    }
+ // Method for bulk approve
+    public function bulkApprove(Request $request)
+    {
+        $ids = $request->input('ids');
+        PengajuanBarang::whereIn('id', $ids)->update(['status' => 'approved']);
+
+        return response()->json(['success' => true, 'message' => 'Item terpilih berhasil disetujui.']);
+    }
+
+ // Method for bulk reject
+    public function bulkReject(Request $request)
+    {
+        $ids = $request->input('ids');
+        PengajuanBarang::whereIn('id', $ids)->update(['status' => 'rejected']);
+
+        return response()->json(['success' => true, 'message' => 'Item terpilih berhasil ditolak.']);
+    }
 }
-}
+

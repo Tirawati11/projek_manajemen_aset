@@ -34,87 +34,95 @@
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary" style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
                     </a>
-                        <button class="btn  btn-sm btn-danger" id="btn-delete-selected"> <i class="fas fa-trash-alt"></i> Hapus Terpilih</button>
-                    </div>
+                    @if(Auth::check() && Auth::user()->jabatan == 'admin')
+                    <button class="btn btn-sm btn-danger" id="btn-delete-selected" style="display: none;"><i class="fas fa-trash-alt"></i> Hapus Terpilih</button>
+                    <button class="btn btn-sm btn-success" id="btn-approve-selected" style="display: none;"><i class="far fa-thumbs-up"></i> Approved Terpilih</button>
+                    <button class="btn btn-sm btn-danger" id="btn-reject-selected" style="display: none;"><i class="far fa-thumbs-down"></i> Reject Terpilih</button>
+                    @endif
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-striped" id="table1">
                             <thead>
                                 <tr>
-                                    <th style="width: 30px;"><input type="checkbox" id="select-all"></th>
-                                    <th style="width: 50px;">No</th>
-                                    <th class="nowrap" style="width: 150px;">Nama Barang</th>
-                                    <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
-                                    <th style="text-align: center; width: 100px;">Status</th>
-                                    <th style="text-align: center; width: 200px;">Aksi</th>
+                                <th style="width: 30px;">
+                                @if(Auth::check() && Auth::user()->jabatan == 'admin')
+                                    <input type="checkbox" id="select-all">
+                                @endif
+                                </th>
+                                <th style="width: 50px;">No</th>
+                                <th class="nowrap" style="width: 150px;">Nama Barang</th>
+                                <th class="nowrap" style="width: 150px;">Nama Pemohon</th>
+                                <th style="text-align: center; width: 100px;">Status</th>
+                                <th style="text-align: center; width: 200px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($pengajuan as $index => $item)
-                                <tr>
-                                    <td><input type="checkbox" class="checkbox-input" value="{{ $item->id }}"></td>
-                                    <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
-                                    <td class="align-middle">{{ $item->nama_barang }}</td>
-                                    <td class="align-middle">{{ $item->nama_pemohon }}
-                                        {{-- @if (auth()->check())
-                                            {{ auth()->user()->nama_user }}
-                                        @else
-                                            Pengguna Tidak Ditemukan
-                                        @endif --}}
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <span class="{{ $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : '')) }}">
-                                            {{ $item->status }}
-                                        </span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="dropdown d-inline mr-2">
-                                            @if(Auth::check() && Auth::user()->jabatan == 'admin' && $item->status === 'pending')
-                                            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="far fa-thumbs-up"></i> Approve
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
-                                                <form id="approvalForm{{ $item->id }}" action="{{ route('pengajuan.approve', $item->id) }}" method="POST" class="dropdown-item">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-link text-primary approvalButton" data-pengajuanid="{{ $item->id }}" title="Approve">
-                                                        <i class="far fa-thumbs-up"></i> Approve
-                                                    </button>
-                                                </form>
-                                                <form id="rejectForm{{ $item->id }}" action="{{ route('pengajuan.reject', $item->id) }}" method="POST" class="dropdown-item">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-link text-danger rejectButton" data-pengajuanid="{{ $item->id }}" title="Reject">
-                                                        <i class="far fa-thumbs-down"></i> Reject
-                                                    </button>
-                                                </form>
-                                            </div>
-                                            @endif
-                                        </div>
-                                        <div class="dropdown d-inline">
-                                            <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton3{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-cogs"></i> Aksi
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3{{ $item->id }}">
-                                                <a href="{{ route('pengajuan.show', $item->id) }}" class="dropdown-item">
-                                                    <i class="far fa-eye"></i> Lihat
-                                                </a>
-                                                <a href="{{ route('pengajuan.edit', $item->id) }}" class="dropdown-item">
-                                                    <i class="fas fa-edit"></i> Edit
-                                                </a>
-                                                <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item delete-confirm" style="cursor:pointer;">
-                                                        <i class="fas fa-trash-alt"></i> Hapus
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="6" class="text-center">Data Pengajuan belum Tersedia.</td>
-                                </tr>
+                                @forelse($pengajuan as $index => $item)
+                                    @if(Auth::user()->jabatan == 'admin' || $item->nama_pemohon == Auth::user()->nama_user)
+                                        <tr>
+                                            <td>
+                                                @if(Auth::check() && Auth::user()->jabatan == 'admin')
+                                                    <input type="checkbox" class="checkbox-input" value="{{ $item->id }}">
+                                                @endif
+                                            </td>
+                                            <td class="align-middle">{{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $index + 1 }}</td>
+                                            <td class="align-middle">{{ $item->nama_barang }}</td>
+                                            <td class="align-middle">{{ $item->nama_pemohon }}</td>
+                                            <td class="align-middle text-center">
+                                                <span class="{{ $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : '')) }}">
+                                                    {{ $item->status }}
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="dropdown d-inline">
+                                                    @if(Auth::check() && Auth::user()->jabatan == 'admin' && $item->status === 'pending')
+                                                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="far fa-thumbs-up"></i> Approve
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $item->id }}">
+                                                            <form id="approvalForm{{ $item->id }}" action="{{ route('pengajuan.approve', $item->id) }}" method="POST" class="dropdown-item">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-link text-primary approvalButton" data-pengajuanid="{{ $item->id }}" title="Approve">
+                                                                    <i class="far fa-thumbs-up"></i> Approve
+                                                                </button>
+                                                            </form>
+                                                            <form id="rejectForm{{ $item->id }}" action="{{ route('pengajuan.reject', $item->id) }}" method="POST" class="dropdown-item">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-link text-danger rejectButton" data-pengajuanid="{{ $item->id }}" title="Reject">
+                                                                    <i class="far fa-thumbs-down"></i> Reject
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    @endif
+                                                    <div class="dropdown d-inline">
+                                                        <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton3{{ $item->id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            <i class="fas fa-cogs"></i> Aksi
+                                                        </button>
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3{{ $item->id }}">
+                                                            <a href="{{ route('pengajuan.show', $item->id) }}" class="dropdown-item">
+                                                                <i class="far fa-eye"></i> Lihat
+                                                            </a>
+                                                            <a href="{{ route('pengajuan.edit', $item->id) }}" class="dropdown-item">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                            <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="dropdown-item">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="delete-confirm" style="cursor:pointer;">
+                                                                    <i class="fas fa-trash-alt"></i> Hapus
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @empty
+                                    <tr>
+                                        <td colspan="6" class="text-center">Data Pengajuan belum Tersedia.</td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -122,7 +130,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </section>
 @endsection
 
@@ -135,23 +142,38 @@ $(document).ready(function() {
     // Memilih semua checkbox
     $('#select-all').click(function(event) {
         if (this.checked) {
-            // Checkbox dipilih
             $('.checkbox-input').each(function() {
                 this.checked = true;
             });
         } else {
-            // Checkbox tidak dipilih
             $('.checkbox-input').each(function() {
                 this.checked = false;
             });
         }
+        toggleActionButtons();
     });
+
+    // Toggling action buttons
+    $('.checkbox-input').change(function() {
+        toggleActionButtons();
+    });
+
+    function toggleActionButtons() {
+        var selectedItems = $('.checkbox-input:checked').length;
+        if (selectedItems > 0) {
+            $('#btn-delete-selected').show();
+            @if(Auth::check() && Auth::user()->jabatan == 'admin')
+            $('#btn-approve-selected, #btn-reject-selected').show();
+            @endif
+        } else {
+            $('#btn-delete-selected, #btn-approve-selected, #btn-reject-selected').hide();
+        }
+    }
 
     // Menghapus terpilih
     $('#btn-delete-selected').click(function() {
         var selectedItems = [];
 
-        // Mengumpulkan id dari item yang dipilih
         $('.checkbox-input:checked').each(function() {
             selectedItems.push($(this).val());
         });
@@ -164,41 +186,38 @@ $(document).ready(function() {
                 confirmButtonText: 'OK'
             });
         } else {
-            // Tampilkan pesan konfirmasi sebelum menghapus
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Anda akan menghapus item terpilih?",
+                text: 'Anda tidak akan dapat mengembalikan tindakan ini',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus',
-                cancelButtonText: 'Batal'
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Lakukan penghapusan dengan AJAX
                     $.ajax({
-                        url: '/pengajuan/bulk-delete',
+                        url: '{{ route('pengajuan.bulk-delete') }}',
                         type: 'POST',
                         data: {
-                            ids: selectedItems,
-                            _token: '{{ csrf_token() }}'
+                            _token: '{{ csrf_token() }}',
+                            ids: selectedItems
                         },
                         success: function(response) {
                             if (response.success) {
                                 Swal.fire({
-                                    title: 'Berhasil',
-                                    text: 'Item terpilih berhasil dihapus.',
+                                    title: 'Berhasil!',
+                                    text: 'Item terpilih telah dihapus.',
                                     icon: 'success',
-                                    showConfirmButton: true,
-                                    confirmButtonText: 'OK'
-                                    }).then(function() {
-                                    location.reload(); // Refresh halaman setelah penghapusan
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
                                 });
                             } else {
                                 Swal.fire({
-                                    title: 'Gagal',
-                                    text: 'Gagal menghapus item terpilih.',
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat menghapus item terpilih.',
                                     icon: 'error',
                                     confirmButtonText: 'OK'
                                 });
@@ -206,7 +225,7 @@ $(document).ready(function() {
                         },
                         error: function(xhr, status, error) {
                             Swal.fire({
-                                title: 'Error',
+                                title: 'Gagal!',
                                 text: 'Terjadi kesalahan saat menghapus item terpilih.',
                                 icon: 'error',
                                 confirmButtonText: 'OK'
@@ -218,93 +237,139 @@ $(document).ready(function() {
         }
     });
 
-    // SweetAlert Confirmation untuk aksi Approve dan Reject
-    $(document).on('click', '.approvalButton', function(e) {
-        e.preventDefault();
-        var pengajuanId = $(this).data('pengajuanid');
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda akan menyetujui pengajuan ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, setujui',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#approvalForm' + pengajuanId).submit();
-            }
+    // Approve terpilih
+    $('#btn-approve-selected').click(function() {
+        var selectedItems = [];
+
+        $('.checkbox-input:checked').each(function() {
+            selectedItems.push($(this).val());
         });
+
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                title: 'Pilih Setidaknya Satu Item',
+                text: 'Anda harus memilih setidaknya satu item untuk diapprove.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Anda tidak akan dapat mengembalikan tindakan ini',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, approve!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('pengajuan.bulk-approve') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            ids: selectedItems
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Item terpilih telah diapprove.',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat melakukan approve item terpilih.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat melakukan approve item terpilih.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        }
     });
 
-    $(document).on('click', '.rejectButton', function(e) {
-        e.preventDefault();
-        var pengajuanId = $(this).data('pengajuanid');
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda akan menolak pengajuan ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, tolak',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $('#rejectForm' + pengajuanId).submit();
-            }
+    // Reject terpilih
+    $('#btn-reject-selected').click(function() {
+        var selectedItems = [];
+
+        $('.checkbox-input:checked').each(function() {
+            selectedItems.push($(this).val());
         });
+
+        if (selectedItems.length === 0) {
+            Swal.fire({
+                title: 'Pilih Setidaknya Satu Item',
+                text: 'Anda harus memilih setidaknya satu item untuk direject.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+        } else {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Anda tidak akan dapat mengembalikan tindakan ini',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, reject!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route('pengajuan.bulk-reject') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            ids: selectedItems
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Item terpilih telah direject.',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: 'Terjadi kesalahan saat melakukan reject item terpilih.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat melakukan reject item terpilih.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        }
     });
-
-    // SweetAlert Confirmation untuk aksi delete tunggal
-    $(document).on('click', '.delete-confirm', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Anda tidak dapat mengembalikan ini setelah dihapus",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
-        });
-    });
-
-    // Menampilkan pesan sukses jika ada
-    @if(session()->has('delete'))
-        Swal.fire({
-            title: 'Berhasil',
-            text: '{{ session('delete') }}',
-            icon: 'success',
-            showConfirmButton: true
-        });
-    @endif
-
-    @if(session()->has('success'))
-        Swal.fire({
-            title: 'Berhasil',
-            text: '{{ session('success') }}',
-            icon: 'success',
-            showConfirmButton: true
-        });
-    @endif
-
-    @if(session()->has('update'))
-        Swal.fire({
-            title: 'Berhasil',
-            text: 'Data berhasil diperbarui',
-            icon: 'success',
-            showConfirmButton: true
-        });
-    @endif
 });
 </script>
 @endsection

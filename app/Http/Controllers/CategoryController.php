@@ -35,14 +35,12 @@ public function store(Request $request)
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-public function show(Category $id)
-{
-    $category = Category::findOrFail($id);
+    public function show($id)
+    {
+        $category = Category::with('aset')->findOrFail($id);
+        return response()->json(['category' => $category]);
+    }
 
-    // Mengambil data peminjaman barang yang terkait dengan lokasi tersebut
-    $aset = $category->aset;
-    return view('categories.show', compact('category', 'aset'));
-}
 
 public function edit(Category $category)
 {
