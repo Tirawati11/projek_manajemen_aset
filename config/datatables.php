@@ -56,7 +56,7 @@ return [
         ],
         'dataTablesCss' => [
             'cdn' => true,
-            'url' => '//cdn.datatables.net/1.11.4/css/dataTables.bootstrap5.min.css',
+            'url' => '//cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css',
         ],
     ],
 

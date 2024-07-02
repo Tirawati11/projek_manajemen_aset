@@ -2,9 +2,9 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> 
+{{-- <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet"> --}}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <style>
     .input-group .form-control {
         border-radius: 50px;
@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped" id="table1">
+                        <table class="table table-striped" id="tables">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -77,7 +77,6 @@
     @include('lokasi.show', ['location' => $location])
     @include('lokasi.edit', ['location' => $location])
 @endforeach
-
 @endsection
 
 @section('scripts')
@@ -85,6 +84,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script>
     $(document).ready(function() {
+        $('#tables').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true
+        });
+
         $('#formTambah').on('submit', function(e) {
             e.preventDefault();
             var form = $(this);
@@ -115,56 +124,57 @@
         });
 
         $(document).on('click', '.delete-confirm', function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
+            e.preventDefault();
+            var form = $(this).closest('form');
 
-        Swal.fire({
-            title: 'Hapus',
-            text: "Anda yakin akan menghapus data ini?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus saja!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        Swal.fire({
-                            title: 'Berhasil',
-                            text: response.message,
-                            icon: 'success',
-                            showConfirmButton: true
-                        }).then((result) => {
-                            form.closest('tr').remove();
-                        });
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 422) {
+            Swal.fire({
+                title: 'Hapus',
+                text: "Anda yakin akan menghapus data ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus saja!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: form.attr('action'),
+                        method: 'POST',
+                        data: form.serialize(),
+                        success: function(response) {
                             Swal.fire({
-                                title: 'Error',
-                                text: xhr.responseJSON.error,
-                                icon: 'error',
+                                title: 'Berhasil',
+                                text: response.message,
+                                icon: 'success',
                                 showConfirmButton: true
+                            }).then((result) => {
+                                form.closest('tr').remove();
                             });
-                        } else {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'Terjadi kesalahan saat menghapus data.',
-                                icon: 'error',
-                                showConfirmButton: true
-                            });
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 422) {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: xhr.responseJSON.error,
+                                    icon: 'error',
+                                    showConfirmButton: true
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Terjadi kesalahan saat menghapus data.',
+                                    icon: 'error',
+                                    showConfirmButton: true
+                                });
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
-    });
-  // Tampilkan modal edit saat tombol edit diklik
+
+        // Tampilkan modal edit saat tombol edit diklik
         $(document).on('click', '.btn-edit', function() {
             var id = $(this).data('id');
             var name = $(this).data('name');

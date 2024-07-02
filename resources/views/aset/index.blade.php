@@ -2,6 +2,8 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h1 class="section-title"> Data Inventaris</h1>
@@ -16,7 +18,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-md" id="table1">
+                    <table class="table table-bordered table-md" id="tables">
                         <thead>
                             <tr>
                                 <th style="text-align: center; width:20px;">No</th>
@@ -75,6 +77,15 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+     $('#tables').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true
+        });
         $(document).on('click', '.delete-confirm', function(e) {
             e.preventDefault();
             var form = $(this).closest('form');

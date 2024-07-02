@@ -13,22 +13,32 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    // public function index(Request $request)
+    // {
+    // $search = $request->input('search');
+
+    // // Query data lokasi berdasarkan pencarian
+    // $query = Location::query();
+    // if ($search) {
+    //     $query->where('name', 'LIKE', "%$search%");
+    // }
+
+    // // Menggunakan paginate dengan 10 item per halaman
+    // $locations = $query->paginate(10);
+
+    // return view('lokasi.index', compact('locations', 'search'));
+    // }
+
+    public function index(){
+        $locations = Location::limit(100)->get();
+        return view('lokasi.index', compact('locations'));
+    }
+
+    // new datatables
+    public function json()
     {
-    $search = $request->input('search');
-
-    // Query data lokasi berdasarkan pencarian
-    $query = Location::query();
-    if ($search) {
-        $query->where('name', 'LIKE', "%$search%");
+      return Datatables::of(Location::limit(10))->make(true);
     }
-
-    // Menggunakan paginate dengan 10 item per halaman
-    $locations = $query->paginate(10);
-
-    return view('lokasi.index', compact('locations', 'search'));
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -41,16 +51,19 @@ class LocationController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|unique:locations,name',
-        ]);
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+    ]);
 
-        Location::create($validatedData);
+    $location = Location::create($validatedData);
 
-        return redirect()->route('lokasi.index')
-            ->with('success', 'Location created successfully.');
+    if ($request->ajax()) {
+        return response()->json(['data' => $location, 'message' => 'Lokasi berhasil disimpan!']);
     }
+
+    return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil disimpan!');
+}
 
     /**
      * Display the specified resource.

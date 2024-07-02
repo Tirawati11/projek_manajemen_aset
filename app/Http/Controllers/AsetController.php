@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\Datatables;
 
 
 class AsetController extends Controller
@@ -43,7 +44,7 @@ class AsetController extends Controller
         }
 
         // Dapatkan hasil paginasi
-        $asets = $query->latest()->paginate(5);
+        $asets = $query->latest()->paginate(2);
 
         // Sertakan query pencarian dalam hasil pagination
         $asets->appends(['search' => $search, 'date_search' => $dateSearch]);
@@ -52,6 +53,11 @@ class AsetController extends Controller
         $categories = Category::all();
 
         return view('aset.index', compact('asets', 'search', 'categories', 'dateSearch'));
+    }
+
+    public function json()
+    {
+      return Datatables::of(Aset::limit(10))->make(true);
     }
 
     /**
