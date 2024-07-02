@@ -11,18 +11,18 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index()
-{
-    $categories = Category::paginate(10);
-    return view('categories.index', compact('categories'));
-}
+        public function index()
+    {
+        $categories = Category::paginate(10);
+        return view('categories.index', compact('categories'));
+    }
 
-public function create()
-{
-    return view('categories.create');
-}
+    public function create()
+    {
+        return view('categories.create');
+    }
 
-public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nama_kategori' => 'required|string|max:255',
@@ -35,27 +35,30 @@ public function store(Request $request)
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-public function show(Category $category)
-{
-    return view('categories.show', compact('category'));
-}
+    public function show($id)
+    {
+        $category = Category::findOrFail($id);
+        $asets = $category->aset; // Pastikan relasi 'assets' sudah didefinisikan di model Category
 
-public function edit(Category $category)
-{
-    return view('categories.edit', compact('category'));
-}
+        return view('categories.show', compact('category', 'asets'));
+    }
+    
+    public function edit(Category $category)
+    {
+        return view('categories.edit', compact('category'));
+    }
 
-public function update(Request $request, Category $category)
-{
-    $request->validate([
-        'nama_kategori' => 'required|string|max:255',
-    ]);
+    public function update(Request $request, Category $category)
+    {
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+        ]);
 
-    $category->name = $request->nama_kategori;
-    $category->save();
+        $category->name = $request->nama_kategori;
+        $category->save();
 
-    return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
-}
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
+    }
 
     public function destroy($id)
     {

@@ -13,6 +13,6 @@ class Category extends Model
 
     public function aset()
     {
-        return $this->hasMany(Aset::class);
+        return $this->hasMany(Aset::class, 'category_id');
     }
 }

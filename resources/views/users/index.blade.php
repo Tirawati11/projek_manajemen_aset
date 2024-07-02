@@ -13,11 +13,12 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
                 <div class="card-header-action">
-                    <button class="btn btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
+                    <button class="btn btn-sm btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
                     </button>
-                    <button class="btn btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
+                    <button class="btn btn-sm btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
                         <i class="fa-solid fa-file-import"></i> Import
                     </button>
                 </div>
@@ -122,8 +123,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
@@ -158,8 +159,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                 </div>
             </form>
         </div>
@@ -185,8 +186,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Import</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Import</button>
                 </div>
             </form>
         </div>
@@ -225,11 +226,11 @@
             text: "Data yang dihapus tidak dapat dikembalikan!",
             icon: 'warning',
             showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();

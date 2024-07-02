@@ -12,7 +12,7 @@
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
+                <a href="#" class="btn btn-sm btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
                 <div class="table-responsive">
                     <table class="table table-bordered table-md">
                         <thead>
@@ -28,7 +28,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $category->name }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Show">
+                                        <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-dark btn-show" title="Show">
                                             <i class="far fa-eye"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Edit">
@@ -59,7 +59,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modal Tambah Kategori -->
 <div class="modal fade" id="modal-tambah-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-tambah-kategori-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -77,12 +76,16 @@
                         <label for="nama_kategori">Nama Kategori</label>
                         <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
 
 <!-- Modal Edit Kategori -->
 <div class="modal fade" id="modal-edit-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-edit-kategori-title" aria-hidden="true">
@@ -102,38 +105,16 @@
                         <label for="edit_nama_kategori">Nama Kategori</label>
                         <input type="text" class="form-control" id="edit_nama_kategori" name="nama_kategori" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-{{-- Modal Show Kategori --}}
-<div class="modal fade" id="modal-show-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-show-kategori-title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-show-kategori-title">Detail Kategori</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="show_nama_kategori">Nama Kategori</label>
-                    <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="show_aset_kategori">Data Aset</label>
-                    <ul id="aset-list" class="list-group">
-                        <!-- Data aset akan dimuat di sini -->
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- SweetAlert CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
@@ -159,13 +140,6 @@
             $('#modal-edit-kategori').modal('show');
         });
 
-        $('.btn-show').click(function(e) {
-            e.preventDefault();
-            var name = $(this).data('name');
-            $('#show_nama_kategori').val(name);
-            $('#modal-show-kategori').modal('show');
-        });
-
         $('.btn-delete').click(function(e) {
             e.preventDefault();
             var form = $(this).closest('form');
@@ -177,7 +151,9 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!'
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();
