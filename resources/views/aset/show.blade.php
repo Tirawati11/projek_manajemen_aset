@@ -17,6 +17,7 @@
                     <p>Merek: {{ $aset->merek }}</p>
                     <p>Kategori: {{ $aset->category->name }}</p>
                     <p>Jumlah: {{ $aset->jumlah}}</p>
+                    <p>Harga: Rp {{ $aset->harga}}</p>
                     <p>Tanggal masuk: {{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</p>
                     <p>Keterangan: {{ $aset->deskripsi }}</p>
                     <p>kondisi: {{ $aset->kondisi }}</p>

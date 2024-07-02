@@ -127,52 +127,56 @@
             e.preventDefault();
             var form = $(this).closest('form');
 
-            Swal.fire({
-                title: 'Hapus',
-                text: "Anda yakin akan menghapus data ini?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus saja!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: form.attr('action'),
-                        method: 'POST',
-                        data: form.serialize(),
-                        success: function(response) {
+             Swal.fire({
+            title: 'Hapus',
+            text: "Anda yakin akan menghapus data ini?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus saja!',
+            cancelButtonText: 'Batal',
+            customClass: {
+                confirmButton: 'btn btn-primary  mr-2', // Adjust margin-left to separate buttons
+                cancelButton: 'btn btn-secondary' // Adjust margin-right to separate buttons
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: form.attr('action'),
+                    method: 'POST',
+                    data: form.serialize(),
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: response.message,
+                            icon: 'success',
+                            showConfirmButton: true
+                        }).then((result) => {
+                            form.closest('tr').remove();
+                        });
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
                             Swal.fire({
-                                title: 'Berhasil',
-                                text: response.message,
-                                icon: 'success',
+                                title: 'Error',
+                                text: xhr.responseJSON.error,
+                                icon: 'error',
                                 showConfirmButton: true
-                            }).then((result) => {
-                                form.closest('tr').remove();
                             });
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 422) {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: xhr.responseJSON.error,
-                                    icon: 'error',
-                                    showConfirmButton: true
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: 'Terjadi kesalahan saat menghapus data.',
-                                    icon: 'error',
-                                    showConfirmButton: true
-                                });
-                            }
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Terjadi kesalahan saat menghapus data.',
+                                icon: 'error',
+                                showConfirmButton: true
+                            });
                         }
-                    });
-                }
-            });
+                    }
+                });
+            }
         });
+    });
 
         // Tampilkan modal edit saat tombol edit diklik
         $(document).on('click', '.btn-edit', function() {

@@ -65,8 +65,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pengajuan/{id}/approve', [PengajuanBarangController::class, 'approve'])->name('pengajuan.approve')->middleware('jabatan:admin');
     Route::post('/pengajuan/{id}/reject', [PengajuanBarangController::class, 'reject'])->name('pengajuan.reject')->middleware('jabatan:admin');
     Route::post('/pengajuan/bulk-delete', [PengajuanBarangController::class, 'bulkDelete'])->name('pengajuan.bulk-delete')->middleware('jabatan:admin');
-    Route::post('/pengajuan/bulk-approve', [PengajuanBarangController::class, 'bulkApprove'])->name('pengajuan.bulk-approve');
-    Route::post('/pengajuan/bulk-reject', [PengajuanBarangController::class, 'bulkReject'])->name('pengajuan.bulk-reject');
+    Route::post('/pengajuan/bulk-approve', [PengajuanBarangController::class, 'bulkApprove'])->name('pengajuan.bulk-approve')->middleware('jabatan:admin');
+    Route::post('/pengajuan/bulk-reject', [PengajuanBarangController::class, 'bulkReject'])->name('pengajuan.bulk-reject')->middleware('jabatan:admin');
     // Route Peminjaman Barang
     Route::resource('peminjaman', PeminjamanBarangController::class);
     Route::resource('users', UserController::class);

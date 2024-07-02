@@ -85,6 +85,7 @@ class AsetController extends Controller
             'tanggal_masuk' => 'required|date',
             'kondisi' => 'required',
             'category_id' => 'required|exists:categories,id',
+            'harga' => 'required|numeric',
         ]);
 
         // Upload image
@@ -101,6 +102,7 @@ class AsetController extends Controller
         $aset->merek = $request->merek;
         $aset->tanggal_masuk = $request->tanggal_masuk; // Assign langsung dari request
         $aset->kondisi = $request->kondisi;
+        $aset->harga = $request->harga;
         $aset->category_id = $request->category_id;
         $aset->save();
 
@@ -140,6 +142,7 @@ class AsetController extends Controller
             'merek' => 'required',
             'tanggal_masuk' => 'required|date',
             'kondisi' => 'required',
+            'harga' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
         ]);
 
@@ -169,6 +172,7 @@ class AsetController extends Controller
         $aset->tanggal_masuk = $validated['tanggal_masuk'];
         $aset->kondisi = $validated['kondisi'];
         $aset->category_id = $validated['category_id'];
+        $aset->harga = $validated['harga'];
         $aset->save();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil diperbarui.');

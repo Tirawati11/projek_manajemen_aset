@@ -2,7 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> --}}
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -25,9 +25,10 @@
                                 <th style="text-align: center;">Kode</th>
                                 <th style="text-align: center;">Gambar</th>
                                 <th style="text-align: center;">Nama Barang</th>
+                                <th style="text-align: center;">Harga</th>
                                 <th style="text-align: center;">Merek</th>
                                 <th style="text-align: center;">Tanggal Masuk</th>
-                                <th style="text-align: center;">Jumlah</th>
+                                {{-- <th style="text-align: center;">Jumlah</th> --}}
                                 <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
@@ -40,20 +41,21 @@
                                     <img src="{{ asset('/storage/aset/'.$aset->gambar) }}" class="rounded" style="width: 150px">
                                 </td>
                                 <td>{{ $aset->nama_barang }}</td>
+                                <td> Rp.{{ $aset->harga }}</td>
                                 <td>{{ $aset->merek }}</td>
                                 <td>{{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</td>
-                                <td>{{ $aset->jumlah }}</td>
+                                {{-- <td>{{ $aset->jumlah }}</td> --}}
                                 <td>
-                                    <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark" title="LIHAT">
+                                    <a href="{{ route('aset.show', $aset->id) }}" class="btn btn-sm btn-dark" title="Show">
                                         <i class="far fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary" title=" EDIT">
+                                    <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary" title=" Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form id="delete-form-{{ $aset->id }}" action="{{ route('aset.destroy', $aset->id) }}" method="POST" class="d-inline delete-form">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger delete-confirm" title=" HAPUS">
+                                        <button type="submit" class="btn btn-sm btn-danger delete-confirm" title=" Hapus">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
@@ -101,7 +103,38 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    $.ajax({
+                        url: '/lokasi/' + id,
+                        type: 'POST',
+                        data: {
+                            '_method': 'DELETE',
+                            '_token': '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            if(response.success) {
+                                Swal.fire(
+                                    'Dihapus!',
+                                    response.message,
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    response.message,
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat menghapus kategori.',
+                                'error'
+                            );
+                        }
+                    });
                 }
             });
         });

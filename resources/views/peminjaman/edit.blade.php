@@ -52,36 +52,35 @@
                             <label class="font-weight-bold">Jumlah</label>
                             <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" step="1" oninput="this.value = Math.abs(this.value)" value="{{ old('jumlah', $peminjaman->jumlah) }}" required>
                         </div>
-                        <div class="form-group d-flex align-items-center mr-3">
-                            <div class="mr-3">
-                                <label class="font-weight-bold">Tanggal Peminjaman</label>
-                                <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman', $peminjaman->tanggal_peminjaman) }}" placeholder="Masukkan tanggal peminjaman">
-                                @error('tanggal_peminjaman')
-                                    <div class="alert alert-danger mt-2">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Tanggal Peminjaman</label>
+                                    <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman', $peminjaman->tanggal_peminjaman) }}" placeholder="Masukkan tanggal peminjaman">
+                                    @error('tanggal_peminjaman')
+                                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
-                            <div>
-                                <label class="font-weight-bold">Tanggal Pengembalian</label>
-                                <input type="date" class="form-control @error('tanggal_pengembalian') is-invalid @enderror" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian', $peminjaman->tanggal_pengembalian) }}" placeholder="Masukkan tanggal pengembalian">
-                                @error('tanggal_pengembalian')
-                                    <div class="alert alert-danger mt-2">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Tanggal Pengembalian</label>
+                                    <input type="date" class="form-control @error('tanggal_pengembalian') is-invalid @enderror" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian', $peminjaman->tanggal_pengembalian) }}" placeholder="Masukkan tanggal pengembalian">
+                                    @error('tanggal_pengembalian')
+                                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label class="font-weight-bold">Status</label>
                             <select class="form-control @error('status') is-invalid @enderror" name="status">
-                                <option value="dipinjam" {{ old('status', $peminjaman->status) == 'dipinjam' ? 'selected' : '' }}>Dipinjam</option>
-                                <option value="kembali" {{ old('status', $peminjaman->status) == 'kembali' ? 'selected' : '' }}>Kembali</option>
+                                <option value="dipinjam" {{ old('status') == 'dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                                <option value="kembali" {{ old('status') == 'kembali' ? 'selected' : '' }}>Kembali</option>
                             </select>
                             @error('status')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
-                                </div>
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <button type="submit" class="btn btn-sm btn-primary">Simpan</button>

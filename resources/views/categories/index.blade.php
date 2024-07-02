@@ -113,28 +113,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori">
-                <ul id="aset_list"> </p>
-                    <ul>
-                    @forelse ($category->aset as $item)
-                        <li>
-                            <strong>Nama Barang:</strong> {{ $item->nama_barang }}
-                            <br>
-                            <strong>Jumlah:</strong> {{ $item->jumlah }}
-                        </li>
-                    @empty
-                        <li>Tidak ada data peminjaman barang di lokasi ini.</li>
-                    @endforelse
-                </ul>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {{-- <div class="modal-body">
                 <div class="form-group">
                     <label for="show_nama_kategori">Nama Kategori</label>
                     <input type="text" class="form-control" id="show_nama_kategori" name="nama_kategori" readonly>
-                </div> --}}
+                </div>
+                <ul id="aset_list"></ul>
             </div>
         </div>
     </div>
@@ -164,9 +147,18 @@
         });
 
         $('.btn-show').click(function() {
+            var id = $(this).data('id');
             var name = $(this).data('name');
             $('#show_nama_kategori').val(name);
-            $('#modal-show-kategori').modal('show');
+
+            $.ajax({
+                url: '/categories/' + id + '/assets',
+                method: 'GET',
+                success: function(data) {
+                    $('#aset_list').html(data);
+                    $('#modal-show-kategori').modal('show');
+                }
+            });
         });
 
         $('.btn-delete').click(function() {
@@ -216,23 +208,24 @@
                 }
             });
         });
-    });
-    @if (session('success'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: '{{ session('success') }}',
-                icon: 'success',
-                showConfirmButton: true
-            });
+
+        @if (session('success'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            showConfirmButton: true
+        });
         @endif
 
         @if (session('update'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: 'Data berhasil diperbarui',
-                icon: 'success',
-                showConfirmButton: true
-            });
+        Swal.fire({
+            title: 'Berhasil',
+            text: 'Data berhasil diperbarui',
+            icon: 'success',
+            showConfirmButton: true
+        });
         @endif
+    });
 </script>
 @endsection

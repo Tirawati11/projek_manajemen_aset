@@ -10,7 +10,7 @@ use App\Models\Barang;
 
 class Aset extends Model
 {
-    protected $fillable = ['gambar', 'kode', 'nama_barang', 'merek', 'jumlah', 'status', 'tanggal_masuk', 'deskripsi', 'lokasi', 'kondisi', 'category_id'];
+    protected $fillable = ['gambar', 'kode', 'nama_barang', 'merek', 'jumlah', 'status', 'tanggal_masuk', 'deskripsi', 'lokasi', 'kondisi', 'category_id', 'harga'];
 
     public function category()
     {

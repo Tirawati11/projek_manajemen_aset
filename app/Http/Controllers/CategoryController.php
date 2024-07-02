@@ -6,16 +6,17 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\Aset;
 
 
 
 class CategoryController extends Controller
 {
     public function index()
-{
-    $categories = Category::paginate(10);
-    return view('categories.index', compact('categories'));
-}
+    {
+        $categories = Category::with('aset')->paginate(10);
+        return view('categories.index', compact('categories'));
+    }
 
 public function create()
 {
@@ -37,8 +38,8 @@ public function store(Request $request)
 
     public function show($id)
     {
-        $category = Category::with('aset')->findOrFail($id);
-        return response()->json(['category' => $category]);
+        $categories = Category::with('aset')->findOrFail($id);
+        return response()->json(['category' => $categories]);
     }
 
 

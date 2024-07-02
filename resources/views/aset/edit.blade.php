@@ -47,6 +47,13 @@
                                     @enderror
                                 </div>
                                 <div class="form-group">
+                                    <label class="font-weight-bold">HARGA</label>
+                                    <input type="number" class="form-control @error('harga') is-invalid @enderror" name="harga" value="{{ old('harga', $aset->harga) }}" placeholder="Masukkan harga barang" step="0.01" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                    @error('harga')
+                                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
                                     <label class="font-weight-bold">KATEGORI</label>
                                     <select class="form-control @error('category_id') is-invalid @enderror" name="category_id">
                                         <option value=""></option>

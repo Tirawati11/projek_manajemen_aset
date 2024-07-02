@@ -48,6 +48,13 @@
                             @enderror
                         </div>
                         <div class="form-group">
+                            <label class="font-weight-bold">HARGA</label>
+                            <input type="number" class="form-control @error('harga') is-invalid @enderror" name="harga" value="{{ old('harga') }}" placeholder="Masukkan harga barang" step="0.01" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                            @error('harga')
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label class="font-weight-bold">MEREK</label>
                             <input type="text" class="form-control @error('merek') is-invalid @enderror" name="merek" value="{{ old('merek') }}" placeholder="Masukkan merek">
                             @error('merek')

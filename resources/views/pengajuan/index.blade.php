@@ -371,5 +371,24 @@ $(document).ready(function() {
         }
     });
 });
+// SweetAlert2 untuk menampilkan pesan berhasil setelah menyimpan
+@if (session('success'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            showConfirmButton: true
+        });
+    @endif
+
+    // SweetAlert2 untuk menampilkan pesan berhasil setelah memperbarui
+    @if (session('update'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: 'Tag berhasil diperbarui',
+            icon: 'success',
+            showConfirmButton: true
+        });
+    @endif
 </script>
 @endsection
