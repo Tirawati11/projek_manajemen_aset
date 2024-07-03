@@ -5,7 +5,7 @@
 
 <section class="section">
     <div class="section-header">
-        <h1>Data User</h1>
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data User</h1>
     </div>
 </section>
 
@@ -19,19 +19,19 @@
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
                     </button>
                     <button class="btn btn-sm btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
-                        <i class="fa-solid fa-file-import"></i> Import
+                        <i class="fa-solid fa-file-import"></i> Import File
                     </button>
                 </div>
                 <div class="card-body">
                     <table class="table table-bordered table-md">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Nama User</th>
-                                <th>Email</th>
-                                <th>Jabatan</th>
-                                <th>Approved</th>
-                                <th>Aksi</th>
+                                <th style="text-align: center;">No</th>
+                                <th style="text-align: center;">Nama User</th>
+                                <th style="text-align: center;">Email</th>
+                                <th style="text-align: center;">Jabatan</th>
+                                <th style="text-align: center;">Approved</th>
+                                <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,7 +123,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                 </div>
             </form>
@@ -159,7 +159,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                 </div>
             </form>
@@ -186,7 +186,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-sm btn-primary">Import</button>
                 </div>
             </form>
@@ -200,45 +200,50 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        // Event handler untuk tombol edit
-        $('.btn-edit').click(function(e) {
-            e.preventDefault();
+    $(document).ready(function () {
+        // Tambah User
+        $('#modal-tambah-user').on('shown.bs.modal', function () {
+            $('#nama_user').focus();
+        });
+
+        // Edit User
+        $('.btn-edit').click(function () {
             var id = $(this).data('id');
             var name = $(this).data('name');
             var email = $(this).data('email');
             var jabatan = $(this).data('jabatan');
+
             $('#edit_nama_user').val(name);
             $('#edit_email_user').val(email);
             $('#edit_jabatan_user').val(jabatan);
             $('#form-edit-user').attr('action', '/users/' + id);
+
             $('#modal-edit-user').modal('show');
         });
 
-        $(document).ready(function() {
-    // Event handler for delete button
-    $('.btn-delete').click(function(e) {
-        e.preventDefault();
-        var form = $(this).closest('form');
-        var id = $(this).closest('form').data('id');
-        Swal.fire({
-            title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!',
-            cancelButtonText: 'Batal',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+        // Delete User
+    $(document).ready(function() {
+        $('.btn-delete').click(function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
+            var id = $(this).closest('form').data('id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
-});
-
 
         // Event handler untuk tombol approve
         $('.btn-approve').click(function(e) {
@@ -261,6 +266,25 @@
             });
         });
 
+       // Handling for successful or failed operations
+       @if(session('success'))
+            Swal.fire({
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        @endif
+    });
         // // Event handler untuk tombol reject
         // $('.btn-reject').click(function(e) {
         //     e.preventDefault();
@@ -279,6 +303,5 @@
         //         }
         //     });
         // });
-    });
 </script>
 @endsection

@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
 <div class="section-header">
-    <h1>Data Kategori</h1>
+    <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Kategori</h1>
 </div>
 </section>
 <div class="container mt-5 mb-5">
@@ -17,9 +17,9 @@
                     <table class="table table-bordered table-md">
                         <thead>
                             <tr>
-                                <th class="col-no">No</th>
-                                <th class="col-name">Kategori</th>
-                                <th class="col-action">Aksi</th>
+                                <th>No</th>
+                                <th>Kategori</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                 </div>
             </form>
@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
                 </div>
             </form>
@@ -160,6 +160,25 @@
                 }
             });
         });
+
+
+        @if(session('success'))
+            Swal.fire({
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        @endif
     });
 </script>
 @endsection

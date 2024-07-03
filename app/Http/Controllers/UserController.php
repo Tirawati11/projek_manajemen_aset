@@ -80,7 +80,7 @@ class UserController extends Controller
     {
         User::destroy($id);
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('users.index')->with('success', 'User berhasil Dihapus.');
     }
 
     public function approve($id) {
@@ -89,7 +89,7 @@ class UserController extends Controller
         // $user->rejected = false; // Reset rejected status
         $user->save();
 
-        return redirect()->route('users.index')->with('success', 'User approved successfully.');
+        return redirect()->route('users.index')->with('success', 'User berhasil disetujui.');
     }
 
     // public function reject($id)
@@ -111,6 +111,6 @@ class UserController extends Controller
 
         \Log::info('Import selesai.');
 
-        return redirect()->back()->with('success', 'Data user berhasil diimport.');
+        return redirect()->back()->with('success', 'File berhasil diimport.');
     }
 }

@@ -16,10 +16,10 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Barang</th>
-                                    <th>Jumlah</th>
-                                    <th>Kondisi</th>
+                                    <th style="text-align: center;">No</th>
+                                    <th style="text-align: center;">Nama Barang</th>
+                                    <th style="text-align: center;">Jumlah</th>
+                                    <th style="text-align: center;">Kondisi</th>
                                 </tr>
                             </thead>
                             <tbody>
