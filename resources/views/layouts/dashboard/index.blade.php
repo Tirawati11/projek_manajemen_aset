@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">
-                        <h4>Total Aset</h4>
+                        <h4>Total Inventaris</h4>
                     </div>
                     <div class="card-body">
                         <h5>{{ $totalAsets }}</h5>
