@@ -109,9 +109,9 @@
                                                             <form id="delete-form-{{ $item->id }}" action="{{ route('pengajuan.destroy', $item->id) }}" method="POST" class="dropdown-item">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="delete-confirm" style="cursor:pointer;">
+                                                                <a href="" class="delete-confirm" style="color:black;">
                                                                     <i class="fas fa-trash-alt"></i> Hapus
-                                                                </button>
+                                                                </a>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -169,61 +169,75 @@ $(document).ready(function() {
             $('#btn-delete-selected, #btn-approve-selected, #btn-reject-selected').hide();
         }
     }
+    $(document).ready(function() {
+        $('.delete-confirm').click(function(e) {
+            e.preventDefault();
+            var form = $(this).closest('form');
+            var id = $(this).closest('form').data('id');
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
 
     // Menghapus terpilih
     $('#btn-delete-selected').click(function() {
-        var selectedItems = [];
+    var selectedItems = [];
+    $('.checkbox-input:checked').each(function() {
+        selectedItems.push($(this).val());
+    });
 
-        $('.checkbox-input:checked').each(function() {
-            selectedItems.push($(this).val());
+    if (selectedItems.length === 0) {
+        Swal.fire({
+            title: 'Pilih Setidaknya Satu Item',
+            text: 'Anda harus memilih setidaknya satu item untuk dihapus.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
         });
-
-        if (selectedItems.length === 0) {
-            Swal.fire({
-                title: 'Pilih Setidaknya Satu Item',
-                text: 'Anda harus memilih setidaknya satu item untuk dihapus.',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-        } else {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Anda tidak akan dapat mengembalikan tindakan ini',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ route('pengajuan.bulk-delete') }}',
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            ids: selectedItems
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: 'Item terpilih telah dihapus.',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Gagal!',
-                                    text: 'Terjadi kesalahan saat menghapus item terpilih.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
+    } else {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: 'Anda tidak akan dapat mengembalikan tindakan ini',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route('pengajuan.bulk-delete') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        ids: selectedItems
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Item terpilih telah dihapus.',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
                             Swal.fire({
                                 title: 'Gagal!',
                                 text: 'Terjadi kesalahan saat menghapus item terpilih.',
@@ -231,66 +245,68 @@ $(document).ready(function() {
                                 confirmButtonText: 'OK'
                             });
                         }
-                    });
-                }
-            });
-        }
-    });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat menghapus item terpilih.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
 
     // Approve terpilih
     $('#btn-approve-selected').click(function() {
-        var selectedItems = [];
+    var selectedItems = [];
 
-        $('.checkbox-input:checked').each(function() {
-            selectedItems.push($(this).val());
+    $('.checkbox-input:checked').each(function() {
+        selectedItems.push($(this).val());
+    });
+
+    if (selectedItems.length === 0) {
+        Swal.fire({
+            title: 'Pilih Setidaknya Satu Item',
+            text: 'Anda harus memilih setidaknya satu item untuk diapprove.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
         });
-
-        if (selectedItems.length === 0) {
-            Swal.fire({
-                title: 'Pilih Setidaknya Satu Item',
-                text: 'Anda harus memilih setidaknya satu item untuk diapprove.',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-        } else {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: 'Anda tidak akan dapat mengembalikan tindakan ini',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, approve!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ route('pengajuan.bulk-approve') }}',
-                        type: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            ids: selectedItems
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: 'Item terpilih telah diapprove.',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                }).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    title: 'Gagal!',
-                                    text: 'Terjadi kesalahan saat melakukan approve item terpilih.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
+    } else {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: 'Anda tidak akan dapat mengembalikan tindakan ini',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, approve!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route('pengajuan.bulk-approve') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        ids: selectedItems
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Item terpilih telah diapprove.',
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
                             Swal.fire({
                                 title: 'Gagal!',
                                 text: 'Terjadi kesalahan saat melakukan approve item terpilih.',
@@ -298,16 +314,24 @@ $(document).ready(function() {
                                 confirmButtonText: 'OK'
                             });
                         }
-                    });
-                }
-            });
-        }
-    });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan saat melakukan approve item terpilih.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
 
     // Reject terpilih
     $('#btn-reject-selected').click(function() {
         var selectedItems = [];
-
         $('.checkbox-input:checked').each(function() {
             selectedItems.push($(this).val());
         });
@@ -325,9 +349,11 @@ $(document).ready(function() {
                 text: 'Anda tidak akan dapat mengembalikan tindakan ini',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dc3545',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, reject!'
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya, reject!',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
@@ -371,6 +397,45 @@ $(document).ready(function() {
         }
     });
 });
+$(document).on('click', '.approvalButton', function(e) {
+        e.preventDefault();
+        var pengajuanId = $(this).data('pengajuanid');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan menyetujui pengajuan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, setujui!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#approvalForm' + pengajuanId).submit();
+            }
+        });
+    });
+
+    $(document).on('click', '.rejectButton', function(e) {
+        e.preventDefault();
+        var pengajuanId = $(this).data('pengajuanid');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda akan menolak pengajuan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, tolak!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#rejectForm' + pengajuanId).submit();
+            }
+        });
+    });
 // SweetAlert2 untuk menampilkan pesan berhasil setelah menyimpan
 @if (session('success'))
         Swal.fire({

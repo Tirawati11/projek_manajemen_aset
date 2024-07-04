@@ -92,6 +92,7 @@ Route::middleware(['auth'])->group(function () {
 
         // Route Lokasi
         Route::resource('lokasi', LocationController::class);
+        
 
         // Route Aset
         Route::resource('aset', AsetController::class);

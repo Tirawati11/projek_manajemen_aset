@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class LocationFactory extends Factory
 {
@@ -22,8 +23,7 @@ class LocationFactory extends Factory
     public function definition()
     {
         return [
-           'name' => $this->faker->unique()->sentence(), // Menggunakan unique() untuk memastikan nama ruangan unik
-            // Tambahkan field lainnya sesuai kebutuhan
-        ];
+           'name' => $this->faker->unique()->city(), // Menggunakan unique() untuk memastikan nama ruangan unik
+            ];
     }
 }

@@ -13,6 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \Database\Factories\LocationFactory::new()->count(5000)->create(); // Panggil factory dengan menggunakan Factory facade
+        \Database\Factories\LocationFactory::new()->count(500)->create(); // Panggil factory dengan menggunakan Factory facade
     }
 }

@@ -13,43 +13,40 @@ class LocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    // public function index(Request $request)
-    // {
-    // $search = $request->input('search');
+    public function index(Request $request)
+{
+    if ($request->ajax()) {
+        $locations = Location::select(['id', 'name']);
 
-    // // Query data lokasi berdasarkan pencarian
-    // $query = Location::query();
-    // if ($search) {
-    //     $query->where('name', 'LIKE', "%$search%");
-    // }
-
-    // // Menggunakan paginate dengan 10 item per halaman
-    // $locations = $query->paginate(10);
-
-    // return view('lokasi.index', compact('locations', 'search'));
-    // }
-
-    public function index(){
-        $locations = Location::limit(100)->get();
-        return view('lokasi.index', compact('locations'));
+        return DataTables::of($locations)
+            ->addColumn('DT_RowIndex', function ($row) {
+                return $row->id; // Nomor urutan bisa menggunakan ID atau menggunakan iterator DataTables
+            })
+            ->addColumn('action', function ($row) {
+                $btn = '<button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modalShow' . $row->id . '" title="Show"> <i class="far fa-eye"></i></button>';
+                $btn .= '<button type="button" class="btn btn-sm btn-primary btn-edit" data-id="' . $row->id . '" data-name="' . $row->name . '" title="Edit"> <i class="fas fa-edit"></i></button>';
+                $btn .= '<button type="button" class="btn btn-sm btn-danger delete-confirm" data-id="' . $row->id . '" title="Hapus"><i class="fas fa-trash-alt"></i></button>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
-    // new datatables
-    public function json()
-    {
-      return Datatables::of(Location::limit(10))->make(true);
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
+    $locations = Location::all(); // Fetch all locations for modals
+    return view('lokasi.index', compact('locations'));
+}
+
+//     /**
+//      * Show the form for creating a new resource.
+//      */
     public function create()
     {
         return view('lokasi.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+//     /**
+//      * Store a newly created resource in storage.
+//      */
     public function store(Request $request)
 {
     $validatedData = $request->validate([
@@ -68,11 +65,7 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-    // public function show(Location $location)
-    // {
-    //     return view('lokasi.show', compact('location'));
-    // }
-    public function show($id)
+      public function show($id)
 {
     // Mengambil data lokasi berdasarkan ID
     $location = Location::findOrFail($id);

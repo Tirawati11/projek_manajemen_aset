@@ -2,7 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-{{-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> --}}
+<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -41,7 +41,7 @@
                                     <img src="{{ asset('/storage/aset/'.$aset->gambar) }}" class="rounded" style="width: 150px">
                                 </td>
                                 <td>{{ $aset->nama_barang }}</td>
-                                <td> Rp.{{ $aset->harga }}</td>
+                                <td>Rp. {{ number_format($aset->harga, 2, ',', '.') }}</td>
                                 <td>{{ $aset->merek }}</td>
                                 <td>{{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</td>
                                 {{-- <td>{{ $aset->jumlah }}</td> --}}
@@ -79,92 +79,64 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-     $('#tables').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true
-        });
-        $(document).on('click', '.delete-confirm', function(e) {
-            e.preventDefault();
-            var form = $(this).closest('form');
+    $('#tables').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true
+    });
 
+    $(document).on('click', '.delete-confirm', function(e) {
+        e.preventDefault();
+        e.preventDefault();
+            var form = $(this).closest('form');
+            var id = $(this).closest('form').data('id');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Anda tidak dapat mengembalikan ini!",
+                text: "Data yang dihapus tidak dapat dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
+                cancelButtonText: 'Batal',
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: '/lokasi/' + id,
-                        type: 'POST',
-                        data: {
-                            '_method': 'DELETE',
-                            '_token': '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            if(response.success) {
-                                Swal.fire(
-                                    'Dihapus!',
-                                    response.message,
-                                    'success'
-                                ).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire(
-                                    'Gagal!',
-                                    response.message,
-                                    'error'
-                                );
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire(
-                                'Gagal!',
-                                'Terjadi kesalahan saat menghapus kategori.',
-                                'error'
-                            );
-                        }
-                    });
+                    form.submit();
                 }
             });
         });
 
-        // Display success messages based on session status
-        @if (session('delete'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: '{{ session('delete') }}',
-                icon: 'success',
-                showConfirmButton: true
-            });
-        @endif
+    // Display success messages based on session status
+    @if (session('delete'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: '{{ session('delete') }}',
+            icon: 'success',
+            showConfirmButton: true
+        });
+    @endif
 
-        @if (session('success'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: '{{ session('success') }}',
-                icon: 'success',
-                showConfirmButton: true
-            });
-        @endif
+    @if (session('success'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            showConfirmButton: true
+        });
+    @endif
 
-        @if (session('update'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: 'Data berhasil diperbarui',
-                icon: 'success',
-                showConfirmButton: true
-            });
-        @endif
+    @if (session('update'))
+        Swal.fire({
+            title: 'Berhasil',
+            text: 'Data berhasil diperbarui',
+            icon: 'success',
+            showConfirmButton: true
+        });
+    @endif
 </script>
 @endsection
