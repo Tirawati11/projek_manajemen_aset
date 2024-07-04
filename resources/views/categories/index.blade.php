@@ -2,31 +2,37 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
 <section class="section">
-<div class="section-header">
-    <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Kategori</h1>
-</div>
+    <div class="section-header">
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Kategori</h1>
+    </div>
 </section>
+
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
+                <div class="card-header-action">
                 <a href="#" class="btn btn-sm btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-md">
-                        <thead>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-1">
+                            <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Kategori</th>
-                                <th>Aksi</th>
+                                <th style="text-align: center;">No</th>
+                                <th style="text-align: center;">Kategori</th>
+                                <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($categories as $category)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $category->name }}</td>
+                                    <td style="text-align: center;">{{ $loop->iteration }}</td>
+                                    <td style="text-align: center;">{{ $category->name }}</td>
                                     <td>
                                         <a href="{{ route('categories.show', $category->id) }}" class="btn btn-sm btn-dark btn-show" title="Show">
                                             <i class="far fa-eye"></i>
@@ -55,6 +61,7 @@
         </div>
     </div>
 </div>
+
 <!-- Modal Tambah Kategori -->
 <div class="modal fade" id="modal-tambah-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-tambah-kategori-title" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -110,18 +117,22 @@
         </div>
     </div>
 </div>
+@endsection
 
-
-<!-- SweetAlert CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
-<!-- SweetAlert JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@section('scripts')
 <!-- jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
+    //  $(document).ready(function () {
+    //     $('#table-1').DataTable();
+    // });
     $(document).ready(function() {
         $('#btn-tambah-kategori').click(function() {
             $('#modal-tambah-kategori').modal('show');

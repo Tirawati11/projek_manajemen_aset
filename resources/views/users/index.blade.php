@@ -2,6 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
 <section class="section">
     <div class="section-header">
@@ -23,8 +24,9 @@
                     </button>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-md">
-                        <thead>
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="table-1">
+                            <thead>
                             <tr>
                                 <th style="text-align: center;">No</th>
                                 <th style="text-align: center;">Nama User</th>
@@ -196,28 +198,36 @@
 @endsection
 
 @section('scripts')
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <!-- SweetAlert JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 
 <script>
+     $(document).ready(function () {
+        $('#table-1').DataTable(); // Menginisialisasi DataTables
+    });
     $(document).ready(function () {
         // Tambah User
         $('#modal-tambah-user').on('shown.bs.modal', function () {
             $('#nama_user').focus();
         });
 
-        // Edit User
-        $('.btn-edit').click(function () {
+        // Event handler untuk tombol edit
+        $('.btn-edit').click(function(e) {
+            e.preventDefault();
             var id = $(this).data('id');
             var name = $(this).data('name');
             var email = $(this).data('email');
             var jabatan = $(this).data('jabatan');
-
             $('#edit_nama_user').val(name);
             $('#edit_email_user').val(email);
             $('#edit_jabatan_user').val(jabatan);
             $('#form-edit-user').attr('action', '/users/' + id);
-
             $('#modal-edit-user').modal('show');
         });
 
