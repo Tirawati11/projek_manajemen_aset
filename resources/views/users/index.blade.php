@@ -5,7 +5,6 @@
 
 <section class="section">
     <div class="section-header">
-        {{-- <h1>Data user</h1> --}}
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data User</h1>
     </div>
 </section>
@@ -82,7 +81,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="6" class="text-center">Data Pengguna belum tersedia.</td>
+                                <td colspan="4" class="text-center">Data Pengguna belum tersedia.</td>
                             </tr>
                             @endforelse
                         </tbody>

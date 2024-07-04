@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <section class="section">
 <div class="section-header">
-    {{-- <h1>Data Kategori</h1> --}}
     <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Kategori</h1>
 </div>
 </section>
@@ -46,11 +45,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center">
-                                        <div class="alert alert-danger">
-                                            Data Kategori belum Tersedia.
-                                        </div>
-                                    </td>
+                                    <td colspan="4" class="text-center">Data Kategori belum Tersedia.</div>
                                 </tr>
                             @endforelse
                         </tbody>
