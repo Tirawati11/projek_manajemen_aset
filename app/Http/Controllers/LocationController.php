@@ -16,7 +16,9 @@ class LocationController extends Controller
     public function index(Request $request)
 {
     if ($request->ajax()) {
-        $locations = Location::select(['id', 'name']);
+        $locations = Location::select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
 
         return DataTables::of($locations)
             ->addColumn('DT_RowIndex', function ($row) {
@@ -32,9 +34,12 @@ class LocationController extends Controller
             ->make(true);
     }
 
-    $locations = Location::all(); // Fetch all locations for modals
+    // Fetch all locations for modals
+    $locations = Location::all();
+
     return view('lokasi.index', compact('locations'));
 }
+
 
 //     /**
 //      * Show the form for creating a new resource.
