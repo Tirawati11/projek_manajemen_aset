@@ -8,8 +8,6 @@
     <div class="section-header">
         <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Kategori</h1>
     </div>
-</section>
-
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
         <div class="col-12">
@@ -130,11 +128,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    //  $(document).ready(function () {
-    //     $('#table-1').DataTable();
-    // });
+     $(document).ready(function () {
+        $('#table-1').DataTable();
+    });
     $(document).ready(function() {
-        $('#btn-tambah-kategori').click(function() {
+        $('#btn-tambah-kategori').click(function() {-
             $('#modal-tambah-kategori').modal('show');
         });
 
