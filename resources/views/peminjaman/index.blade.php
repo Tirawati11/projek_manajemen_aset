@@ -2,29 +2,10 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-    <style>
-    .badge-success {
-        background-color: green;
-        color: white;
-    }
-
-    .badge-primary {
-        background-color: blue;
-        color: white;
-    }
-</style>
+<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 <section class="section">
     <div class="section-header">
         <h1 class="section-title">Data Peminjaman Aset</h1>
-        {{-- <form action="" method="GET" class="form-inline ml-auto">
-            <div class="input-group">
-                <input class="form-control" type="search" name="search" placeholder="Search" aria-label="Search" value="{{ $search ?? '' }}">
-                <div class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
-                </div>
-            </div>
-        </form> --}}
     </div>
     <div class="row">
         <div class="col-12">
@@ -34,7 +15,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-md" id="table1">
+                        <table class="table table-bordered table-md" id="mytable1">
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">No</th>
@@ -46,50 +27,8 @@
                                     <th style="text-align: center; width:150px;">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($peminjaman as $index => $item)
-                                    <tr>
-                                        <td class="align-middle">{{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $index + 1 }}</td>
-                                        <td class="align-middle">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
-                                        <td class="align-middle">{{ $item->nama_peminjam }}
-                                            {{-- @if (auth()->check())
-                                                {{ auth()->user()->nama_user }}
-                                            @else
-                                                Pengguna Tidak Ditemukan
-                                            @endif --}}
-                                        </td>
-                                        <td class="align-middle">{{ $item->tanggal_peminjaman }}</td>
-                                        <td class="align-middle">{{ $item->tanggal_pengembalian }}</td>
-                                        <td class="align-middle">
-                                            <span class="badge {{ $item->status == 'dipinjam' ? 'badge-success' : ($item->status == 'kembali' ? 'badge-primary' : '') }}">
-                                                {{ $item->status }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('peminjaman.show', $item->id) }}" class="btn btn-sm btn-dark" title="Lihat">
-                                                <i class="far fa-eye"></i>
-                                            </a>
-                                            <form id="delete-form-{{ $item->id }}" action="{{ route('peminjaman.destroy', $item->id) }}" method="POST" class="d-inline">
-                                                <a href="{{ route('peminjaman.edit', $item->id) }}" title="Edit" class="btn btn-sm btn-primary edit-confirm">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" title="Hapus" class="btn btn-sm btn-danger delete-confirm">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center">Belum ada data peminjaman.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
                         </table>
                     </div>
-                    {{-- {{ $peminjaman->appends(['search' => $search])->links('pagination::bootstrap-5') }} --}}
                 </div>
             </div>
         </div>
@@ -98,13 +37,35 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+$(document).ready(function() {
+    $('#mytable1').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: "{{ route('peminjaman.index') }}",
+            type: 'GET',
+        },
+        columns: [
+            { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+            { data: 'barang.nama_barang', name: 'barang.nama_barang' },
+            { data: 'nama_peminjam', name: 'nama_peminjam' },
+            { data: 'tanggal_peminjaman', name: 'tanggal_peminjaman' },
+            { data: 'tanggal_pengembalian', name: 'tanggal_pengembalian' },
+            { data: 'status', name: 'status', render: function(data, type, row) {
+                return '<span class="badge ' + (data === 'dipinjam' ? 'badge-success' : 'badge-primary') + '">' + data + '</span>';
+            }},
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ],
+        order: [[1, 'asc']]
+    });
+
     $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
-        var name = $(this).data('name');
-
         Swal.fire({
             title: 'Hapus',
             text: "Anda yakin akan menghapus ini?",
@@ -113,15 +74,15 @@
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Ya, hapus saja!',
-            cancelButtonText: 'Batal'
+            cancelButtonText: 'Batal',
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                form.submit(); // Submit form jika pengguna mengonfirmasi
+                form.submit();
             }
         });
     });
 
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah menghapus
     @if (session('delete'))
         Swal.fire({
             title: 'Berhasil',
@@ -131,7 +92,6 @@
         });
     @endif
 
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah menyimpan
     @if (session('success'))
         Swal.fire({
             title: 'Berhasil',
@@ -141,7 +101,6 @@
         });
     @endif
 
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah memperbarui
     @if (session('update'))
         Swal.fire({
             title: 'Berhasil',
@@ -150,5 +109,6 @@
             showConfirmButton: true
         });
     @endif
+});
 </script>
 @endsection

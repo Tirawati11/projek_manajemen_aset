@@ -16,43 +16,104 @@ class AsetController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index(Request $request)
+    // {
+    //     // Ambil query pencarian dari request
+    //     $search = $request->input('search');
+    //     $dateSearch = $request->input('date_search');
+
+    //     // Query untuk mendapatkan data aset dengan pencarian
+    //     $query = Aset::with('category');
+
+    //     if ($search) {
+    //         $query->where(function($q) use ($search) {
+    //             $q->where('kode', 'like', '%' . $search . '%')
+    //               ->orWhere('nama_barang', 'like', '%' . $search . '%')
+    //               ->orWhere('merek', 'like', '%' . $search . '%');
+    //         });
+    //     }
+
+    //     // Tambahkan pencarian berdasarkan tanggal_masuk
+    //     if ($dateSearch) {
+    //         try {
+    //             $date = Carbon::createFromFormat('d-m-Y', $dateSearch);
+    //             $query->whereDate('tanggal_masuk', $date);
+    //         } catch (\Exception $e) {
+    //             // Handle exception jika format tanggal tidak valid
+    //         }
+    //     }
+
+    //     // Dapatkan hasil paginasi
+    //     $asets = $query->latest()->paginate(2);
+
+    //     // Sertakan query pencarian dalam hasil pagination
+    //     $asets->appends(['search' => $search, 'date_search' => $dateSearch]);
+
+    //     // Ambil data categories
+    //     $categories = Category::all();
+
+    //     return view('aset.index', compact('asets', 'search', 'categories', 'dateSearch'));
+    // }
     public function index(Request $request)
     {
-        // Ambil query pencarian dari request
-        $search = $request->input('search');
-        $dateSearch = $request->input('date_search');
+        if ($request->ajax()) {
+            $query = Aset::with('category');
 
-        // Query untuk mendapatkan data aset dengan pencarian
-        $query = Aset::with('category');
+            // Ambil query pencarian dari request
+            $search = $request->input('search.value');
+            $dateSearch = $request->input('date_search');
 
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('kode', 'like', '%' . $search . '%')
-                  ->orWhere('nama_barang', 'like', '%' . $search . '%')
-                  ->orWhere('merek', 'like', '%' . $search . '%');
-            });
-        }
-
-        // Tambahkan pencarian berdasarkan tanggal_masuk
-        if ($dateSearch) {
-            try {
-                $date = Carbon::createFromFormat('d-m-Y', $dateSearch);
-                $query->whereDate('tanggal_masuk', $date);
-            } catch (\Exception $e) {
-                // Handle exception jika format tanggal tidak valid
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('kode', 'like', '%' . $search . '%')
+                        ->orWhere('nama_barang', 'like', '%' . $search . '%')
+                        ->orWhere('merek', 'like', '%' . $search . '%');
+                });
             }
+
+            // Tambahkan pencarian berdasarkan tanggal_masuk
+            if ($dateSearch) {
+                try {
+                    $date = Carbon::createFromFormat('d-m-Y', $dateSearch);
+                    $query->whereDate('tanggal_masuk', $date);
+                } catch (\Exception $e) {
+                    // Handle exception jika format tanggal tidak valid
+                }
+            }
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('category_name', function ($aset) {
+                    return $aset->category->name;
+                })
+                ->addColumn('gambar', function ($aset) {
+                    return '<img src="'. asset('/storage/aset/'.$aset->gambar) .'" class="rounded" style="width: 150px">';
+                })
+                ->addColumn('action', function ($aset) {
+                    return '
+                        <a href="'. route('aset.show', $aset->id) .'" class="btn btn-sm btn-dark" title="Show">
+                            <i class="far fa-eye"></i>
+                        </a>
+                        <a href="'. route('aset.edit', $aset->id) .'" class="btn btn-sm btn-primary" title=" Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form id="delete-form-'. $aset->id .'" action="'. route('aset.destroy', $aset->id) .'" method="POST" class="d-inline delete-form">
+                            '. csrf_field() .'
+                            '. method_field('DELETE') .'
+                            <button type="submit" class="btn btn-sm btn-danger delete-confirm" title=" Hapus">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['gambar', 'action'])
+                ->make(true);
         }
-
-        // Dapatkan hasil paginasi
-        $asets = $query->latest()->paginate(2);
-
-        // Sertakan query pencarian dalam hasil pagination
-        $asets->appends(['search' => $search, 'date_search' => $dateSearch]);
 
         // Ambil data categories
         $categories = Category::all();
 
-        return view('aset.index', compact('asets', 'search', 'categories', 'dateSearch'));
+        return view('aset.index', compact('categories'));
     }
 
     public function json()

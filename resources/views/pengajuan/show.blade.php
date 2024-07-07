@@ -18,8 +18,8 @@
                         <p>Stok Divisi : {{ $pengajuan->stok }}</p>
                         <p>Keterangan : {{ $pengajuan->deskripsi }}</p>
                     </div>
-                    <div class="mt-4">
-                        <a href="{{ route('pengajuan.edit', $pengajuan->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <div class="d-flex justify-content-end mt-3">
+                        <a href="{{ route('pengajuan.edit', $pengajuan->id) }}" class="btn btn-sm btn-primary me-2 mr-1">Edit</a>
                         <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </div>
                 </div>

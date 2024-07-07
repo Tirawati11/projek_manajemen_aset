@@ -2,7 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
@@ -45,7 +45,7 @@
 @include('lokasi.create')
 
 @foreach($locations as $location)
-    @include('lokasi.show', ['location' => $location])
+    {{-- @include('lokasi.show', ['location' => $location]) --}}
     @include('lokasi.edit', ['location' => $location])
 @endforeach
 

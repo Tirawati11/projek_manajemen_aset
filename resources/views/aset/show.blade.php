@@ -21,8 +21,8 @@
                     <p>Tanggal masuk: {{ \Carbon\Carbon::parse($aset->tanggal_masuk)->format('d-m-Y') }}</p>
                     <p>Keterangan: {{ $aset->deskripsi }}</p>
                     <p>kondisi: {{ $aset->kondisi }}</p>
-                    <div>
-                        <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary">Edit</a>
+                    <div class="d-flex justify-content-end mt-3">
+                        <a href="{{ route('aset.edit', $aset->id) }}" class="btn btn-sm btn-primary me-2 mr-1">Edit</a>
                         <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </div>
                 </div>

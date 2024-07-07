@@ -39,7 +39,7 @@ class PengajuanBarangController extends Controller
     }
 
     // Dapatkan hasil paginasi dengan menyertakan query pencarian
-    $pengajuan = $query->latest()->paginate(5);
+    $pengajuan = $query->latest()->paginate(1);
 
     $pengajuan->appends(['search' => $search]);
 

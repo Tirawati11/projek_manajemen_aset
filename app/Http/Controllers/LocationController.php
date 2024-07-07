@@ -25,10 +25,19 @@ class LocationController extends Controller
                 return $row->id; // Nomor urutan bisa menggunakan ID atau menggunakan iterator DataTables
             })
             ->addColumn('action', function ($row) {
-                $btn = '<button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#modalShow' . $row->id . '" title="Show"> <i class="far fa-eye"></i></button>';
-                $btn .= '<button type="button" class="btn btn-sm btn-primary btn-edit" data-id="' . $row->id . '" data-name="' . $row->name . '" title="Edit"> <i class="fas fa-edit"></i></button>';
-                $btn .= '<button type="button" class="btn btn-sm btn-danger delete-confirm" data-id="' . $row->id . '" title="Hapus"><i class="fas fa-trash-alt"></i></button>';
-                return $btn;
+                $btn = '<a href="'.route('lokasi.show', $row->id).'" class="btn btn-sm btn-dark" title="Lihat">
+                <i class="far fa-eye"></i>
+            </a>';
+
+            $btn .= ' <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="' . $row->id . '" data-name="' . $row->name . '" title="Edit">
+                <i class="fas fa-edit"></i>
+            </button>';
+
+            $btn .= ' <button type="button" class="btn btn-sm btn-danger delete-confirm" data-id="' . $row->id . '" title="Hapus">
+                <i class="fas fa-trash-alt"></i>
+            </button>';
+
+            return $btn;
             })
             ->rawColumns(['action'])
             ->make(true);
