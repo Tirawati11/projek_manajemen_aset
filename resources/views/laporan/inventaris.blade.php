@@ -1,109 +1,13 @@
 @extends('layouts.main')
 
 <!-- Bootstrap CSS -->
-{{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> --}}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
-{{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet"> --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
 {{--
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css"> --}}
-
-{{-- <style>
-    @media print {
-        .table-print th, .table-print td {
-        border: 1px solid black !important; /* Gaya border tabel saat cetak */
-    }
-    body * {
-            visibility: hidden;
-        }
-
-        .printableArea,
-        .printableArea * {
-            visibility: visible;
-        }
-
-        .printableArea {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-        }
-
-        .no-print {
-            display: none !important;
-        }
-
-        /* CSS untuk membuat tombol sejajar dan kecil */
-        .form-select,
-        .btn {
-            height: 38px; /* Atur tinggi yang sama untuk input fields dan tombol */
-            font-size: 14px; /* Atur ukuran font yang lebih kecil */
-        }
-
-        .form-group {
-            margin-bottom: 0; /* Hapus margin bawah pada form-group */
-        }
-
-        .btn-primary {
-            padding: 0.375rem 0.75rem; /* Atur padding agar tombol tidak terlalu besar */
-        }
-
-        /* Penyesuaian untuk cetak hanya tabel */
-        .card-header,
-        .section-header,
-        .section-title,
-        .printableTitle,
-        .dataTables_filter,
-        .dataTables_length,
-        .dataTables_info,
-        .dataTables_paginate,
-        .sorting:before,
-        .sorting:after,
-        .sorting_asc:before,
-        .sorting_asc:after,
-        .sorting_desc:before,
-        .sorting_desc:after {
-            display: none !important; /* Sembunyikan elemen DataTables dan ikon panah saat cetak */
-        }
-
-        .card-body {
-            padding-top: 0; /* Hapus padding atas pada card-body */
-        }
-
-        .btn {
-            display: none; /* Sembunyikan semua tombol saat cetak */
-        }
-
-        /* Mengatur margin kertas saat cetak */
-        @page {
-            size: auto;  /* auto is the current printer page size */
-            margin: 10mm; /* Sesuaikan margin sesuai kebutuhan Anda */
-        }
-
-        table.table-print {
-            background-color: black;
-            }
-
-        table.table-print th,
-        table.table-print td {
-        border: 1px solid black !important; /* Gaya border tabel saat cetak */
-        }
-    }
-
-    /* CSS untuk gaya border pada tabel Excel */
-    .excel-table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    .excel-table th,
-    .excel-table td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: center;
-    }
-</style> --}}
 
 @section('content')
 <section class="section">
@@ -128,6 +32,7 @@
                                 <tr>
                                     <th style="text-align: center;">No</th>
                                     <th style="text-align: center;">Nama Barang</th>
+                                    <th style="text-align: center;">Harga</th>
                                     <th style="text-align: center;">Jumlah</th>
                                     <th style="text-align: center;">Tanggal masuk</th>
                                     <th style="text-align: center;">Kondisi</th>
@@ -140,6 +45,7 @@
                                 <tr>
                                     <td style="text-align: center;">{{ $no++ }}</td>
                                     <td style="text-align: center;">{{ $item->nama_barang }}</td>
+                                    <td style="text-align: center;">{{ 'Rp'   . number_format($item->harga, 2, ',', '.')}}</td>
                                     <td style="text-align: center;">{{ $item->jumlah }}</td>
                                     <td style="text-align: center;">
                                         @if(isset($item->tanggal_masuk))

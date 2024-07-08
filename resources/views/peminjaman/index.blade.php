@@ -39,6 +39,7 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
@@ -53,8 +54,12 @@ $(document).ready(function() {
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'barang.nama_barang', name: 'barang.nama_barang' },
             { data: 'nama_peminjam', name: 'nama_peminjam' },
-            { data: 'tanggal_peminjaman', name: 'tanggal_peminjaman' },
-            { data: 'tanggal_pengembalian', name: 'tanggal_pengembalian' },
+            { data: 'tanggal_peminjaman', name: 'tanggal_peminjaman', render: function(data) {
+                return data ? moment(data, 'DD-MM-YYYY').format('DD-MM-YYYY') : '';
+            }},
+            { data: 'tanggal_pengembalian', name: 'tanggal_pengembalian', render: function(data) {
+                return data ? moment(data, 'DD-MM-YYYY').format('DD-MM-YYYY') : '';
+            }},
             { data: 'status', name: 'status', render: function(data, type, row) {
                 return '<span class="badge ' + (data === 'dipinjam' ? 'badge-success' : 'badge-primary') + '">' + data + '</span>';
             }},

@@ -147,7 +147,7 @@
                     error: function(xhr) {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Data gagal dihapus.',
+                            text: 'Data gagal dihapus. terdapat data peminjaman',
                             icon: 'error',
                             showConfirmButton: true
                         });

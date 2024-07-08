@@ -3,6 +3,7 @@
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <style>
     @media print {
         body * {
@@ -95,7 +96,7 @@
                                         <td class="align-middle" style="text-align: center;">{{ $item->nama_peminjam  }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->jumlah }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->tanggal_peminjaman }}</td>
+                                        <td class="align-middle" style="text-align: center;"> {{ \Carbon\Carbon::parse($item->tanggal_peminjaman)->format('d-m-Y') }}</td>
                                         <td class="align-middle" style="text-align: center;">{{ $item->tanggal_pengembalian }}</td>
                                     </tr>
                                 @empty

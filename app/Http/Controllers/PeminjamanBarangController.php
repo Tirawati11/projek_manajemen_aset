@@ -9,72 +9,47 @@ use App\Models\Barang;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\Datatables;
+use Illuminate\Support\Facades\Log;
+
 
 class PeminjamanBarangController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-//     public function index(Request $request)
-// {
-//     $search = $request->input('search');
 
-//     // Query data peminjaman berdasarkan pencarian
-//     $query = PeminjamanBarang::with('location', 'barang')->latest();
+     public function index()
+     {
+         if (request()->ajax()) {
+             $data = PeminjamanBarang::with('barang')
+                 ->select('peminjaman_barangs.*')
+                 ->get();
 
-//     if ($search) {
-//         $query->whereHas('barang', function ($query) use ($search) {
-//             $query->where('nama_barang', 'LIKE', "%$search%");
-//         })
-//         ->orWhereHas('location', function ($query) use ($search) {
-//             $query->where('name', 'LIKE', "%$search%");
-//         })
-//         ->orWhere('nama', 'LIKE', "%$search%");
-//     }
+             return DataTables::of($data)
+                 ->addIndexColumn()
+                 ->addColumn('barang.nama_barang', function ($peminjaman) {
+                     return $peminjaman->barang ? $peminjaman->barang->nama_barang : 'Barang tidak tersedia';
+                 })
+                 ->addColumn('action', function ($peminjaman) {
+                     $btn = '<a href="'.route('peminjaman.show', $peminjaman->id).'" class="btn btn-sm btn-dark" title="show">
+                     <i class="far fa-eye"></i>
+                     </a>';
+                     $btn .= ' <a href="'.route('peminjaman.edit', $peminjaman->id).'" class="btn btn-sm btn-primary" title="Edit">
+                     <i class="fas fa-edit"></i>
+                     </a>';
+                     $btn .= '<form action="'.route('peminjaman.destroy', $peminjaman->id).'" method="POST" class="d-inline">
+                                 '.csrf_field().'
+                                 '.method_field("DELETE").'
+                                 <button type="submit" title="Hapus" class="btn btn-sm btn-danger delete-confirm"><i class="fas fa-trash-alt"></i></button>
+                              </form>';
+                     return $btn;
+                 })
+                 ->rawColumns(['action'])
+                 ->make(true);
+         }
 
-//     // Menggunakan paginate dengan 5 item per halaman
-//     $peminjaman = $query->paginate(5);
-
-//     // Manipulasi tanggal menggunakan Carbon
-//     foreach ($peminjaman as $item) {
-//         $item->tanggal_peminjaman = Carbon::parse($item->tanggal_peminjaman)->format('d-m-Y');
-//         $item->tanggal_pengembalian = $item->tanggal_pengembalian ? Carbon::parse($item->tanggal_pengembalian)->format('d-m-Y') : null;
-//     }
-
-//     return view('peminjaman.index', compact('peminjaman', 'search'));
-// }
-public function index()
-{
-    if (request()->ajax()) {
-        $data = PeminjamanBarang::with('barang')
-            ->select('peminjaman_barangs.*')
-            ->get();
-
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('barang.nama_barang', function ($peminjaman) {
-                return $peminjaman->barang ? $peminjaman->barang->nama_barang : 'Barang tidak tersedia';
-            })
-            ->addColumn('action', function ($peminjaman) {
-                $btn = '<a href="'.route('peminjaman.show', $peminjaman->id).'" class="btn btn-sm btn-dark" title="show">
-                <i class="far fa-eye"></i>
-                </a>';
-                $btn .= ' <a href="'.route('peminjaman.edit', $peminjaman->id).'" class="btn btn-sm btn-primary" title="Edit">
-                <i class="fas fa-edit"></i>
-                </a>';
-                $btn .= '<form action="'.route('peminjaman.destroy', $peminjaman->id).'" method="POST" class="d-inline">
-                            '.csrf_field().'
-                            '.method_field("DELETE").'
-                            <button type="submit" title="Hapus" class="btn btn-sm btn-danger delete-confirm"><i class="fas fa-trash-alt"></i></button>
-                         </form>';
-                return $btn;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-    }
-
-    return view('peminjaman.index');
-}
+         return view('peminjaman.index');
+     }
     /**
      * Show the form for creating a new resource.
      */

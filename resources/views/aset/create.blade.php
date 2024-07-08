@@ -99,7 +99,8 @@
                                 <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                        <div class="d-flex justify-content-end mt-3">
+                        <button type="submit" class="btn btn-sm btn-primary me-2 mr-1">Simpan</button>
                         <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </form>
                 </div>
