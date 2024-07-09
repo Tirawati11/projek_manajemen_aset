@@ -11,12 +11,32 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-        public function index()
+    public function index()
     {
-        $categories = Category::paginate(10);
-        return view('categories.index', compact('categories'));
+        if(request()->ajax()) {
+            $categories = Category::select('*');
+            return Datatables::of($categories)
+                ->addColumn('action', function($category){
+                    $editUrl = route('categories.edit', $category->id);
+                    $deleteUrl = route('categories.destroy', $category->id);
+                    return '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a>
+                            <form action="'.$deleteUrl.'" method="POST" class="d-inline">
+                                '.csrf_field().'
+                                '.method_field('DELETE').'
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('categories.index');
     }
-
+    
+    public function json()
+    {
+      return Datatables::of(category::limit(10))->make(true);
+    }
+    
     public function create()
     {
         return view('categories.create');

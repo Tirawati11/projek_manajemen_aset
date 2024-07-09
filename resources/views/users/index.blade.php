@@ -209,9 +209,9 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 
 <script>
-     $(document).ready(function () {
-        $('#table-1').DataTable(); // Menginisialisasi DataTables
-    });
+    //  $(document).ready(function () {
+    //     $('#table-1').DataTable(); 
+    // });
     $(document).ready(function () {
         // Tambah User
         $('#modal-tamsbah-user').on('shown.bs.modal', function () {
@@ -267,7 +267,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
+                confirmButtonText: 'Ya, Setujui!',
                 cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
