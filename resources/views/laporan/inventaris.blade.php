@@ -14,7 +14,6 @@
     <div class="section-header no-print">
         <h1 class="section-title">Data Laporan Inventaris</h1>
     </div>
-
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">

@@ -76,11 +76,10 @@ class AsetController extends Controller
     return view('aset.index', compact('categories'));
 }
 
-
-    public function json()
-    {
-      return Datatables::of(Aset::limit(10))->make(true);
-    }
+    // public function json()
+    // {
+    //   return Datatables::of(Aset::limit(10))->make(true);
+    // }
 
     /**
      * Show the form for creating a new resource.

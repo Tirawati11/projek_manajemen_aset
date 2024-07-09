@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Aset;
 use App\Models\PeminjamanBarang;
 use App\Models\PengajuanBarang;
+use Yajra\DataTables\Facades\Datatables;
+use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
@@ -37,72 +39,76 @@ class LaporanController extends Controller
         $forecasts[$aset->id] = $aset->value * 1.1;
     }
     return $forecasts;
-}
-// Laporan Peminjaman
-public function laporanPeminjaman(Request $request)
-{
-    // Ambil semua data dari model Peminjaman
-    $peminjamanQuery = PeminjamanBarang::with('barang');
-
-    // Filter berdasarkan bulan dan tahun jika ada permintaan
-    if ($request->has('bulan') && $request->has('tahun')) {
-        $peminjamanQuery->whereMonth('tanggal_peminjaman', $request->bulan)
-            ->whereYear('tanggal_peminjaman', $request->tahun);
     }
 
-    $peminjaman = $peminjamanQuery->paginate(10);
+    // Laporan Peminjaman
+    public function laporanPeminjaman(Request $request)
+{
+    if ($request->ajax()) {
+        $peminjamanQuery = PeminjamanBarang::with('barang');
 
-    // Lakukan perhitungan forecast jika diperlukan (contoh dummy function)
-    $forecasts = $this->calculateForecast($peminjaman);
+        if ($request->has('bulan') && $request->has('tahun')) {
+            $peminjamanQuery->whereMonth('tanggal_peminjaman', $request->bulan)
+                ->whereYear('tanggal_peminjaman', $request->tahun);
+        }
 
-    // Kembalikan view dengan data
-    return view('laporan.peminjaman', compact('peminjaman', 'forecasts'));
+        return DataTables::eloquent($peminjamanQuery)
+            ->addIndexColumn()
+            ->addColumn('nama_barang', function ($peminjaman) {
+                return $peminjaman->barang->nama_barang;
+            })
+            ->editColumn('tanggal_peminjaman', function ($peminjaman) {
+                return Carbon::parse($peminjaman->tanggal_peminjaman)->format('d-m-Y');
+            })
+            ->editColumn('tanggal_pengembalian', function ($peminjaman) {
+                return Carbon::parse($peminjaman->tanggal_pengembalian)->format('d-m-Y');
+            })
+            ->rawColumns(['tanggal_peminjaman', 'tanggal_pengembalian'])
+            ->make(true);
+    }
+
+    return view('laporan.peminjaman');
 }
 
-public function calculate($peminjaman)
-{
-    // Contoh sederhana perhitungan forecast
+    public function calculate($peminjaman)
+    {
     $forecasts = [];
     foreach ($peminjaman as $item) {
         $forecasts[$item->id] = $item->value * 1.1;
     }
     return $forecasts;
-}
-// Laporan Pengajuan
-public function laporanPengajuan(Request $request)
+    }
+
+    // Laporan Pengajuan
+    public function laporanPengajuan(Request $request)
     {
-        // Ambil semua data dari model PengajuanBarang
-        $pengajuanQuery = PengajuanBarang::query();
+        if ($request->ajax()) {
+            $pengajuanQuery = PengajuanBarang::query();
 
-        // Filter berdasarkan nama pemohon jika ada dalam permintaan
-        if ($request->has('nama_pemohon')) {
-            $pengajuanQuery->where('nama_pemohon', 'like', '%' . $request->input('nama_pemohon') . '%');
+            // Filter by nama_pemohon
+            if ($request->has('nama_pemohon') && !empty($request->input('nama_pemohon'))) {
+                $pengajuanQuery->where('nama_pemohon', 'like', '%' . $request->input('nama_pemohon') . '%');
+            }
+
+            // Filter by status
+            if ($request->has('status') && !empty($request->input('status'))) {
+                $pengajuanQuery->where('status', $request->input('status'));
+            }
+
+            // Order by created_at desc
+            $pengajuanQuery->orderBy('created_at', 'desc');
+
+            return DataTables::eloquent($pengajuanQuery)
+                ->addIndexColumn()
+                ->editColumn('status', function($item) {
+                    $badgeClass = $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : ''));
+                    return '<span class="'. $badgeClass .'">'. $item->status .'</span>';
+                })
+                ->rawColumns(['status'])
+                ->make(true);
         }
 
-        // Filter berdasarkan status jika ada dalam permintaan
-        if ($request->has('status')) {
-            $status = $request->input('status');
-            $pengajuanQuery->where('status', $status);
-        }
-
-        // Lakukan pengurutan data berdasarkan tanggal dibuat secara descending (terbaru dulu)
-        $pengajuanQuery->orderBy('created_at', 'desc');
-
-        // Ambil data dengan pagination
-        $pengajuan = $pengajuanQuery->paginate(10);
-
-        // Kembalikan view dengan data
-        return view('laporan.pengajuan', compact('pengajuan'));
-    }
-    
-    public function calculatePengajuan($pengajuan)
-{
-    // Contoh sederhana perhitungan forecast
-    $forecasts = [];
-    foreach ($pengajuan as $item) {
-        $forecasts[$item->id] = $item->value * 1.1;
-    }
-    return $forecasts;
+        return view('laporan.pengajuan');
 }
 }
 

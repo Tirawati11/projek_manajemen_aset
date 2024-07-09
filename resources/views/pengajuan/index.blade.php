@@ -3,6 +3,8 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+<link href="assets/modules/datatables/datatables.min.css">
+<link href="assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .dropdown-item {
@@ -31,7 +33,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header-action">
+                <div class="card-header-action mt-3 ml-3">
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary" style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
                     </a>
@@ -135,9 +137,10 @@
 @endsection
 
 @section('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script src="assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
     $('#table1').DataTable(); // Initialize DataTables
 

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\PengajuanBarang;
 use Illuminate\Support\Facades\Auth;
 
+
 class PengajuanBarangController extends Controller
 {
     public function index(Request $request)
@@ -45,7 +46,6 @@ class PengajuanBarangController extends Controller
 
     return view('pengajuan.index', compact('pengajuan', 'search'));
     }
-
     // Create Pengajuan
     public function create()
     {

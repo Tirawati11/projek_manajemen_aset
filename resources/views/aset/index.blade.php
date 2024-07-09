@@ -12,8 +12,8 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header-action">
-                    <a href="{{ route('aset.create') }}" class="btn btn-primary" style="margin-right: 10px;">
+                <div class="card-header-action mt-3 ml-3">
+                    <a href="{{ route('aset.create') }}" class="btn btn-primary">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Aset
                     </a>
                 </div>
@@ -22,14 +22,14 @@
                         <table class="table table-bordered table-md" id="tables">
                             <thead>
                                 <tr>
-                                    <th style="text-align: center; width:20px;">No</th>
+                                    <th style="text-align: center;">No</th>
                                     <th style="text-align: center;">Kode</th>
                                     <th style="text-align: center;">Gambar</th>
                                     <th style="text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Harga</th>
                                     <th style="text-align: center;">Merek</th>
                                     <th style="text-align: center;">Tanggal Masuk</th>
-                                    <th style="text-align: center;">Aksi</th>
+                                    <th style="text-align: center; width:150px">Aksi</th>
                                 </tr>
                             </thead>
                         </table>
@@ -44,6 +44,7 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {

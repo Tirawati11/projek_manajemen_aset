@@ -1,64 +1,9 @@
 @extends('layouts.main')
 
-<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<style>
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-
-        .printableArea, .printableArea * {
-            visibility: visible;
-        }
-
-        .printableArea {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-        }
-
-        .no-print {
-            display: none !important;
-        }
-
-        /* Gaya border tabel saat cetak */
-        .excel-table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        .excel-table th,
-        .excel-table td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-
-        /* Menghilangkan panah sortir */
-        .sorting,
-        .sorting_asc,
-        .sorting_desc {
-            background-image: none !important;
-            cursor: default !important;
-        }
-
-        /* Mengatur tampilan teks di tengah untuk nomor urut dan tanggal */
-        .excel-table td:nth-child(1),
-        .excel-table td:nth-child(4),
-        .excel-table td:nth-child(5),
-        .excel-table td:nth-child(6) {
-            text-align: center;
-        }
-
-        .dataTables_length, .dataTables_filter, .dataTables_info, .dataTables_paginate {
-            display: none !important;
-        }
-    }
-</style>
 
 @section('content')
 <section class="section">
@@ -78,7 +23,7 @@
                 <div class="card-body printableArea">
                     <h4 id="tableTitle" style="text-align: center;">Laporan Peminjaman</h4>
                     <div class="table-responsive">
-                        <table class="table table-striped excel-table" cellspacing="0" width="100%" id="table1">
+                        <table class="table table-striped excel-table" id="peminjaman-table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">No</th>
@@ -86,30 +31,11 @@
                                     <th style="width: 150px; text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Jumlah</th>
                                     <th class="nowrap" style="text-align: center; width:150px;">Tanggal Pinjam</th>
-                                    <th style="text-align: center; width:150px">Tanggal Kembali</th>
+                                    <th style="text-align: center; width:150px;">Tanggal Kembali</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($peminjaman as $index => $item)
-                                    <tr>
-                                        <td class="align-middle" style="text-align: center;">{{ ($peminjaman->currentPage() - 1) * $peminjaman->perPage() + $index + 1 }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->nama_peminjam  }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->barang ? $item->barang->nama_barang : 'Barang tidak tersedia' }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->jumlah }}</td>
-                                        <td class="align-middle" style="text-align: center;"> {{ \Carbon\Carbon::parse($item->tanggal_peminjaman)->format('d-m-Y') }}</td>
-                                        <td class="align-middle" style="text-align: center;">{{ $item->tanggal_pengembalian }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" style="text-align: center;">Data aset tidak ditemukan.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
+                            <tbody></tbody> <!-- Data akan dimasukkan melalui JavaScript -->
                         </table>
-                        <!-- Pagination links -->
-                        {{-- <div class="d-flex justify-content-center">
-                            {{ $peminjaman->links() }}
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -118,21 +44,39 @@
 </section>
 @endsection
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script>
-    function prepareForPrint() {
-        // Clone the table to keep original untouched
-        const tableToPrint = document.getElementById('table1').cloneNode(true);
+    $(document).ready(function() {
+        $('#peminjaman-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('laporan.peminjaman') }}",
+                data: function(d) {
+                    d.bulan = $('#bulan').val(); // Ambil nilai bulan dari input dengan id 'bulan'
+                    d.tahun = $('#tahun').val(); // Ambil nilai tahun dari input dengan id 'tahun'
+                }
+            },
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'nama_peminjam', name: 'nama_peminjam', className: 'text-center' },
+                { data: 'nama_barang', name: 'barang.nama_barang', className: 'text-center' },
+                { data: 'jumlah', name: 'jumlah', className: 'text-center' },
+                { data: 'tanggal_peminjaman', name: 'tanggal_peminjaman', className: 'text-center' },
+                { data: 'tanggal_pengembalian', name: 'tanggal_pengembalian', className: 'text-center' },
+            ]
+        });
+    });
 
-        // Remove DataTables classes and attributes from cloned table
+    function prepareForPrint() {
+        const tableToPrint = document.getElementById('peminjaman-table').cloneNode(true);
+
         tableToPrint.classList.remove('dataTable', 'no-footer');
         tableToPrint.removeAttribute('role');
 
-        // Adjust styles if needed for printing
-        tableToPrint.style.width = '100%'; // Example: Adjust width for better printing
+        tableToPrint.style.width = '100%';
 
-        // Create a new window for printing
         const printWindow = window.open('', '_blank');
         printWindow.document.open();
         printWindow.document.write(`
@@ -177,7 +121,7 @@
     }
 
     function exportToExcel() {
-        const table = document.getElementById('table1');
+        const table = document.getElementById('peminjaman-table');
         const workbook = XLSX.utils.table_to_book(table, { sheet: "Laporan Peminjaman" });
         const worksheet = workbook.Sheets["Laporan Peminjaman"];
 
@@ -202,4 +146,13 @@
         XLSX.writeFile(workbook, 'Laporan Peminjaman.xlsx');
     }
 </script>
+@endsection
+
+@section('styles')
+<style>
+    .table th,
+    .table td {
+        text-align: center;
+    }
+</style>
 @endsection

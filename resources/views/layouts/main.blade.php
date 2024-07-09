@@ -61,8 +61,10 @@
   <!-- Template JS File -->
   <script src="{{ asset('assets/js/scripts.js')}}"></script>
   <script src="{{ asset('assets/js/custom.js') }}"></script>
- <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-  {{-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
+ <script src="{{ asset('https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js')}}"></script>
+ <script src="{{ asset('assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="{{ asset('assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js')}}"></script>
+  <script src="{{ asset ('assets/js/page/modules-datatables.js')}}"></script>
   @yield('scripts')
 </body>
 </html>

@@ -64,7 +64,7 @@ class LocationController extends Controller
     public function store(Request $request)
 {
     $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
+        'name' => 'required|string|max:255|unique:locations,name',
     ]);
 
     $location = Location::create($validatedData);
@@ -106,7 +106,7 @@ class LocationController extends Controller
     {
         // Validasi data input
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+           'name' => 'required|string|max:255|unique:locations,name',
         ]);
 
         try {
