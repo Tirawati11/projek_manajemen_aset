@@ -7,45 +7,126 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\PengajuanBarang;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\Datatables;
 
 
 class PengajuanBarangController extends Controller
 {
-    public function index(Request $request)
+//     public function index(Request $request)
+// {
+//     $search = $request->input('search');
+//     $user = Auth::user();
+
+//     // Query untuk mendapatkan data PengajuanBarang dengan relasi User
+//     $query = PengajuanBarang::query();
+
+//     // Jika user adalah admin, tampilkan semua data
+//     if ($user->jabatan == 'admin') {
+//         $query->when($search, function ($query, $search) {
+//             return $query->where(function ($query) use ($search) {
+//                 $query->where('nama_barang', 'LIKE', "%{$search}%")
+//                       ->orWhereHas('user', function ($query) use ($search) {
+//                           $query->where('nama_user', 'LIKE', "%{$search}%");
+//                       });
+//             });
+//         });
+//     } else {
+//         // Jika user bukan admin, filter hanya untuk data mereka sendiri
+//         $query->where('nama_pemohon', $user->nama_user)
+//               ->when($search, function ($query, $search) {
+//                   return $query->where(function ($query) use ($search) {
+//                       $query->where('nama_barang', 'LIKE', "%{$search}%");
+//                   });
+//               });
+//     }
+
+//     // Dapatkan hasil paginasi dengan menyertakan query pencarian
+//     $pengajuan = $query->latest()->paginate(10);
+
+//     $pengajuan->appends(['search' => $search]);
+
+//     return view('pengajuan.index', compact('pengajuan', 'search'));
+//     }
+
+public function index(Request $request)
 {
-    $search = $request->input('search');
-    $user = Auth::user();
+    if ($request->ajax()) {
+        $user = Auth::user();
+        $query = PengajuanBarang::query();
 
-    // Query untuk mendapatkan data PengajuanBarang dengan relasi User
-    $query = PengajuanBarang::query();
+        // Filter berdasarkan peran pengguna
+        if ($user->jabatan != 'admin') {
+            $query->where('nama_pemohon', $user->nama_user);
+        }
 
-    // Jika user adalah admin, tampilkan semua data
-    if ($user->jabatan == 'admin') {
-        $query->when($search, function ($query, $search) {
-            return $query->where(function ($query) use ($search) {
-                $query->where('nama_barang', 'LIKE', "%{$search}%")
-                      ->orWhereHas('user', function ($query) use ($search) {
-                          $query->where('nama_user', 'LIKE', "%{$search}%");
-                      });
-            });
-        });
-    } else {
-        // Jika user bukan admin, filter hanya untuk data mereka sendiri
-        $query->where('nama_pemohon', $user->nama_user)
-              ->when($search, function ($query, $search) {
-                  return $query->where(function ($query) use ($search) {
-                      $query->where('nama_barang', 'LIKE', "%{$search}%");
-                  });
-              });
+        // Urutankan data untuk memunculkan yang belum di-approve di atas
+        $query->orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END, created_at DESC");
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('checkbox', function($item) {
+                if (Auth::user()->jabatan == 'admin') {
+                    return '<input type="checkbox" class="checkbox-input" value="'.$item->id.'">';
+                }
+                return '';
+            })
+            ->addColumn('action', function($item) {
+                $approveButton = '';
+                if (Auth::user()->jabatan == 'admin' && $item->status === 'pending') {
+                    $approveButton = '
+                    <div class="dropdown d-inline">
+                        <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton'.$item->id.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="far fa-thumbs-up"></i> Approve
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton'.$item->id.'">
+                            <form id="approvalForm'.$item->id.'" action="'.route('pengajuan.approve', $item->id).'" method="POST" class="dropdown-item">
+                                '.csrf_field().'
+                                <button type="submit" class="btn btn-link text-primary approvalButton" data-pengajuanid="'.$item->id.'" title="Approve">
+                                    <i class="far fa-thumbs-up"></i> Approve
+                                </button>
+                            </form>
+                            <form id="rejectForm'.$item->id.'" action="'.route('pengajuan.reject', $item->id).'" method="POST" class="dropdown-item">
+                                '.csrf_field().'
+                                <button type="submit" class="btn btn-link text-danger rejectButton" data-pengajuanid="'.$item->id.'" title="Reject">
+                                    <i class="far fa-thumbs-down"></i> Reject
+                                </button>
+                            </form>
+                        </div>
+                    </div>';
+                }
+
+                return $approveButton.'
+                <div class="dropdown d-inline">
+                    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton3'.$item->id.'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-cogs"></i> Aksi
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3'.$item->id.'">
+                        <a href="'.route('pengajuan.show', $item->id).'" class="dropdown-item">
+                            <i class="far fa-eye"></i> Lihat
+                        </a>
+                        <a href="'.route('pengajuan.edit', $item->id).'" class="dropdown-item">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form id="delete-form-'.$item->id.'" action="'.route('pengajuan.destroy', $item->id).'" method="POST" class="dropdown-item">
+                            '.csrf_field().'
+                            '.method_field('DELETE').'
+                            <a href="" class="delete-confirm" style="color:black;">
+                                <i class="fas fa-trash-alt"></i> Hapus
+                            </a>
+                        </form>
+                    </div>
+                </div>';
+            })
+            ->editColumn('status', function($item) {
+                return '<span class="'.($item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : 'badge badge-danger')).'">'.$item->status.'</span>';
+            })
+            ->rawColumns(['checkbox', 'action', 'status'])
+            ->make(true);
     }
 
-    // Dapatkan hasil paginasi dengan menyertakan query pencarian
-    $pengajuan = $query->latest()->paginate(10);
+    return view('pengajuan.index');
+}
 
-    $pengajuan->appends(['search' => $search]);
-
-    return view('pengajuan.index', compact('pengajuan', 'search'));
-    }
     // Create Pengajuan
     public function create()
     {

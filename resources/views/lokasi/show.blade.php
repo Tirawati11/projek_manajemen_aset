@@ -30,7 +30,8 @@
                 </div>
             </div>
         </div>
-@endsection{{-- <!-- Modal -->
+@endsection
+{{-- <!-- Modal -->
 <div class="modal fade" id="modalShow{{$location->id}}" tabindex="-1" role="dialog" aria-labelledby="modalShowLabel{{$location->id}}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">

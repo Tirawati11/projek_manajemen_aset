@@ -29,8 +29,8 @@
                             <label class="font-weight-bold">Catatan</label>
                             <input type="text" name="deskripsi" id="deskripsi" class="form-control">
                             <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-sm btn-primary  me-2 mr-1">Ajukan</button>
-                        <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-danger">Kembali</a>
+                                <a href="{{ route('pengajuan.index') }}" class="btn btn-sm btn-danger mr-1">Kembali</a>
+                                <button type="submit" class="btn btn-sm btn-primary">Ajukan</button>
                     </form>
                 </div>
             </div>

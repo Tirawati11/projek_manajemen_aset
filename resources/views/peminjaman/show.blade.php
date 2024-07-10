@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <h4 class="mb-4">Detail Peminjaman Aset</h4>
+                    <h4 class="mb-4" style="text-align: center;">Detail Peminjaman Aset</h4>
                     <hr>
                     <p class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
                         ID :  {{ $peminjaman->id }}
@@ -21,8 +21,8 @@
                         <p>Status : {{ $peminjaman->status }}</p>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        <a href="{{ route('peminjaman.edit', $peminjaman->id) }}" class="btn btn-sm btn-primary me-2 mr-1">Edit</a>
-                        <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger">Kembali</a>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-danger mr-1">Kembali</a>
+                        <a href="{{ route('peminjaman.edit', $peminjaman->id) }}" class="btn btn-primary">Edit</a>
                     </div>
                 </div>
             </div>
