@@ -6,37 +6,31 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Yajra\DataTables\DataTables;
 
 
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        if(request()->ajax()) {
-            $categories = Category::select('*');
-            return Datatables::of($categories)
-                ->addColumn('action', function($category){
-                    $editUrl = route('categories.edit', $category->id);
-                    $deleteUrl = route('categories.destroy', $category->id);
-                    return '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a>
-                            <form action="'.$deleteUrl.'" method="POST" class="d-inline">
-                                '.csrf_field().'
-                                '.method_field('DELETE').'
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>';
+        if ($request->ajax()) {
+            $categories = Category::select(['id', 'name']);
+
+            return DataTables::of($categories)
+                ->addColumn('action', function($category) {
+                    return '
+                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="'.$category->id.'" data-name="'.$category->name.'"><i class="far fa-eye" title="Show"></i></a>
+                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="'.$category->id.'" data-name="'.$category->name.'"><i class="fas fa-edit" title="Edit"></i></a>
+                        <button class="btn btn-sm btn-danger btn-delete" data-id="'.$category->id.'"><i class="fas fa-trash-alt" title="Hapus"></i></button>
+                    ';
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
+
         return view('categories.index');
     }
-    
-    public function json()
-    {
-      return Datatables::of(category::limit(10))->make(true);
-    }
-    
     public function create()
     {
         return view('categories.create');

@@ -92,6 +92,8 @@ Route::middleware(['auth'])->group(function () {
         // Route Categories
         Route::resource('categories', CategoryController::class);
         Route::get('/categories/{id}/edit', [CategoryController::class, 'edit']);
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+
 
         // Route Lokasi
         Route::resource('lokasi', LocationController::class);
