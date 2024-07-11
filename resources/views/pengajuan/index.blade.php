@@ -3,8 +3,8 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
-<link href="assets/modules/datatables/datatables.min.css">
-<link href="assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .dropdown-item {
@@ -40,7 +40,7 @@
                     @if(Auth::check() && Auth::user()->jabatan == 'admin')
                     <button class="btn btn-sm btn-danger" id="btn-delete-selected" style="display: none;"><i class="fas fa-trash-alt"></i> Hapus Terpilih</button>
                     <button class="btn btn-sm btn-success" id="btn-approve-selected" style="display: none;"><i class="far fa-thumbs-up"></i> Approved Terpilih</button>
-                    <button class="btn btn-sm btn-danger" id="btn-reject-selected" style="display: none;"><i class="far fa-thumbs-down"></i> Reject Terpilih</button>
+                    <button class="btn btn-sm btn-warning" id="btn-reject-selected" style="display: none;"><i class="far fa-thumbs-down"></i> Reject Terpilih</button>
                     @endif
                 </div>
                 <div class="card-body">
@@ -60,12 +60,7 @@
                                 <th style="text-align: center; width: 200px;">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
                         </table>
-                        {{-- <button id="btn-delete-selected" class="btn btn-danger" style="display:none;">Delete Selected</button> --}}
-                        {{-- <button id="btn-approve-selected" class="btn btn-success" style="display:none;">Approve Selected</button>
-                        <button id="btn-reject-selected" class="btn btn-warning" style="display:none;">Reject Selected</button> --}}
                     </div>
                 </div>
             </div>
@@ -82,10 +77,7 @@ $(document).ready(function() {
     var table = $('#table-pengajuan').DataTable({
         processing: true,
         serverSide: true,
-        ajax: {
-            url: "{{ route('pengajuan.index') }}",
-            type: 'GET',
-        },
+        ajax:  "{{ route('pengajuan.index') }}",
         columns: [
             { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
@@ -94,10 +86,10 @@ $(document).ready(function() {
             { data: 'status', name: 'status', orderable: false, searchable: false },
             { data: 'action', name: 'action', orderable: false, searchable: false }
         ],
-        order: [[1, 'desc']]
+        order: [[3, 'desc']] // Default order, misalnya berdasarkan indeks
     });
 
-    // Memilih semua checkbox
+    // Menambahkan event listener untuk seleksi semua checkbox
     $('#select-all').click(function(event) {
         var isChecked = this.checked;
         $('.checkbox-input').each(function() {
@@ -106,7 +98,7 @@ $(document).ready(function() {
         toggleActionButtons();
     });
 
-    // Toggling action buttons
+    // Toggle action buttons berdasarkan checkbox yang dipilih
     $('#table-pengajuan tbody').on('change', '.checkbox-input', function() {
         toggleActionButtons();
     });
@@ -123,7 +115,7 @@ $(document).ready(function() {
         }
     }
 
-    // Menghapus terpilih
+    // Event untuk menghapus item terpilih
     $('#btn-delete-selected').click(function() {
         var selectedItems = [];
         $('.checkbox-input:checked').each(function() {
@@ -191,7 +183,7 @@ $(document).ready(function() {
         }
     });
 
-    // Approval dan Rejection untuk terpilih
+    // Event untuk menyetujui dan menolak item terpilih
     $('#btn-approve-selected').click(function() {
         handleBulkAction('{{ route('pengajuan.bulk-approve') }}', 'approve');
     });
@@ -266,9 +258,9 @@ $(document).ready(function() {
             });
         }
     }
-});
 
-$(document).on('click', '.approvalButton', function(e) {
+    // Event untuk menampilkan SweetAlert2 saat menyetujui pengajuan
+    $(document).on('click', '.approvalButton', function(e) {
         e.preventDefault();
         var pengajuanId = $(this).data('pengajuanid');
         Swal.fire({
@@ -288,6 +280,7 @@ $(document).on('click', '.approvalButton', function(e) {
         });
     });
 
+    // Event untuk menampilkan SweetAlert2 saat menolak pengajuan
     $(document).on('click', '.rejectButton', function(e) {
         e.preventDefault();
         var pengajuanId = $(this).data('pengajuanid');
@@ -308,7 +301,7 @@ $(document).on('click', '.approvalButton', function(e) {
         });
     });
 
-    // Menghapus pengajuan
+    // Event untuk menampilkan SweetAlert2 saat mengkonfirmasi penghapusan
     $('#table-pengajuan').on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');
@@ -329,8 +322,9 @@ $(document).on('click', '.approvalButton', function(e) {
             }
         });
     });
-// SweetAlert2 untuk menampilkan pesan berhasil setelah menyimpan
-@if (session('success'))
+
+    // Tampilkan pesan berhasil setelah menyimpan
+    @if (session('success'))
         Swal.fire({
             title: 'Berhasil',
             text: '{{ session('success') }}',
@@ -339,7 +333,7 @@ $(document).on('click', '.approvalButton', function(e) {
         });
     @endif
 
-    // SweetAlert2 untuk menampilkan pesan berhasil setelah memperbarui
+    // Tampilkan pesan berhasil setelah memperbarui
     @if (session('update'))
         Swal.fire({
             title: 'Berhasil',
@@ -348,5 +342,6 @@ $(document).on('click', '.approvalButton', function(e) {
             showConfirmButton: true
         });
     @endif
+});
 </script>
 @endsection

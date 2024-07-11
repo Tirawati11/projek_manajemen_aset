@@ -31,9 +31,6 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <!-- Data dari DataTables akan dimasukkan di sini -->
-                            </tbody>
                         </table>
                     </div>
                 </div>

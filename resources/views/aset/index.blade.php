@@ -13,7 +13,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header-action mt-3 ml-3">
-                    <a href="{{ route('aset.create') }}" class="btn btn-primary">
+                    <a href="{{ route('aset.create') }}" class="btn btn-primary"  style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Aset
                     </a>
                 </div>
@@ -44,7 +44,6 @@
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {

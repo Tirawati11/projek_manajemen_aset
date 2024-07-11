@@ -16,71 +16,68 @@ class AsetController extends Controller
     /**
      * Display a listing of the resource.
      */
-      public function index(Request $request)
-{
-    if ($request->ajax()) {
-        $query = Aset::with('category');
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            $query = Aset::select('id', 'kode', 'nama_barang', 'merek', 'tanggal_masuk', 'harga', 'gambar', 'category_id')
+                         ->with('category:id,name');
 
-        // Ambil query pencarian dari request
-        $search = $request->input('search.value');
+            // Ambil query pencarian dari request
+            $search = $request->input('search.value');
 
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('kode', 'like', '%' . $search . '%')
-                    ->orWhere('nama_barang', 'like', '%' . $search . '%')
-                    ->orWhere('merek', 'like', '%' . $search . '%')
-                    ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%d-%m-%Y") like ?', ['%' . $search . '%'])
-                    ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%m-%Y") like ?', ['%' . $search . '%'])
-                    ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%Y") like ?', ['%' . $search . '%']);
-            });
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('kode', 'like', '%' . $search . '%')
+                        ->orWhere('nama_barang', 'like', '%' . $search . '%')
+                        ->orWhere('merek', 'like', '%' . $search . '%')
+                        ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%d-%m-%Y") like ?', ['%' . $search . '%'])
+                        ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%m-%Y") like ?', ['%' . $search . '%'])
+                        ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%Y") like ?', ['%' . $search . '%']);
+                });
+            }
+
+            $dataTable = DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('category_name', function ($aset) {
+                    return $aset->category ? $aset->category->name : 'N/A';
+                })
+                ->addColumn('gambar', function ($aset) {
+                    return '<img src="'. asset('/storage/aset/'.$aset->gambar) .'" class="rounded" style="width: 150px">';
+                })
+                ->editColumn('harga', function($row) {
+                    return 'Rp ' . number_format($row->harga, 2, ',', '.');
+                })
+                ->editColumn('tanggal_masuk', function($row) {
+                    return \Carbon\Carbon::parse($row->tanggal_masuk)->format('d-m-Y');
+                })
+                ->addColumn('action', function ($aset) {
+                    return '
+                        <a href="'. route('aset.show', $aset->id) .'" class="btn btn-sm btn-dark" title="Show">
+                            <i class="far fa-eye"></i>
+                        </a>
+                        <a href="'. route('aset.edit', $aset->id) .'" class="btn btn-sm btn-primary" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form id="delete-form-'. $aset->id .'" action="'. route('aset.destroy', $aset->id) .'" method="POST" class="d-inline delete-form">
+                            '. csrf_field() .'
+                            '. method_field('DELETE') .'
+                            <button type="submit" class="btn btn-sm btn-danger delete-confirm" title="Hapus">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['gambar', 'action'])
+                ->make(true);
+
+            return $dataTable;
         }
 
-        return DataTables::of($query)
-            ->addIndexColumn()
-            ->addColumn('category_name', function ($aset) {
-                return $aset->category->name;
-            })
-            ->addColumn('gambar', function ($aset) {
-                return '<img src="'. asset('/storage/aset/'.$aset->gambar) .'" class="rounded" style="width: 150px">';
-            })
-            ->editColumn('harga', function($row) {
-                return 'Rp ' . number_format($row->harga, 2, ',', '.');
-            })
-            ->editColumn('tanggal_masuk', function($row) {
-                return \Carbon\Carbon::parse($row->tanggal_masuk)->format('d-m-Y');
-            })
-            ->addColumn('action', function ($aset) {
-                return '
-                    <a href="'. route('aset.show', $aset->id) .'" class="btn btn-sm btn-dark" title="Show">
-                        <i class="far fa-eye"></i>
-                    </a>
-                    <a href="'. route('aset.edit', $aset->id) .'" class="btn btn-sm btn-primary" title=" Edit">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <form id="delete-form-'. $aset->id .'" action="'. route('aset.destroy', $aset->id) .'" method="POST" class="d-inline delete-form">
-                        '. csrf_field() .'
-                        '. method_field('DELETE') .'
-                        <button type="submit" class="btn btn-sm btn-danger delete-confirm" title=" Hapus">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </form>
-                ';
-            })
-            ->rawColumns(['gambar', 'action'])
-            ->make(true);
+        // Ambil data categories
+        $categories = Category::all();
+
+        return view('aset.index', compact('categories'));
     }
-
-    // Ambil data categories
-    $categories = Category::all();
-
-    return view('aset.index', compact('categories'));
-}
-
-    // public function json()
-    // {
-    //   return Datatables::of(Aset::limit(10))->make(true);
-    // }
-
     /**
      * Show the form for creating a new resource.
      */
