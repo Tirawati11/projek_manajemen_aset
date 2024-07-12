@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
-    public function laporanInventaris(Request $request)
+    public function laporanAset(Request $request)
     {
         // Ambil semua data dari model Aset
         $aset = Aset::query();
@@ -28,7 +28,7 @@ class LaporanController extends Controller
         $forecasts = $this->calculateForecast($aset);
 
         // Kembalikan view dengan data
-        return view('laporan.inventaris', compact('aset', 'forecasts'));
+        return view('laporan.aset', compact('aset', 'forecasts'));
     }
 
     public function calculateForecast($asets)
@@ -95,20 +95,29 @@ class LaporanController extends Controller
                 $pengajuanQuery->where('status', $request->input('status'));
             }
 
-            // Order by created_at desc
-            $pengajuanQuery->orderBy('created_at', 'desc');
+            // Order data
+            $orderColumnIndex = $request->input('order.0.column');
+            $orderDirection = $request->input('order.0.dir');
+            $orderColumn = $request->input('columns.' . $orderColumnIndex . '.data');
+
+            // Validate order column
+            if ($orderColumnIndex !== null && $orderDirection !== null && in_array($orderColumn, ['nama_barang', 'nama_pemohon', 'status', 'created_at'])) {
+                $pengajuanQuery->orderBy($orderColumn, $orderDirection);
+            } else {
+                $pengajuanQuery->orderBy('created_at', 'desc'); // Default order if not provided
+            }
 
             return DataTables::eloquent($pengajuanQuery)
                 ->addIndexColumn()
-                ->editColumn('status', function($item) {
+                ->editColumn('status', function ($item) {
                     $badgeClass = $item->status === 'pending' ? 'badge badge-warning' : ($item->status === 'approved' ? 'badge badge-success' : ($item->status === 'rejected' ? 'badge badge-danger' : ''));
-                    return '<span class="'. $badgeClass .'">'. $item->status .'</span>';
+                    return '<span class="' . $badgeClass . '">' . $item->status . '</span>';
                 })
                 ->rawColumns(['status'])
                 ->make(true);
         }
 
         return view('laporan.pengajuan');
-}
+    }
 }
 

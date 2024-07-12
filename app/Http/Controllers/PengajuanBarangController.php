@@ -10,21 +10,46 @@ use Yajra\DataTables\Facades\Datatables;
 
 class PengajuanBarangController extends Controller
 {
-    public function index(Request $request)
-    {
-        if ($request->ajax()) {
-            $user = Auth::user();
-            $query = PengajuanBarang::query();
+  public function index(Request $request)
+{
+    if ($request->ajax()) {
+        $user = Auth::user();
+        $query = PengajuanBarang::query()->select('id', 'nama_barang', 'nama_pemohon', 'status', 'created_at');
 
-            // Filter berdasarkan peran pengguna
-            if ($user->jabatan != 'admin') {
-                $query->where('nama_pemohon', $user->nama_user);
-            }
+        // Filter based on user role
+        if ($user->jabatan != 'admin') {
+            $query->where('nama_pemohon', $user->nama_user);
+        }
 
-            // Urutankan data untuk memunculkan yang belum di-approve di atas
-            $query->orderByRaw("CASE WHEN status = 'pending' THEN 1 ELSE 2 END, created_at DESC");
+        // Apply search filter
+        $search = $request->input('search.value');
 
-            return DataTables::of($query)
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nama_barang', 'like', '%' . $search . '%')
+                    ->orWhere('nama_pemohon', 'like', '%' . $search . '%')
+                    ->orWhere('status', 'like', '%' . $search . '%')
+                    ->orWhere('id', '=', $search); // Search by ID
+            });
+        }
+
+        // Order data
+        $orderColumnIndex = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir');
+        $orderColumn = $request->input('columns.'.$orderColumnIndex.'.data');
+
+         // Order data
+         $orderColumnIndex = $request->input('order.0.column');
+         $orderDirection = $request->input('order.0.dir');
+         $orderColumn = $request->input('columns.' . $orderColumnIndex . '.data');
+
+         if ($orderColumnIndex !== null && $orderDirection !== null && in_array($orderColumn, ['nama_barang', 'nama_pemohon', 'status', 'created_at'])) {
+             $query->orderBy($orderColumn, $orderDirection);
+         } else {
+             $query->orderBy('created_at', 'desc'); // Default order if not provided
+         }
+
+        return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('checkbox', function($item) {
                     if (Auth::user()->jabatan == 'admin') {
@@ -88,6 +113,7 @@ class PengajuanBarangController extends Controller
 
         return view('pengajuan.index');
     }
+
     // Create Pengajuan
     public function create()
     {

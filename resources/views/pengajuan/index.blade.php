@@ -3,8 +3,7 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://code.jquery.com/jquery-3.6.1.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
-<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <style>
     .dropdown-item {
@@ -35,7 +34,7 @@
             <div class="card">
                 <div class="card-header-action mt-3 ml-3">
                     <a href="{{ route('pengajuan.create') }}" class="btn btn-sm btn-primary" style="margin-right: 10px;">
-                        <i class="fa-solid fa-circle-plus"></i> Tambah Pengajuan
+                        <i class="fa-solid fa-circle-plus"></i> Buat Pengajuan
                     </a>
                     @if(Auth::check() && Auth::user()->jabatan == 'admin')
                     <button class="btn btn-sm btn-danger" id="btn-delete-selected" style="display: none;"><i class="fas fa-trash-alt"></i> Hapus Terpilih</button>
@@ -70,6 +69,8 @@
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script src="assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
@@ -77,16 +78,16 @@ $(document).ready(function() {
     var table = $('#table-pengajuan').DataTable({
         processing: true,
         serverSide: true,
-        ajax:  "{{ route('pengajuan.index') }}",
+        ajax: "{{ route('pengajuan.index') }}",
         columns: [
             { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'nama_barang', name: 'nama_barang' },
-            { data: 'nama_pemohon', name: 'nama_pemohon' },
-            { data: 'status', name: 'status', orderable: false, searchable: false },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
+            { data: 'nama_barang', name: 'nama_barang', className: 'text-center' },
+            { data: 'nama_pemohon', name: 'nama_pemohon', className: 'text-center' },
+            { data: 'status', name: 'status',className: 'text-center', orderable: true, searchable: true },
+            { data: 'action', name: 'action', className: 'text-center', orderable: false, searchable: false }
         ],
-        order: [[3, 'desc']] // Default order, misalnya berdasarkan indeks
+        order: [[2, 'desc']]
     });
 
     // Menambahkan event listener untuk seleksi semua checkbox
@@ -137,7 +138,7 @@ $(document).ready(function() {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
+                confirmButtonText: 'Ya, hapus',
                 cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
@@ -265,12 +266,12 @@ $(document).ready(function() {
         var pengajuanId = $(this).data('pengajuanid');
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Anda akan menyetujui pengajuan ini!",
+            text: "Anda akan menyetujui pengajuan ini",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, setujui!',
+            confirmButtonText: 'Ya, setujui',
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {
@@ -286,12 +287,12 @@ $(document).ready(function() {
         var pengajuanId = $(this).data('pengajuanid');
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Anda akan menolak pengajuan ini!",
+            text: "Anda akan menolak pengajuan ini",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, tolak!',
+            confirmButtonText: 'Ya, tolak',
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {
@@ -308,12 +309,12 @@ $(document).ready(function() {
         var id = form.data('id');
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            text: "Data yang dihapus tidak dapat dikembalikan",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!',
+            confirmButtonText: 'Ya, hapus',
             cancelButtonText: 'Batal',
             reverseButtons: true,
         }).then((result) => {

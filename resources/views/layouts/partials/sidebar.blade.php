@@ -15,7 +15,7 @@
         <li class="dropdown {{ Request::routeIs('aset.*') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Aset</span></a>
             <ul class="dropdown-menu">
-                <li class="{{ Request::routeIs('aset.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('aset.index') }}">Inventaris</a></li>
+                <li class="{{ Request::routeIs('aset.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('aset.index') }}">Manajemen Aset</a></li>
                 <li class="{{ Request::routeIs('peminjaman.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('peminjaman.index') }}">Peminjaman Aset</a></li>
                 <li class="{{ Request::routeIs('pengajuan.index') ? 'active' : '' }}"><a class="nav-link" href="{{ route('pengajuan.index') }}">Pengajuan Aset</a></li>
             </ul>
@@ -37,7 +37,7 @@
         <li class="dropdown {{ Request::routeIs('laporan.*') ? 'active' : '' }}">
             <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="far fa-file-alt"></i> <span>Laporan</span></a>
             <ul class="dropdown-menu">
-                <li class="{{ Request::routeIs('laporan.inventaris') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.inventaris') }}">Laporan Inventaris</a></li>
+                <li class="{{ Request::routeIs('laporan.aset') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.aset') }}">Laporan Aset</a></li>
                 <li class="{{ Request::routeIs('laporan.peminjaman') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.peminjaman') }}">Laporan Peminjaman Aset</a></li>
                 <li class="{{ Request::routeIs('laporan.pengajuan') ? 'active' : '' }}"><a class="nav-link" href="{{ route('laporan.pengajuan') }}">Laporan Pengajuan Aset</a></li>
             </ul>

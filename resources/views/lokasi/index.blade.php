@@ -94,7 +94,7 @@
                 $('.modal-backdrop').remove();
                 Swal.fire({
                     title: 'Success',
-                    text: 'Data lokasi berhasil disimpan!',
+                    text: 'Data lokasi berhasil disimpan',
                     icon: 'success',
                     showConfirmButton: true
                 }).then((result) => {

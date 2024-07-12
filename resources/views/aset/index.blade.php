@@ -7,7 +7,7 @@
 <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
 <section class="section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 class="section-title"> Data Inventaris</h1>
+        <h1 class="section-title"> Data Aset</h1>
     </div>
     <div class="row">
         <div class="col-12">
@@ -74,7 +74,7 @@ $(document).ready(function() {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus!',
+            confirmButtonText: 'Ya, hapus',
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {

@@ -83,9 +83,9 @@
                                 <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="d-flex justify-content-end mt-3">
-                            <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger mr-1">Kembali</a>
+                        <div class="d-flex justify-content-start mt-3">
                             <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                            <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger ml-1 mr-1">Kembali</a>
                     </form>
                 </div>
             </div>

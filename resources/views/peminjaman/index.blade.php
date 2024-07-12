@@ -56,12 +56,12 @@ $(document).ready(function() {
         },
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-            { data: 'barang.nama_barang', name: 'barang.nama_barang' },
-            { data: 'nama_peminjam', name: 'nama_peminjam' },
-            { data: 'tanggal_peminjaman', name: 'tanggal_peminjaman', render: function(data) {
+            { data: 'barang.nama_barang', name: 'barang.nama_barang', className: 'text-center' },
+            { data: 'nama_peminjam', name: 'nama_peminjam', className: 'text-center' },
+            { data: 'tanggal_peminjaman', name: 'tanggal_peminjaman', className: 'text-center', render: function(data) {
                 return data ? moment(data, 'DD-MM-YYYY').format('DD-MM-YYYY') : '';
             }},
-            { data: 'tanggal_pengembalian', name: 'tanggal_pengembalian', render: function(data) {
+            { data: 'tanggal_pengembalian', name: 'tanggal_pengembalian', className: 'text-center', render: function(data) {
                 return data ? moment(data, 'DD-MM-YYYY').format('DD-MM-YYYY') : '';
             }},
             { data: 'status', name: 'status', render: function(data, type, row) {
@@ -82,7 +82,7 @@ $(document).ready(function() {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, hapus saja!',
+            confirmButtonText: 'Ya, hapus saja',
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {

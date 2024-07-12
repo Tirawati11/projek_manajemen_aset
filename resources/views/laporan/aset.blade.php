@@ -12,7 +12,7 @@
 @section('content')
 <section class="section">
     <div class="section-header no-print">
-        <h1 class="section-title">Data Laporan Inventaris</h1>
+        <h1 class="section-title">Data Laporan Aset</h1>
     </div>
     <div class="row mt-4">
         <div class="col-12">
@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="card-body printableArea">
-                    <h4 id="tableTitle" style="text-align: center;">Laporan Inventaris</h4>
+                    <h4 id="tableTitle" style="text-align: center;">Laporan Aset</h4>
                     <div class="table-responsive">
                         <table class="table table-striped table-print" cellspacing="0" width="100%" id="table1">
                             <thead>
@@ -91,7 +91,7 @@
         printWindow.document.write(`
             <html>
             <head>
-                <title>Laporan Inventaris</title>
+                <title>Laporan Aset</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
                 <style>
                     /* Optional: Add custom styles for printing */
@@ -113,7 +113,7 @@
                 </style>
             </head>
             <body>
-                <h4 style="text-align: center;">Laporan Inventaris</h4>
+                <h4 style="text-align: center;">Laporan Aset</h4>
         `);
         printWindow.document.write(tableToPrint.outerHTML);
         printWindow.document.write(`
@@ -131,8 +131,8 @@
     // eksport data ke excel
     function exportToExcel() {
         const table = document.getElementById('table1');
-        const workbook = XLSX.utils.table_to_book(table, { sheet: "Laporan Inventaris" });
-        const worksheet = workbook.Sheets["Laporan Inventaris"];
+        const workbook = XLSX.utils.table_to_book(table, { sheet: "Laporan Aset" });
+        const worksheet = workbook.Sheets["Laporan Aset"];
 
         // Apply border styles to all cells
         const range = XLSX.utils.decode_range(worksheet['!ref']);
@@ -152,7 +152,7 @@
         }
 
         // Export the workbook
-        XLSX.writeFile(workbook, 'Laporan Inventaris.xlsx');
+        XLSX.writeFile(workbook, 'Laporan Aset.xlsx');
     }
 </script>
 @endsection

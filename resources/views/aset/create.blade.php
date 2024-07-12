@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title">Tambah Inventaris</h1>
+        <h1 class="section-title">Tambah Aset</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
@@ -99,9 +99,9 @@
                                 <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-sm btn-primary me-2 mr-1">Simpan</button>
-                        <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger">Kembali</a>
+                        <div class="d-flex justify-content-start mt-3">
+                            <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                            <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger ml-1 mr-1">Kembali</a>
                     </form>
                 </div>
             </div>
@@ -111,9 +111,10 @@
 @endsection
 
 @section('scripts')
-<!-- Select2 JS -->
+<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#kode_select').change(function() {

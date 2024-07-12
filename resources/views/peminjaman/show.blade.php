@@ -20,9 +20,9 @@
                         <p>Tanggal Pengembalian : {{ $peminjaman->tanggal_pengembalian }}</p>
                         <p>Status : {{ $peminjaman->status }}</p>
                     </div>
-                    <div class="d-flex justify-content-end mt-3">
-                        <a href="{{ route('peminjaman.index') }}" class="btn btn-danger mr-1">Kembali</a>
+                    <div class="d-flex justify-content-start mt-3">
                         <a href="{{ route('peminjaman.edit', $peminjaman->id) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-danger ml-1 mr-1">Kembali</a>
                     </div>
                 </div>
             </div>
