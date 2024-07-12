@@ -6,31 +6,17 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Yajra\DataTables\DataTables;
-
 
 
 class CategoryController extends Controller
 {
-    public function index(Request $request)
+        public function index()
     {
-        if ($request->ajax()) {
-            $categories = Category::select(['id', 'name']);
-
-            return DataTables::of($categories)
-                ->addColumn('action', function($category) {
-                    return '
-                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="'.$category->id.'" data-name="'.$category->name.'"><i class="far fa-eye" title="Show"></i></a>
-                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="'.$category->id.'" data-name="'.$category->name.'"><i class="fas fa-edit" title="Edit"></i></a>
-                        <button class="btn btn-sm btn-danger btn-delete" data-id="'.$category->id.'"><i class="fas fa-trash-alt" title="Hapus"></i></button>
-                    ';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
-
-        return view('categories.index');
+        $categories = Category::paginate(10);
+        return view('categories.index', compact('categories'));
     }
+
+    
     public function create()
     {
         return view('categories.create');

@@ -2,10 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
-<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 
 <section class="section">
     <div class="section-header">
@@ -30,6 +27,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($categories as $category)
+                                            <tr>
+                                                <td style="text-align: center;">{{ $loop->iteration }}</td>
+                                                <td style="text-align: center;">{{ $category->name }}</td>
+                                                <td style="text-align: center;">
+                                                    <a href="#" class="btn btn-sm btn-warning btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="fas fa-edit"></i></a>
+                                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-danger btn-delete"><i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -98,32 +109,17 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function() {
-        $('#table-id').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: '{{ route('categories.index') }}',
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'name', name: 'name' },
-                { data: 'action', name: 'action', orderable: false, searchable: false }
-            ],
-            order: [] // Menonaktifkan pengurutan awal
-        });
-        
         // Event handler untuk tombol "Tambah Kategori"
         $('#btn-tambah-kategori').click(function(e) {
             e.preventDefault(); // Hindari navigasi ke link
             $('#modal-tambah-kategori').modal('show');
         });
 
-        // Event handler for editing a category
+        // Event handler untuk tombol "Edit Kategori"
         $(document).on('click', '.btn-edit', function(e) {
             e.preventDefault();
             var id = $(this).data('id');
@@ -133,11 +129,10 @@
             $('#modal-edit-kategori').modal('show');
         });
 
-        // Event handler for deleting a category
+        // Event handler untuk tombol "Hapus Kategori"
         $(document).on('click', '.btn-delete', function(e) {
             e.preventDefault();
             var form = $(this).closest('form');
-            var id = $(this).data('id');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda tidak akan dapat mengembalikan ini!",
