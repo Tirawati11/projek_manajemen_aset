@@ -27,29 +27,38 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($categories as $category)
-                                            <tr>
-                                                <td style="text-align: center;">{{ $loop->iteration }}</td>
-                                                <td style="text-align: center;">{{ $category->name }}</td>
-                                                <td style="text-align: center;">
-                                                    <a href="#" class="btn btn-sm btn-warning btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="fas fa-edit"></i></a>
-                                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline;">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger btn-delete"><i class="fas fa-trash"></i></button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                                        @forelse ($categories as $category)
+                                    <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $category->name }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Show">
+                                            <i class="far fa-eye"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline form-delete">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}" title="Hapus">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">Data Kategori belum tersedia.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Modal Tambah Kategori -->
     <div class="modal fade" id="modal-tambah-kategori" tabindex="-1" role="dialog" aria-labelledby="modal-tambah-kategori-title" aria-hidden="true">
