@@ -14,43 +14,48 @@
         <div class="col-12">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
+                    <a href="#" class="btn btn-sm btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
                     <div class="table-responsive">
                         <table class="table table-bordered table-md" id="table1">
                             <thead>
                                 <tr>
-                                    <th class="col-no">No</th>
-                                    <th class="col-name">Kategori</th>
-                                    <th class="col-action">Aksi</th>
+                                    <th style="text-align: center;">No</th>
+                                    <th style="text-align: center;">Kategori</th>
+                                    <th style="text-align: center;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($categories as $category)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $category->name }}</td>
-                                        <td>
-                                            <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="far fa-eye" title="Show"></i></a>
-                                            <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="fas fa-edit" title="Edit"></i></a>
-                                            <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}"><i class="fas fa-trash-alt" title="Hapus"></i></button>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center">
-                                            <div class="alert alert-danger">
-                                                Data Kategori belum Tersedia.
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+                            <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $category->name }}</td>
+                            <td>
+                                <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" title="Show">
+                                    <i class="far fa-eye"></i>
+                                </a>
+                                <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline form-delete">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}" title="Hapus">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center">Data Kategori belum tersedia.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
+</div>
 </div>
 
     <!-- Modal Tambah Kategori -->
@@ -131,22 +136,16 @@
             $('#modal-edit-kategori').modal('show');
         });
 
-        $('.btn-show').click(function() {
+        // Event handler untuk tombol "Show Kategori"
+        $(document).on('click', '.btn-show', function(e) {
+            e.preventDefault();
             var id = $(this).data('id');
-            var name = $(this).data('name');
-            $('#show_nama_kategori').val(name);
-
-            $.ajax({
-                url: '/categories/' + id + '/assets',
-                method: 'GET',
-                success: function(data) {
-                    $('#aset_list').html(data);
-                    $('#modal-show-kategori').modal('show');
-                }
-            });
+            window.location.href = '/categories/' + id;
         });
 
-        $('.btn-delete').click(function() {
+        // Event handler untuk tombol "Delete Kategori"
+        $(document).on('click', '.btn-delete', function(e) {
+            e.preventDefault();
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -160,7 +159,7 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit();
+                    $(this).closest('form').submit();
                 }
             });
         });
@@ -185,3 +184,4 @@
     });
 </script>
 @endsection
+

@@ -5,8 +5,7 @@
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="anonymous" referrerpolicy="no-referrer" />
  <!-- Import jQuery -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
- <!-- Import DataTables CSS -->
- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
 
 
 <section class="section">
@@ -25,12 +24,10 @@
                     <button class="btn btn-sm btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
                         <i class="fa-solid fa-file-import"></i> Import File
                     </button>
-                </div>
-                <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped" id="table-1">
+                        <table class="table table-bordered table-md" id="table1">
                             <thead>
-                            <tr>
+                                <tr>
                                 <th style="text-align: center;">No</th>
                                 <th style="text-align: center;">Nama User</th>
                                 <th style="text-align: center;">Email</th>
@@ -203,15 +200,10 @@
 @section('scripts')
 <!-- Import Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <!-- SweetAlert JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
 
 <script>
-     $(document).ready(function () {
-        $('#table-1').DataTable(); 
-    });
     $(document).ready(function () {
         // Tambah User
         $('#modal-tamsbah-user').on('shown.bs.modal', function () {

@@ -35,26 +35,24 @@ public function create()
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-public function show(Category $category)
-{
-    return view('categories.show', compact('category'));
-}
-
-public function edit(Category $category)
-{
-    return view('categories.edit', compact('category'));
-}
-
-    public function update(Request $request, Category $category)
+    public function show($id)
     {
-        $request->validate([
-            'nama_kategori' => 'required|string|max:255',
-        ]);
-
-        $category->name = $request->nama_kategori;
-        $category->save();
-
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
+        $category = Category::findOrFail($id);
+        $asets = $category->asets; // Asumsi bahwa relasi antara kategori dan aset adalah 'asets'
+        return view('categories.show', compact('category', 'asets'));
+    }
+    
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return response()->json($category);
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui');
     }
 
 public function destroy($id)

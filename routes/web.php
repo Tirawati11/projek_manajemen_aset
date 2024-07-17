@@ -53,8 +53,10 @@ Route::middleware(['auth'])->group(function () {
 
         // Route Categories
         Route::resource('categories', CategoryController::class);
-        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit']);
-        
+        Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+
 
         // Route Lokasi
         Route::resource('lokasi', LocationController::class);

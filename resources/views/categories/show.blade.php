@@ -23,26 +23,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($asets as $index => $aset)
+                                @if ($asets && count($asets) > 0)
+                                @foreach($asets as $index => $aset)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $aset->nama_barang }}</td>
                                         <td>{{ $aset->jumlah }}</td>
                                         <td>{{ $aset->kondisi }}</td>
                                     </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="4" class="text-center">Tidak ada aset yang terkait dengan kategori ini.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="d-flex justify-content-end">
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="4" class="text-center">Tidak ada aset yang terkait dengan kategori ini.</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-end">
                     <a href="{{ route('categories.index') }}" class="btn btn-sm btn-primary mt-3">Kembali</a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 @endsection
