@@ -84,21 +84,7 @@
                 </div>
                 @enderror
             </div>
-            <div class="form-group">
-                <label class="font-weight-bold">Role</label>
-                <select class="form-control @error('jabatan') is-invalid @enderror" name="jabatan">
-                    <option value="">----</option>
-                    <option value="admin">Admin</option>
-                    <option value="user">Karyawan</option>
-                    <option value="HRD">HRD</option>
-                    </select>
-                @error('jabatan')
-                    <div class="alert alert-danger mt-2">
-                        {{ $message }}
-                    </div>
-                @enderror
-            </div>
-            <div class="form-group">
+                <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-lg btn-block">
                     Login
                 </button>

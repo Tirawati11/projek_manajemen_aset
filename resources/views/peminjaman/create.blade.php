@@ -1,25 +1,30 @@
 @extends('layouts.main')
 
 @section('content')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 <section class="section">
     <div class="section-header">
-        <h1>Buat Peminjaman</h1>
+        <h1 class="section-title">Buat Peminjaman</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
     <div class="row">
-        <div class="col-md-12">
+    <form action="{{ route('peminjaman.store') }}" method="POST">
+        @csrf
+        </div>
+        <div class="col-md-6">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <form action="{{ route('peminjaman.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="form-group">
-                            <label class="font-weight-bold">Nama Peminjam</label>
-                            <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama">
-                            @error('nama')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
-                                </div>
+                    <div class="form-group">
+                            <label class="font-weight-bold">Nama Barang</label>
+                            <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
+                                <option value="">Pilih Nama Barang</option>
+                                @foreach($barangs as $barang)
+                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
+                                @endforeach
+                            </select>
+                            @error('nama_barang_id')
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-group">
@@ -37,39 +42,30 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label class="font-weight-bold">Nama Barang</label>
-                            <select class="form-control @error('nama_barang_id') is-invalid @enderror" name="nama_barang_id">
-                                <option value="">Pilih Nama Barang</option>
-                                @foreach($barangs as $barang)
-                                    <option value="{{ $barang->id }}">{{ $barang->nama_barang }}</option>
-                                @endforeach
-                            </select>
-                            @error('nama_barang_id')
-                                <div class="alert alert-danger mt-2">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
                             <label class="font-weight-bold">Jumlah</label>
-                            <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" value="{{ old('jumlah') }}" required>
+                            <input type="number" name="jumlah" id="jumlah" class="form-control" min="1" step="1" oninput="this.value = Math.abs(this.value)" value="{{ old('jumlah') }}" required>
                         </div>
-                        <div class="form-group">
-                            <label class="font-weight-bold">Tanggal Peminjaman</label>
-                            <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman') }}" placeholder="Masukkan tanggal peminjaman">
-                            @error('tanggal_peminjaman')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Tanggal Peminjaman</label>
+                                    <input type="date" class="form-control @error('tanggal_peminjaman') is-invalid @enderror" name="tanggal_peminjaman" value="{{ old('tanggal_peminjaman') }}" placeholder="Masukkan tanggal peminjaman">
+                                    @error('tanggal_peminjaman')
+                                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label class="font-weight-bold">Tanggal Pengembalian</label>
-                            <input type="date" class="form-control @error('tanggal_pengembalian') is-invalid @enderror" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') }}" placeholder="Masukkan tanggal pengembalian">
-                            @error('tanggal_pengembalian')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="font-weight-bold">Tanggal Pengembalian</label>
+                                    <input type="date" class="form-control @error('tanggal_pengembalian') is-invalid @enderror" name="tanggal_pengembalian" value="{{ old('tanggal_pengembalian') }}" placeholder="Masukkan tanggal pengembalian">
+                                    @error('tanggal_pengembalian')
+                                        <div class="alert alert-danger mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                            @enderror
+                            </div>
                         </div>
+
                         <div class="form-group">
                             <label class="font-weight-bold">Status</label>
                             <select class="form-control @error('status') is-invalid @enderror" name="status">
@@ -77,12 +73,12 @@
                                 <option value="kembali" {{ old('status') == 'kembali' ? 'selected' : '' }}>Kembali</option>
                             </select>
                             @error('status')
-                                <div class="alert alert-danger mt-2">
-                                    {{ $message }}
-                                </div>
+                                <div class="alert alert-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-md btn-primary">Simpan</button>
+                        <div class="d-flex justify-content-start mt-3">
+                        <button type="submit" class="btn btn-sm btn-primary me-2 mr-1">Simpan</button>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                     </form>
                 </div>
             </div>
@@ -93,7 +89,7 @@
 
 @section('scripts')
 <!-- jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 <!-- Bootstrap JS -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

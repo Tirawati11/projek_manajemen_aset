@@ -6,13 +6,13 @@
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <h4 class="mb-4" style="font-family: 'Roboto', sans-serif; color: #333; text-align: center;">Detail Peminjaman Aset</h4>
+                    <h4 class="mb-4" style="text-align: center;">Detail Peminjaman Aset</h4>
                     <hr>
                     <p class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
                         ID :  {{ $peminjaman->id }}
                     </p>
                     <div class="mt-3" style="font-family: 'Roboto', sans-serif; color: #666;">
-                        <p>Penanggungjawab : {{ $peminjaman->nama }}</p>
+                        <p>Penanggungjawab : {{ $peminjaman->user ? $peminjaman->user->nama_user : 'Tidak diketahui' }}</p>
                         <p>Nama Barang : {{ $peminjaman->barang->nama_barang }}</p>
                         <p>Jumlah : {{ $peminjaman->jumlah }}</p>
                         <p>Lokasi : {{ $peminjaman->location ? $peminjaman->location->name : 'Tidak diketahui' }}</p>
@@ -20,8 +20,9 @@
                         <p>Tanggal Pengembalian : {{ $peminjaman->tanggal_pengembalian }}</p>
                         <p>Status : {{ $peminjaman->status }}</p>
                     </div>
-                    <div class="mt-4">
-                        <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-danger">Kembali</a>
+                    <div class="d-flex justify-content-start mt-3">
+                        <a href="{{ route('peminjaman.edit', $peminjaman->id) }}" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('peminjaman.index') }}" class="btn btn-danger ml-1 mr-1">Kembali</a>
                     </div>
                 </div>
             </div>
