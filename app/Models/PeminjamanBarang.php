@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Location;
-use App\Models\Barang;
+use App\Models\User;
 
 class PeminjamanBarang extends Model
 {
-   protected $fillable = ['nama_barang_id', 'nama', 'location_id', 'jumlah', 'tanggal_peminjaman', 'tanggal_pengembalian', 'status'];
+   protected $fillable = ['nama_barang_id', 'user_id', 'nama_peminjam', 'location_id', 'jumlah', 'tanggal_peminjaman', 'tanggal_pengembalian', 'status'];
 
    public function location()
     {
@@ -18,5 +18,10 @@ class PeminjamanBarang extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'nama_barang_id');
+    }
+    // relasi
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

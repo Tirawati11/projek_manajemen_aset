@@ -1,5 +1,5 @@
 <div class="modal fade" id="modalEdit{{$location->id}}" tabindex="-1" role="dialog" aria-labelledby="modalEditLabel{{$location->id}}" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalEditLabel{{$location->id}}">Edit Lokasi</h5>
@@ -17,8 +17,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

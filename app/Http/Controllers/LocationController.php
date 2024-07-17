@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Location;
 use App\Models\PeminjamanBarang;
+use Yajra\DataTables\Facades\Datatables;
 
 
 class LocationController extends Controller
@@ -13,52 +14,72 @@ class LocationController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-    $search = $request->input('search');
+{
+    if ($request->ajax()) {
+        $locations = Location::select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
 
-    // Query data lokasi berdasarkan pencarian
-    $query = Location::query();
-    if ($search) {
-        $query->where('name', 'LIKE', "%$search%");
+        return DataTables::of($locations)
+            ->addColumn('DT_RowIndex', function ($row) {
+                return $row->id; // Nomor urutan bisa menggunakan ID atau menggunakan iterator DataTables
+            })
+            ->addColumn('action', function ($row) {
+                $btn = '<a href="'.route('lokasi.show', $row->id).'" class="btn btn-sm btn-dark" title="Lihat">
+                <i class="far fa-eye"></i>
+            </a>';
+
+            $btn .= ' <button type="button" class="btn btn-sm btn-primary btn-edit" data-id="' . $row->id . '" data-name="' . $row->name . '" title="Edit">
+                <i class="fas fa-edit"></i>
+            </button>';
+
+            $btn .= ' <button type="button" class="btn btn-sm btn-danger delete-confirm" data-id="' . $row->id . '" title="Hapus">
+                <i class="fas fa-trash-alt"></i>
+            </button>';
+
+            return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 
-    // Menggunakan paginate dengan 10 item per halaman
-    $locations = $query->paginate(5);
+    // Fetch all locations for modals
+    $locations = Location::all();
 
-    return view('lokasi.index', compact('locations', 'search'));
-    }
+    return view('lokasi.index', compact('locations'));
+}
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
+//     /**
+//      * Show the form for creating a new resource.
+//      */
     public function create()
     {
         return view('lokasi.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+//     /**
+//      * Store a newly created resource in storage.
+//      */
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|unique:locations,name',
-        ]);
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255|unique:locations,name',
+    ]);
 
-        Location::create($validatedData);
+    $location = Location::create($validatedData);
 
-        return redirect()->route('lokasi.index')
-            ->with('success', 'Location created successfully.');
+    if ($request->ajax()) {
+        return response()->json(['data' => $location, 'message' => 'Lokasi berhasil disimpan!']);
     }
+
+    return redirect()->route('lokasi.index')->with('success', 'Lokasi berhasil disimpan!');
+}
 
     /**
      * Display the specified resource.
      */
-    // public function show(Location $location)
-    // {
-    //     return view('lokasi.show', compact('location'));
-    // }
-    public function show($id)
+      public function show($id)
 {
     // Mengambil data lokasi berdasarkan ID
     $location = Location::findOrFail($id);
@@ -85,7 +106,7 @@ class LocationController extends Controller
     {
         // Validasi data input
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+           'name' => 'required|string|max:255|unique:locations,name',
         ]);
 
         try {
@@ -123,13 +144,15 @@ class LocationController extends Controller
      */
     public function destroy($id)
     {
-        $location = Location::find($id);
+        $location = Location::findOrFail($id);
 
-        if ($location) {
-            $location->delete();
-            return redirect()->route('lokasi.index')->with('success', 'Lokasi telah dihapus.');
-        } else {
-            return redirect()->route('lokasi.index')->with('error', 'Lokasi tidak ditemukan.');
+        // Check if the location is still related to any peminjamanBarangs
+        if ($location->peminjamanBarangs()->exists()) {
+            return response()->json(['error' => 'Lokasi masih digunakan dalam peminjaman barang. Tidak dapat dihapus.'], 422);
         }
+
+        $location->delete();
+
+        return response()->json(['message' => 'Lokasi berhasil dihapus.']);
     }
 }

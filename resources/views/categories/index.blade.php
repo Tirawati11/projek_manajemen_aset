@@ -2,58 +2,51 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data Kategori</h1>
+        <h1 class="section-title">Data Kategori</h1>
     </div>
-    <div class="container mt-5 mb-5">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm rounded">
-                    <div class="card-body">
-                        <div class="card-header-action">
-                            <a href="#" class="btn btn-sm btn-primary mb-3" id="btn-tambah-kategori"><i class="fas fa-plus-circle"></i> Tambah Kategori</a>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped" id="table-id">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">No</th>
-                                            <th style="text-align: center;">Kategori</th>
-                                            <th style="text-align: center;">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($categories as $category)
-                                    <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $category->name }}</td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Show">
-                                            <i class="far fa-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline form-delete">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}" title="Hapus">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
+</section>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
+                    <a href="#" class="btn btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-md" id="table1">
+                            <thead>
                                 <tr>
-                                    <td colspan="4" class="text-center">Data Kategori belum tersedia.</td>
+                                    <th class="col-no">No</th>
+                                    <th class="col-name">Kategori</th>
+                                    <th class="col-action">Aksi</th>
                                 </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @forelse ($categories as $category)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $category->name }}</td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="far fa-eye" title="Show"></i></a>
+                                            <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}"><i class="fas fa-edit" title="Edit"></i></a>
+                                            <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}"><i class="fas fa-trash-alt" title="Hapus"></i></button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <div class="alert alert-danger">
+                                                Data Kategori belum Tersedia.
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -138,10 +131,23 @@
             $('#modal-edit-kategori').modal('show');
         });
 
-        // Event handler untuk tombol "Hapus Kategori"
-        $(document).on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            var form = $(this).closest('form');
+        $('.btn-show').click(function() {
+            var id = $(this).data('id');
+            var name = $(this).data('name');
+            $('#show_nama_kategori').val(name);
+
+            $.ajax({
+                url: '/categories/' + id + '/assets',
+                method: 'GET',
+                success: function(data) {
+                    $('#aset_list').html(data);
+                    $('#modal-show-kategori').modal('show');
+                }
+            });
+        });
+
+        $('.btn-delete').click(function() {
+            var id = $(this).data('id');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: "Anda tidak akan dapat mengembalikan ini!",
