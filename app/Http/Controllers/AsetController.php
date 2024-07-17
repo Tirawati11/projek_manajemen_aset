@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Yajra\DataTables\Facades\Datatables;
 
 
 class AsetController extends Controller
@@ -16,43 +17,67 @@ class AsetController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    // Ambil query pencarian dari request
-    $search = $request->input('search');
-    $dateSearch = $request->input('date_search');
+    {
+        if ($request->ajax()) {
+            $query = Aset::select('id', 'kode', 'nama_barang', 'merek', 'tanggal_masuk', 'harga', 'gambar', 'category_id')
+                         ->with('category:id,name');
 
-    // Query untuk mendapatkan data aset dengan pencarian
-    $query = Aset::with('category');
+            // Ambil query pencarian dari request
+            $search = $request->input('search.value');
 
-    if ($search) {
-        $query->where(function($q) use ($search) {
-            $q->where('nama_barang', 'like', '%' . $search . '%')
-              ->orWhere('merek', 'like', '%' . $search . '%');
-        });
-    }
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('kode', 'like', '%' . $search . '%')
+                        ->orWhere('nama_barang', 'like', '%' . $search . '%')
+                        ->orWhere('merek', 'like', '%' . $search . '%')
+                        ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%d-%m-%Y") like ?', ['%' . $search . '%'])
+                        ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%m-%Y") like ?', ['%' . $search . '%'])
+                        ->orWhereRaw('DATE_FORMAT(tanggal_masuk, "%Y") like ?', ['%' . $search . '%']);
+                });
+            }
 
-    // Tambahkan pencarian berdasarkan tanggal_masuk
-    if ($dateSearch) {
-        try {
-            $date = Carbon::createFromFormat('d-m-Y', $dateSearch);
-            $query->whereDate('tanggal_masuk', $date);
-        } catch (\Exception $e) {
-            // Handle exception jika format tanggal tidak valid
+            $dataTable = DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('category_name', function ($aset) {
+                    return $aset->category ? $aset->category->name : 'N/A';
+                })
+                ->addColumn('gambar', function ($aset) {
+                    return '<img src="'. asset('/storage/aset/'.$aset->gambar) .'" class="rounded" style="width: 150px">';
+                })
+                ->editColumn('harga', function($row) {
+                    return 'Rp ' . number_format($row->harga, 2, ',', '.');
+                })
+                ->editColumn('tanggal_masuk', function($row) {
+                    return \Carbon\Carbon::parse($row->tanggal_masuk)->format('d-m-Y');
+                })
+                ->addColumn('action', function ($aset) {
+                    return '
+                        <a href="'. route('aset.show', $aset->id) .'" class="btn btn-sm btn-dark" title="Show">
+                            <i class="far fa-eye"></i>
+                        </a>
+                        <a href="'. route('aset.edit', $aset->id) .'" class="btn btn-sm btn-primary" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form id="delete-form-'. $aset->id .'" action="'. route('aset.destroy', $aset->id) .'" method="POST" class="d-inline delete-form">
+                            '. csrf_field() .'
+                            '. method_field('DELETE') .'
+                            <button type="submit" class="btn btn-sm btn-danger delete-confirm" title="Hapus">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    ';
+                })
+                ->rawColumns(['gambar', 'action'])
+                ->make(true);
+
+            return $dataTable;
         }
+
+        // Ambil data categories
+        $categories = Category::all();
+
+        return view('aset.index', compact('categories'));
     }
-
-    // Dapatkan hasil paginasi
-    $asets = $query->latest()->paginate(5);
-
-    // Sertakan query pencarian dalam hasil pagination
-    $asets->appends(['search' => $search, 'date_search' => $dateSearch]);
-
-    // Ambil data categories
-    $categories = Category::all();
-
-    return view('aset.index', compact('asets', 'search', 'categories', 'dateSearch'));
-}
-
     /**
      * Show the form for creating a new resource.
      */
@@ -66,7 +91,7 @@ class AsetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+     public function store(Request $request)
     {
         $validated = $request->validate([
             'gambar' => 'required|image|mimes:jpeg,jpg,png|max:2048',
@@ -78,6 +103,7 @@ class AsetController extends Controller
             'tanggal_masuk' => 'required|date',
             'kondisi' => 'required',
             'category_id' => 'required|exists:categories,id',
+            'harga' => 'required|numeric',
         ]);
 
         // Upload image
@@ -94,6 +120,7 @@ class AsetController extends Controller
         $aset->merek = $request->merek;
         $aset->tanggal_masuk = $request->tanggal_masuk; // Assign langsung dari request
         $aset->kondisi = $request->kondisi;
+        $aset->harga = $request->harga;
         $aset->category_id = $request->category_id;
         $aset->save();
 
@@ -104,10 +131,12 @@ class AsetController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Aset $aset)
-    {
-        return view('aset.show', compact('aset'));
-    }
+    public function show($id)
+{
+    $aset = Aset::findOrFail($id);
+    $aset->harga_format = 'Rp ' . number_format($aset->harga, 2, ',', '.');
+    return view('aset.show', compact('aset'));
+}
 
     /**
      * Show the form for editing the specified resource.
@@ -133,6 +162,7 @@ class AsetController extends Controller
             'merek' => 'required',
             'tanggal_masuk' => 'required|date',
             'kondisi' => 'required',
+            'harga' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
         ]);
 
@@ -162,6 +192,7 @@ class AsetController extends Controller
         $aset->tanggal_masuk = $validated['tanggal_masuk'];
         $aset->kondisi = $validated['kondisi'];
         $aset->category_id = $validated['category_id'];
+        $aset->harga = $validated['harga'];
         $aset->save();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil diperbarui.');
@@ -179,18 +210,5 @@ class AsetController extends Controller
         $aset->delete();
 
         return redirect()->route('aset.index')->with('success', 'Data aset berhasil dihapus.');
-    }
-    public function getNamaBarang($kode_id)
-    {
-        // Cari nama barang berdasarkan kode yang diberikan
-        $nama_barang = Item::where('code_id', $kode_id)->value('nama_barang');
-
-        // Pastikan nama barang ditemukan
-        if ($nama_barang) {
-            return response()->json(['nama_barang' => $nama_barang]);
-        } else {
-            // Jika nama barang tidak ditemukan, kirim respons error
-            return response()->json(['error' => 'Nama barang tidak ditemukan'], 404);
-        }
     }
 }

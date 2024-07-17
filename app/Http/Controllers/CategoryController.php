@@ -6,16 +6,17 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\Aset;
 
 
 
 class CategoryController extends Controller
 {
     public function index()
-{
-    $categories = Category::paginate(10);
-    return view('categories.index', compact('categories'));
-}
+    {
+        $categories = Category::with('aset')->paginate(10);
+        return view('categories.index', compact('categories'));
+    }
 
 public function create()
 {
@@ -35,10 +36,12 @@ public function store(Request $request)
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
-public function show(Category $category)
-{
-    return view('categories.show', compact('category'));
-}
+    public function show($id)
+    {
+        $categories = Category::with('aset')->findOrFail($id);
+        return response()->json(['category' => $categories]);
+    }
+
 
 public function edit(Category $category)
 {
@@ -57,15 +60,20 @@ public function update(Request $request, Category $category)
     return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
 }
 
-    public function destroy($id)
+public function destroy($id)
     {
-        $category = Category::find($id);
+        try {
+            $category = Category::findOrFail($id);
 
-        if ($category) {
+            if ($category->aset()->count() > 0) {
+                return response()->json(['success' => false, 'message' => 'Kategori tidak bisa dihapus karena masih berelasi dengan aset.']);
+            }
+
             $category->delete();
-            return response()->json(['success' => true, 'message' => 'Kategori telah dihapus.']);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Kategori tidak ditemukan.']);
+
+            return response()->json(['success' => true, 'message' => 'Kategori berhasil dihapus.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus kategori.']);
         }
     }
 }

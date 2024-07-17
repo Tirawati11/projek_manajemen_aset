@@ -29,5 +29,15 @@ class User extends Authenticatable
     protected $dates = [
         'last_login_at',
     ];
+// Relasi Pengajuan Barang
+    public function pengajuanBarang()
+    {
+        return $this->hasMany(PengajuanBarang::class, 'user_id');
+    }
+    // Relasi Peminjaman Barang
+    public function peminjamanBarang()
+    {
+        return $this->hasMany(PeminjamanBarang::class, 'user_id');
+    }
+    }
 
-  }
