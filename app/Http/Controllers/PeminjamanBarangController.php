@@ -18,16 +18,45 @@ class PeminjamanBarangController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index()
+     public function index(Request $request)
      {
-         if (request()->ajax()) {
-             $data = PeminjamanBarang::with('barang')
-                 ->select('peminjaman_barangs.*')
-                 ->get();
+         if ($request->ajax()) {
+             $peminjamanQuery = PeminjamanBarang::with('barang');
 
-             return DataTables::of($data)
+             if ($request->has('tanggal_peminjaman') && !empty($request->tanggal_peminjaman)) {
+                 $tanggal_peminjaman = $request->tanggal_peminjaman;
+                 if (preg_match('/^\d{4}$/', $tanggal_peminjaman)) {
+                    $peminjamanQuery->whereYear('tanggal_peminjaman', $tanggal_peminjaman);
+                 } elseif (preg_match('/^\d{2}-\d{4}$/', $tanggal_peminjaman)) {
+                    [$bulan, $tahun] = explode('-', $tanggal_peminjaman);
+                     $peminjamanQuery->whereMonth('tanggal_peminjaman', $bulan)
+                                     ->whereYear('tanggal_peminjaman', $tahun);
+                 } else {
+                    $parts = explode('-', $tanggal_peminjaman);
+                     $tanggal_peminjaman = $parts[2] . '-' . $parts[1] . '-' . $parts[0];
+                     $peminjamanQuery->whereDate('tanggal_peminjaman', $tanggal_peminjaman);
+                 }
+             }
+
+             // Filter berdasarkan tanggal pengembalian
+             if ($request->has('tanggal_pengembalian') && !empty($request->tanggal_pengembalian)) {
+                 $tanggal_pengembalian = $request->tanggal_pengembalian;
+                 if (preg_match('/^\d{4}$/', $tanggal_pengembalian)) {
+                $peminjamanQuery->whereYear('tanggal_pengembalian', $tanggal_pengembalian);
+                 } elseif (preg_match('/^\d{2}-\d{4}$/', $tanggal_pengembalian)) {
+                     [$bulan, $tahun] = explode('-', $tanggal_pengembalian);
+                     $peminjamanQuery->whereMonth('tanggal_pengembalian', $bulan)
+                                     ->whereYear('tanggal_pengembalian', $tahun);
+                 } else {
+                    $parts = explode('-', $tanggal_pengembalian);
+                     $tanggal_pengembalian = $parts[2] . '-' . $parts[1] . '-' . $parts[0];
+                     $peminjamanQuery->whereDate('tanggal_pengembalian', $tanggal_pengembalian);
+                 }
+             }
+
+             return DataTables::eloquent($peminjamanQuery)
                  ->addIndexColumn()
-                 ->addColumn('barang.nama_barang', function ($peminjaman) {
+                 ->addColumn('nama_barang', function ($peminjaman) {
                      return $peminjaman->barang ? $peminjaman->barang->nama_barang : 'Barang tidak tersedia';
                  })
                  ->addColumn('action', function ($peminjaman) {
@@ -44,12 +73,19 @@ class PeminjamanBarangController extends Controller
                               </form>';
                      return $btn;
                  })
-                 ->rawColumns(['action'])
+                 ->editColumn('tanggal_peminjaman', function ($peminjaman) {
+                     return Carbon::parse($peminjaman->tanggal_peminjaman)->format('d-m-Y');
+                 })
+                 ->editColumn('tanggal_pengembalian', function ($peminjaman) {
+                     return Carbon::parse($peminjaman->tanggal_pengembalian)->format('d-m-Y');
+                 })
+                 ->rawColumns(['tanggal_peminjaman', 'tanggal_pengembalian', 'action'])
                  ->make(true);
          }
 
          return view('peminjaman.index');
      }
+
     /**
      * Show the form for creating a new resource.
      */

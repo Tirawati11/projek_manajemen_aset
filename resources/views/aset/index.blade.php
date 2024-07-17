@@ -13,7 +13,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header-action mt-3 ml-3">
-                    <a href="{{ route('aset.create') }}" class="btn btn-primary"  style="margin-right: 10px;">
+                    <a href="{{ route('aset.create') }}" class="btn btn-sm btn-primary"  style="margin-right: 10px;">
                         <i class="fa-solid fa-circle-plus"></i> Tambah Aset
                     </a>
                 </div>
@@ -28,8 +28,8 @@
                                     <th style="text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Harga</th>
                                     <th style="text-align: center;">Merek</th>
-                                    <th style="text-align: center;">Tanggal Masuk</th>
-                                    <th style="text-align: center; width:150px">Aksi</th>
+                                    <th style="text-align: center; width:200px">Tanggal Masuk</th>
+                                    <th style="text-align: center; width:200px">Aksi</th>
                                 </tr>
                             </thead>
                         </table>
@@ -69,7 +69,7 @@ $(document).ready(function() {
         var form = $(this).closest('form');
         Swal.fire({
             title: 'Apakah Anda yakin?',
-            text: "Data yang dihapus tidak dapat dikembalikan!",
+            text: "Data yang dihapus tidak dapat dikembalikan",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',

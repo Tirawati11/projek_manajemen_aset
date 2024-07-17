@@ -59,7 +59,7 @@
                 }
             },
             columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', className: 'text-center', orderable: false, searchable: false },
                 { data: 'nama_peminjam', name: 'nama_peminjam', className: 'text-center' },
                 { data: 'nama_barang', name: 'barang.nama_barang', className: 'text-center' },
                 { data: 'jumlah', name: 'jumlah', className: 'text-center' },

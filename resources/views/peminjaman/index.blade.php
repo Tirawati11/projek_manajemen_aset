@@ -12,7 +12,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header-action mt-3 ml-3">
-                    <a href="{{ route('peminjaman.create') }}" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i> Buat Peminjaman</a>
+                    <a href="{{ route('peminjaman.create') }}" class="btn btn-sm btn-primary"><i class="fa-solid fa-circle-plus"></i> Buat Peminjaman</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -51,9 +51,42 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: {
-            url: "{{ route('peminjaman.index') }}",
-            type: 'GET',
-        },
+                url: "{{ route('peminjaman.index') }}",
+                data: function (d) {
+                    var tanggal_peminjaman = $('#tanggal_peminjaman').val();
+                    var tanggal_pengembalian = $('#tanggal_pengembalian').val();
+
+                    if (tanggal_peminjaman) {
+                        var parts = tanggal_peminjaman.split('-');
+                        if (parts.length === 3) {
+                            // Tanggal lengkap
+                            tanggal_peminjaman = parts[2] + '-' + parts[1] + '-' + parts[0];
+                        } else if (parts.length === 2) {
+                            // Bulan dan tahun
+                            tanggal_peminjaman = parts[1] + '-' + parts[0];
+                        } else if (parts.length === 1) {
+                            // Hanya tahun
+                            tanggal_peminjaman = parts[0];
+                        }
+                        d.tanggal_peminjaman = tanggal_peminjaman;
+                    }
+
+                    if (tanggal_pengembalian) {
+                        var parts = tanggal_pengembalian.split('-');
+                        if (parts.length === 3) {
+                            // Tanggal lengkap
+                            tanggal_pengembalian = parts[2] + '-' + parts[1] + '-' + parts[0];
+                        } else if (parts.length === 2) {
+                            // Bulan dan tahun
+                            tanggal_pengembalian = parts[1] + '-' + parts[0];
+                        } else if (parts.length === 1) {
+                            // Hanya tahun
+                            tanggal_pengembalian = parts[0];
+                        }
+                        d.tanggal_pengembalian = tanggal_pengembalian;
+                    }
+                }
+            },
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'barang.nama_barang', name: 'barang.nama_barang', className: 'text-center' },
@@ -71,7 +104,9 @@ $(document).ready(function() {
         ],
         order: [[1, 'asc']]
     });
-
+    $('#tanggal_peminjaman, #tanggal_pengembalian').change(function() {
+            table.draw();
+        });
     $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var form = $(this).closest('form');

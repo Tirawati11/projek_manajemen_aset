@@ -116,9 +116,9 @@
                                     </div>
                                     @enderror
                                 <br>
-                                <div class="d-flex justify-content-end mt-3">
-                                    <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger mr-1">Kembali</a>
-                                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                                <div class="d-flex justify-content-start mt-3">
+                                    <button type="submit" class="btn btn-sm btn-primary mr-1">Simpan</button>
+                                    <a href="{{ route('aset.index') }}" class="btn btn-sm btn-danger">Kembali</a>
                             </div>
                         </div>
                     </form>
