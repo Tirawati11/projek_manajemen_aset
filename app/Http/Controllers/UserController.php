@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UsersImport;
+
 
 
 
@@ -25,6 +29,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        
         $request->validate([
             'nama_user' => 'required',
             'email' => 'required|email|unique:users',
@@ -49,7 +54,7 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        return view('users.edit', compact('user'));
+        return view('users.index', compact('user'));
     }
 
     public function update(Request $request, User $user): RedirectResponse
@@ -74,26 +79,39 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id);
+        User::destroy($id);
 
-        if ($user) {
-            $user->delete();
-            return response()->json(['success' => true, 'message' => 'Pengguna berhasil dihapus.']);
-        }
-
-        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
+        return redirect()->route('users.index')->with('success', 'User berhasil Dihapus.');
     }
-    public function approve($id)
+
+    public function approve($id) {
+        $user = User::findOrFail($id);
+        $user->approved = true;
+        // $user->rejected = false; // Reset rejected status
+        $user->save();
+
+        return redirect()->route('users.index')->with('success', 'User berhasil disetujui.');
+    }
+
+    // public function reject($id)
+    // {
+    //     $user = User::findOrFail($id);
+    //     $user->approved = false;
+    //     $user->save();
+
+    //     return redirect()->route('users.index')->with('success', 'User rejected successfully.');
+    // }
+
+    public function import(Request $request)
     {
-        $user = User::find($id);
+        // Tambahkan log untuk memastikan file diterima
+        \Log::info('File yang diunggah:', [$request->file('file')]);
 
-        if ($user) {
-            $user->approved = true;
-            $user->save();
-            return response()->json(['success' => true, 'message' => 'Pengguna berhasil disetujui.']);
-        }
+        // Lakukan import dan tambahkan log untuk melihat prosesnya
+        Excel::import(new UsersImport, $request->file('file'));
 
-        return response()->json(['success' => false, 'message' => 'Pengguna tidak ditemukan.']);
+        \Log::info('Import selesai.');
+
+        return redirect()->back()->with('success', 'File berhasil diimport.');
     }
-
 }

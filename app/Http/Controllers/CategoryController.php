@@ -6,24 +6,23 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Models\Aset;
 
 
 
 class CategoryController extends Controller
 {
     public function index()
-    {
-        $categories = Category::with('aset')->paginate(10);
-        return view('categories.index', compact('categories'));
-    }
+{
+    $categories = Category::paginate(10);
+    return view('categories.index', compact('categories'));
+}
 
 public function create()
 {
     return view('categories.create');
 }
 
-public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nama_kategori' => 'required|string|max:255',
@@ -38,42 +37,33 @@ public function store(Request $request)
 
     public function show($id)
     {
-        $categories = Category::with('aset')->findOrFail($id);
-        return response()->json(['category' => $categories]);
+        $category = Category::findOrFail($id);
+        $asets = $category->asets; // Asumsi bahwa relasi antara kategori dan aset adalah 'asets'
+        return view('categories.show', compact('category', 'asets'));
     }
-
-
-public function edit(Category $category)
-{
-    return view('categories.edit', compact('category'));
-}
-
-public function update(Request $request, Category $category)
-{
-    $request->validate([
-        'nama_kategori' => 'required|string|max:255',
-    ]);
-
-    $category->name = $request->nama_kategori;
-    $category->save();
-
-    return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');
-}
+    
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return response()->json($category);
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui');
+    }
 
 public function destroy($id)
     {
-        try {
-            $category = Category::findOrFail($id);
+        $category = Category::find($id);
 
-            if ($category->aset()->count() > 0) {
-                return response()->json(['success' => false, 'message' => 'Kategori tidak bisa dihapus karena masih berelasi dengan aset.']);
-            }
-
+        if ($category) {
             $category->delete();
-
-            return response()->json(['success' => true, 'message' => 'Kategori berhasil dihapus.']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menghapus kategori.']);
+            return response()->json(['success' => true, 'message' => 'Kategori telah dihapus.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Kategori tidak ditemukan.']);
         }
     }
 }
