@@ -6,7 +6,7 @@ use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-
+use App\Models\Aset;
 
 
 class CategoryController extends Controller
@@ -38,7 +38,8 @@ public function create()
     public function show($id)
     {
         $category = Category::findOrFail($id);
-        $asets = $category->asets; // Asumsi bahwa relasi antara kategori dan aset adalah 'asets'
+        $asets = $category->asets;
+        $asets = Aset::all(); // Asumsi bahwa relasi antara kategori dan aset adalah 'asets'
         return view('categories.show', compact('category', 'asets'));
     }
     
@@ -50,20 +51,31 @@ public function create()
     
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nama_kategori' => 'required|string|max:255',
+        ]);
+    
         $category = Category::findOrFail($id);
-        $category->update($request->all());
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui');
+        $category->name = $request->input('nama_kategori');
+        $category->save();
+    
+        return response()->json(['success' => true, 'message' => 'Kategori berhasil diperbarui.']);
     }
 
-public function destroy($id)
+    public function destroy($id)
     {
         $category = Category::find($id);
 
-        if ($category) {
-            $category->delete();
-            return response()->json(['success' => true, 'message' => 'Kategori telah dihapus.']);
-        } else {
+        if (!$category) {
             return response()->json(['success' => false, 'message' => 'Kategori tidak ditemukan.']);
         }
+
+        // Misalkan kategori berelasi dengan produk, menggunakan relasi hasMany bernama 'products'
+        if ($category->aset()->count() > 0) {
+            return response()->json(['success' => false, 'message' => 'Kategori masih berelasi dengan produk dan tidak bisa dihapus.']);
+        }
+
+        $category->delete();
+        return response()->json(['success' => true, 'message' => 'Kategori telah dihapus.']);
     }
 }

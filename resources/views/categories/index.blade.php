@@ -126,15 +126,31 @@
             $('#modal-tambah-kategori').modal('show');
         });
 
-        // Event handler untuk tombol "Edit Kategori"
-        $(document).on('click', '.btn-edit', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            var name = $(this).data('name');
-            $('#edit_nama_kategori').val(name);
-            $('#form-edit-kategori').attr('action', '/categories/' + id);
-            $('#modal-edit-kategori').modal('show');
+// Event handler untuk tombol "Edit Kategori"
+$(document).on('click', '.btn-edit', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+
+        // Fetch category data using AJAX
+        $.ajax({
+            url: '/categories/' + id + '/edit',
+            type: 'GET',
+            success: function(data) {
+                $('#edit_nama_kategori').val(data.name);
+                $('#form-edit-kategori').attr('action', '/categories/' + id);
+                $('#modal-edit-kategori').modal('show');
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    title: 'Gagal!',
+                    text: 'Terjadi kesalahan saat mengambil data kategori.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         });
+    });
+
 
         // Event handler untuk tombol "Show Kategori"
         $(document).on('click', '.btn-show', function(e) {
@@ -143,26 +159,55 @@
             window.location.href = '/categories/' + id;
         });
 
-        // Event handler untuk tombol "Delete Kategori"
-        $(document).on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Anda tidak akan dapat mengembalikan ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(this).closest('form').submit();
+    $(document).on('click', '.btn-delete', function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    var form = $(this).closest('form'); // Ambil form terdekat
+
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda tidak akan dapat mengembalikan ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: form.attr('action'), // Ambil URL dari atribut action pada form
+                type: 'POST',
+                data: form.serialize(), // Serialize form data untuk dikirimkan
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'Terhapus!',
+                            response.message,
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Reload halaman setelah penghapusan berhasil
+                        });
+                    } else {
+                        Swal.fire(
+                            'Gagal!',
+                            response.message,
+                            'error'
+                        );
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                    );
                 }
             });
-        });
+        }
+    });
+});
 
         @if(session('success'))
             Swal.fire({
