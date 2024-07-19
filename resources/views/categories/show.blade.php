@@ -13,7 +13,7 @@
                 <div class="card-body">
                     <h3 class="mb-4" style="text-align: center;" >Data Aset</h3>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-md">
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">No</th>
@@ -26,10 +26,10 @@
                                 @if ($asets && count($asets) > 0)
                                 @foreach($asets as $index => $aset)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $aset->nama_barang }}</td>
-                                        <td>{{ $aset->jumlah }}</td>
-                                        <td>{{ $aset->kondisi }}</td>
+                                        <td class="text-center">{{ $index + 1 }}</td>
+                                        <td class="text-center">{{ $aset->nama_barang }}</td>
+                                        <td class="text-center">{{ $aset->jumlah }}</td>
+                                        <td class="text-center">{{ $aset->kondisi }}</td>
                                     </tr>
                                 @endforeach
                             @else

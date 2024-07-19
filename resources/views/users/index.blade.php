@@ -6,11 +6,9 @@
  <!-- Import jQuery -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-
-
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data User</h1>
+        <h1 class="section-title">Data User</h1>
     </div>
 <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
@@ -24,6 +22,8 @@
                     <button class="btn btn-sm btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
                         <i class="fa-solid fa-file-import"></i> Import File
                     </button>
+                </div>
+                <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-md" id="table1">
                             <thead>
@@ -39,11 +39,11 @@
                         <tbody>
                             @forelse ($users as $user)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $user->nama_user }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->jabatan }}</td>
-                                <td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $user->nama_user }}</td>
+                                <td class="text-center">{{ $user->email }}</td>
+                                <td class="text-center">{{ $user->jabatan }}</td>
+                                <td class="text-center">
                                     @if($user->approved)
                                         <span class="badge badge-success">Approved</span>
                                     @elseif($user->rejected)

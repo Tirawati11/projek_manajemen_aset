@@ -27,9 +27,9 @@
                             <tbody>
                                 @forelse ($categories as $category)
                             <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $category->name }}</td>
+                                <td class="text-center">
                                 <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" title="Show">
                                     <i class="far fa-eye"></i>
                                 </a>

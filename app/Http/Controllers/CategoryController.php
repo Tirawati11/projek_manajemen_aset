@@ -50,17 +50,13 @@ public function create()
     }
     
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_kategori' => 'required|string|max:255',
-        ]);
-    
-        $category = Category::findOrFail($id);
-        $category->name = $request->input('nama_kategori');
-        $category->save();
-    
-        return response()->json(['success' => true, 'message' => 'Kategori berhasil diperbarui.']);
-    }
+{
+    $category = Category::find($id);
+    $category->name = $request->nama_kategori; // Ensure the input name matches the form input name
+    $category->save();
+
+    return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
+}
 
     public function destroy($id)
     {
