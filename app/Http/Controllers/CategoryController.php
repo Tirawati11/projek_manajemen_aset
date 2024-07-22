@@ -7,14 +7,40 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\Aset;
+use Yajra\DataTables\Facades\Datatables;
+
+
 
 
 class CategoryController extends Controller
 {
     public function index()
 {
-    $categories = Category::paginate(10);
-    return view('categories.index', compact('categories'));
+    // Mengambil data kategori
+    $categories = Category::select(['id', 'name']);
+
+    // Jika request adalah AJAX untuk DataTables
+    if (request()->ajax()) {
+        return DataTables::of($categories)
+            ->addIndexColumn()
+            ->addColumn('action', function($row) {
+                $btn = '<a href="#" class="btn btn-sm btn-dark btn-show" data-id="' . $row->id . '" title="Show">
+                            <i class="far fa-eye"></i>
+                        </a>';
+                $btn .= '<form action="' . route('categories.destroy', $row->id) . '" method="POST" class="d-inline form-delete">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger btn-delete" data-id="' . $row->id . '" title="Hapus">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    // Jika request adalah GET biasa untuk menampilkan halaman
+    return view('categories.index');
 }
 
 public function create()
@@ -25,7 +51,7 @@ public function create()
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kategori' => 'required|string|max:255',
+            'nama_kategori' => 'required|string|max:255|unique:categories,name',
         ]);
 
         Category::create([
@@ -37,26 +63,35 @@ public function create()
 
     public function show($id)
     {
+        // Mengambil data kategori berdasarkan ID
         $category = Category::findOrFail($id);
-        $asets = $category->asets;
-        $asets = Aset::all(); // Asumsi bahwa relasi antara kategori dan aset adalah 'asets'
+
+        // Mengambil data aset yang terkait dengan kategori tersebut
+        $asets = $category->aset
+        ;
+
         return view('categories.show', compact('category', 'asets'));
     }
-    
+
+
     public function edit($id)
     {
         $category = Category::findOrFail($id);
         return response()->json($category);
     }
-    
-    public function update(Request $request, $id)
-{
-    $category = Category::find($id);
-    $category->name = $request->nama_kategori; // Ensure the input name matches the form input name
-    $category->save();
 
-    return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
-}
+    public function update(Request $request, $id)
+    {
+        $category = Category::findOrFail($id);
+        $category->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil diperbarui',
+            'data' => $category
+        ]);
+    }
+
 
     public function destroy($id)
     {
