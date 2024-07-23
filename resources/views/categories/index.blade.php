@@ -2,7 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
 <section class="section">
     <div class="section-header">
         <h1 class="section-title">Data Kategori</h1>
@@ -24,11 +24,11 @@
                                     <th style="text-align: center;">Aksi</th>
                                 </tr>
                             </thead>
-            </table>
+                     </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 
     <!-- Modal Tambah Kategori -->
@@ -90,9 +90,7 @@
 
   @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
 <script>
     $(document).ready(function() {

@@ -14,11 +14,13 @@
     <div class="section-header">
         <h1 class="section-title">Data Lokasi</h1>
     </div>
+</section>
+<div class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalTambah"><i class="fa-solid fa-circle-plus"></i> Tambah Lokasi</button>
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded">
+                <div class="card-body">
+                    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalTambah"><i class="fa-solid fa-circle-plus"></i> Tambah Lokasi</button>
                 </div>
                 <div class="card-body">
                     <div id="alert-container"></div>

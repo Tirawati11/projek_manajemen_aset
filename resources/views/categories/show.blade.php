@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Detail Data Kategori: {{ $category->name }}</h1>
+        <h1 class="section-title">Detail Data Kategori: {{ $category->name }}</h1>
     </div>
 </section>
 <div class="container mt-5 mb-5">
@@ -19,7 +19,7 @@
                                     <th style="text-align: center;">No</th>
                                     <th style="text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Jumlah</th>
-                                    <th style="text-align: center;">Kondisi</th>
+                                    <th style="text-align: center; width:50px">Kondisi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,7 +41,7 @@
                         </table>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <a href="{{ route('categories.index') }}" class="btn btn-sm btn-primary mt-3">Kembali</a>
+                        <a href="{{ route('categories.index') }}" class="btn btn-sm btn-danger mt-3">Kembali</a>
                     </div>
                 </div>
             </div>
