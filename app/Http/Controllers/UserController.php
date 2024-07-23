@@ -10,17 +10,55 @@ use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\UsersImport;
+use Yajra\DataTables\Facades\Datatables;
+use Illuminate\Support\Facades\Log;
+
 
 
 
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
-        return view('users.index', compact('users'));
+        if ($request->ajax()) {
+            $data = User::select('*');
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $btn = '';
+
+                    // Tombol Approve jika pengguna belum disetujui atau ditolak
+                    if (!$row->approved && !$row->rejected) {
+                        $btn .= '<form action="' . route('users.approve', $row->id) . '" method="POST" class="d-inline form-approve" data-id="' . $row->id . '">
+                            ' . csrf_field() . method_field('PUT') . '
+                            <button type="button" class="btn btn-sm btn-success btn-approve" title="Approve">
+                                <i class="far fa-thumbs-up"></i>
+                            </button>
+                        </form>';
+                    }
+
+                    // Tombol Edit
+                    $btn .= '<a href="#" class="btn btn-sm btn-primary btn-edit" data-id="' . $row->id . '" data-name="' . $row->nama_user . '" data-email="' . $row->email . '" data-jabatan="' . $row->jabatan . '" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </a>';
+
+                    // Tombol Hapus
+                    $btn .= '<form action="' . route('users.destroy', $row->id) . '" method="POST" class="d-inline form-delete" data-id="' . $row->id . '">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="button" class="btn btn-sm btn-danger btn-delete" title="Hapus">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>';
+
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('users.index');
     }
+
 
     public function create(): View
     {
@@ -29,7 +67,7 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        
+
         $request->validate([
             'nama_user' => 'required',
             'email' => 'required|email|unique:users',
@@ -105,12 +143,12 @@ class UserController extends Controller
     public function import(Request $request)
     {
         // Tambahkan log untuk memastikan file diterima
-        \Log::info('File yang diunggah:', [$request->file('file')]);
+        Log::info('File yang diunggah:', [$request->file('file')]);
 
         // Lakukan import dan tambahkan log untuk melihat prosesnya
         Excel::import(new UsersImport, $request->file('file'));
 
-        \Log::info('Import selesai.');
+        Log::info('Import selesai.');
 
         return redirect()->back()->with('success', 'File berhasil diimport.');
     }

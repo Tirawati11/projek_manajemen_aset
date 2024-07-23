@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <a href="#" class="btn btn-sm btn-primary mb-3" id="btn-tambah-kategori"><i class="fa-solid fa-circle-plus"></i> Tambah Kategori</a>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-md" id="table1">
+                        <table class="table table-bordered table-md" id="data-table">
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">No</th>
@@ -24,33 +24,6 @@
                                     <th style="text-align: center;">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($categories as $category)
-                            <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-dark btn-show" data-id="{{ $category->id }}" title="Show">
-                                    <i class="far fa-eye"></i>
-                                </a>
-                                <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $category->id }}" data-name="{{ $category->name }}" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline form-delete">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger btn-delete" data-id="{{ $category->id }}" title="Hapus">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">Data Kategori belum tersedia.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
             </table>
         </div>
     </div>
@@ -115,17 +88,73 @@
 </section>
 @endsection
 
-@section('scripts')
+  @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
 
 <script>
     $(document).ready(function() {
-        // Event handler untuk tombol "Tambah Kategori"
-        $('#btn-tambah-kategori').click(function(e) {
-            e.preventDefault(); // Hindari navigasi ke link
-            $('#modal-tambah-kategori').modal('show');
+        // Initialize DataTables
+        var table = $('#data-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('categories.index') }}",
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, className: 'text-center' },
+                { data: 'name', name: 'name', className: 'text-center' },
+                { data: 'action', name: 'action', orderable: false, searchable: false, className: 'text-center' }
+            ]
         });
 
+        $('#btn-tambah-kategori').click(function(e) {
+        e.preventDefault(); // Hindari navigasi ke link
+
+        // Reset form saat modal ditampilkan
+        $('#form-tambah-kategori')[0].reset();
+
+        $('#modal-tambah-kategori').modal('show');
+    });
+
+    // Event handler untuk form tambah kategori
+    $('#form-tambah-kategori').submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        var data = form.serialize();
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: data,
+            success: function(response) {
+                $('#modal-tambah-kategori').modal('hide');
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    table.ajax.reload(null, false); // Reload data tanpa mereset halaman ke halaman pertama
+                });
+            },
+            error: function(xhr) {
+                var errorMessage = 'Gagal menambahkan kategori.';
+
+                if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                    errorMessage = xhr.responseJSON.errors.nama_kategori[0];
+                }
+
+                Swal.fire({
+                    title: 'Error',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
         // Event handler untuk tombol "Edit Kategori"
         $(document).on('click', '.btn-edit', function(e) {
             e.preventDefault();
@@ -134,6 +163,44 @@
             $('#edit_nama_kategori').val(name);
             $('#form-edit-kategori').attr('action', '/categories/' + id);
             $('#modal-edit-kategori').modal('show');
+        });
+
+        $('#form-edit-kategori').submit(function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            var method = form.attr('method');
+            var data = form.serialize();
+
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                success: function(response) {
+                    $('#modal-edit-kategori').modal('hide');
+                    $('.modal-backdrop').remove();
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success',
+                        showConfirmButton: true
+                    }).then((result) => {
+                        table.ajax.reload(null, false); // Reload data tanpa mereset halaman ke halaman pertama
+                    });
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Gagal melakukan update.',
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                }
+            });
+        });
+
+        $('.modal').on('hidden.bs.modal', function () {
+            $('.modal-backdrop').remove();
         });
 
         // Event handler untuk tombol "Show Kategori"
@@ -145,25 +212,54 @@
 
         // Event handler untuk tombol "Delete Kategori"
         $(document).on('click', '.btn-delete', function(e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Anda tidak akan dapat mengembalikan ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(this).closest('form').submit();
+    e.preventDefault();
+    var id = $(this).data('id');
+    var form = $(this).closest('form'); // Ambil form terdekat
+
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Anda tidak akan dapat mengembalikan ini",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus',
+        cancelButtonText: 'Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: form.attr('action'), // Ambil URL dari atribut action pada form
+                type: 'POST',
+                data: form.serialize(), // Serialize form data untuk dikirimkan
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'Terhapus!',
+                            response.message,
+                            'success'
+                        ).then(() => {
+                            location.reload(); // Reload halaman setelah penghapusan berhasil
+                        });
+                    } else {
+                        Swal.fire(
+                            'Gagal!',
+                            response.message,
+                            'error'
+                        );
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire(
+                        'Gagal!',
+                        'Terjadi kesalahan saat menghapus data.',
+                        'error'
+                    );
                 }
             });
-        });
-
+        }
+    });
+});
         @if(session('success'))
             Swal.fire({
                 title: 'Berhasil!',
@@ -184,4 +280,3 @@
     });
 </script>
 @endsection
-

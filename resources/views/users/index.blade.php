@@ -1,98 +1,49 @@
 @extends('layouts.main')
 
 @section('content')
- <!-- Import Font Awesome CSS -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="anonymous" referrerpolicy="no-referrer" />
- <!-- Import jQuery -->
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.1.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Data User</h1>
+        <h1 class="section-title">Data User</h1>
     </div>
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded">
-                <div class="card-body">
-                <div class="card-header-action">
-                    <button class="btn btn-sm btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
-                        <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
-                    </button>
-                    <button class="btn btn-sm btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
-                        <i class="fa-solid fa-file-import"></i> Import File
-                    </button>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-md" id="table1">
-                            <thead>
-                                <tr>
-                                <th style="text-align: center;">No</th>
-                                <th style="text-align: center;">Nama User</th>
-                                <th style="text-align: center;">Email</th>
-                                <th style="text-align: center;">Jabatan</th>
-                                <th style="text-align: center;">Approved</th>
-                                <th style="text-align: center;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($users as $user)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $user->nama_user }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->jabatan }}</td>
-                                <td>
-                                    @if($user->approved)
-                                        <span class="badge badge-success">Approved</span>
-                                    @elseif($user->rejected)
-                                        {{-- <span class="badge badge-danger">Rejected</span> --}}
-                                    @else
-                                        <span class="badge badge-warning">Pending</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <a href="#" class="btn btn-sm btn-primary btn-edit" data-id="{{ $user->id }}" data-name="{{ $user->nama_user }}" data-email="{{ $user->email }}" data-jabatan="{{ $user->jabatan }}" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline form-delete" data-id="{{ $user->id }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-danger btn-delete" title="Hapus">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </form>
-                                    @if(!$user->approved && !$user->rejected)
-                                        <form action="{{ route('users.approve', $user->id) }}" method="POST" class="d-inline form-approve" data-id="{{ $user->id }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="button" class="btn btn-sm btn-primary btn-approve" title="Approve">
-                                                <i class="far fa-thumbs-up"></i>
-                                            </button>
-                                        </form>
-                                        {{-- <form action="{{ route('users.reject', $user->id) }}" method="POST" class="d-inline form-reject" data-id="{{ $user->id }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="button" class="btn btn-sm btn-danger btn-reject" title="Reject">
-                                                <i class="far fa-thumbs-down"></i>
-                                            </button>
-                                        </form> --}}
-                                    @endif
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="text-center">Data Pengguna belum tersedia.</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded">
+                    <div class="card-body">
+                        <div class="card-header-action">
+                            <button class="btn btn-sm btn-primary" id="btn-tambah-user" data-toggle="modal" data-target="#modal-tambah-user">
+                                <i class="fa-solid fa-circle-plus"></i> Tambah Pengguna
+                            </button>
+                            <button class="btn btn-sm btn-danger" id="btn-import-excel" data-toggle="modal" data-target="#modal-import-excel">
+                                <i class="fa-solid fa-file-import"></i> Import File
+                            </button>
+                        </div>
+                        <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-md" id="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama User</th>
+                                        <th>Email</th>
+                                        <th>Jabatan</th>
+                                        <th>Approved</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Modal Tambah Pengguna -->
 <div class="modal fade" id="modal-tambah-user" tabindex="-1" role="dialog" aria-labelledby="modal-tambah-user-label" aria-hidden="true">
@@ -198,21 +149,32 @@
 @endsection
 
 @section('scripts')
-<!-- Import Bootstrap JS -->
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<!-- SweetAlert JS -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.4/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     $(document).ready(function () {
-        // Tambah User
-        $('#modal-tamsbah-user').on('shown.bs.modal', function () {
-            $('#nama_user').focus();
+        var table = $('#users-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('users.index') }}",
+            columns: [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false},
+                {data: 'nama_user', name: 'nama_user'},
+                {data: 'email', name: 'email'},
+                {data: 'jabatan', name: 'jabatan'},
+                {data: 'approved', name: 'approved', render: function(data) {
+                    return data ? '<span class="badge badge-success">Approved</span>' : '<span class="badge badge-warning">Pending</span>';
+                }},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
         });
 
-        // Event handler untuk tombol edit
-        $('.btn-edit').click(function(e) {
-            e.preventDefault();
+        // Event handler for Edit button
+        $(document).on('click', '.btn-edit', function() {
             var id = $(this).data('id');
             var name = $(this).data('name');
             var email = $(this).data('email');
@@ -225,19 +187,20 @@
         });
 
         // Delete User
-    $(document).ready(function() {
-        $('.btn-delete').click(function(e) {
+        $(document).on
+
+        // Delete User
+        $(document).on('click', '.btn-delete', function(e) {
             e.preventDefault();
             var form = $(this).closest('form');
-            var id = $(this).closest('form').data('id');
             Swal.fire({
                 title: 'Apakah Anda yakin?',
-                text: "Data yang dihapus tidak dapat dikembalikan!",
+                text: "Data yang dihapus tidak dapat dikembalikan",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!',
+                confirmButtonText: 'Ya, hapus',
                 cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
@@ -246,10 +209,9 @@
                 }
             });
         });
-    });
 
-        // Event handler untuk tombol approve
-        $('.btn-approve').click(function(e) {
+        // Approve User
+        $(document).on('click', '.btn-approve', function(e) {
             e.preventDefault();
             var form = $(this).closest('form');
             Swal.fire({
@@ -259,7 +221,7 @@
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Setujui!',
+                confirmButtonText: 'Ya, Setujui',
                 cancelButtonText: 'Batal',
                 reverseButtons: true
             }).then((result) => {
@@ -269,8 +231,8 @@
             });
         });
 
-       // Handling for successful or failed operations
-       @if(session('success'))
+        // Show success or error messages
+        @if(session('success'))
             Swal.fire({
                 title: 'Berhasil!',
                 text: "{{ session('success') }}",
@@ -288,23 +250,5 @@
             });
         @endif
     });
-        // // Event handler untuk tombol reject
-        // $('.btn-reject').click(function(e) {
-        //     e.preventDefault();
-        //     var form = $(this).closest('form');
-        //     Swal.fire({
-        //         title: 'Apakah Anda yakin?',
-        //         text: "Apakah Anda ingin menolak pengguna ini?",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonText: 'Ya, tolak!'
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             form.submit();
-        //         }
-        //     });
-        // });
 </script>
 @endsection
