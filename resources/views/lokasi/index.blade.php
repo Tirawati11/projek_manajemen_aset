@@ -112,6 +112,10 @@
         });
     });
 
+    $('#modalTambah').on('hidden.bs.modal', function () {
+        $(this).find('form')[0].reset();
+    });
+
     $(document).on('click', '.delete-confirm', function(e) {
         e.preventDefault();
         var id = $(this).data('id');

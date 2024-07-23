@@ -37,16 +37,26 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pengajuan/bulk-reject', [PengajuanBarangController::class, 'bulkReject'])->name('pengajuan.bulk-reject')->middleware('jabatan:admin');
 
         // Route Users
-
-        Route::put('users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.delete');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::resource('users', UserController::class)->except(['destroy']);
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::put('/users/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
+        Route::put('/users/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
+        Route::post('users/import', [UserController::class, 'import'])->name('users.import');
+
+
+                
+
 
         // Route Categories
         Route::resource('categories', CategoryController::class);
-        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit']);
+        Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
+        Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+
 
         // Route Lokasi
         Route::resource('lokasi', LocationController::class);

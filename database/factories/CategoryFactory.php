@@ -22,7 +22,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->word(), // Menggunakan unique() untuk memastikan nama kategori unik
+            'name' => $this->faker->word(), // Menggunakan unique() untuk memastikan nama kategori unik
         ];
     }
 }

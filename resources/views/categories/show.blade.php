@@ -1,36 +1,51 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-10 col-lg-10">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5>Detail Kategori</h5>
-                </div>
+<section class="section">
+    <div class="section-header">
+        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Detail Data Kategori: {{ $category->name }}</h1>
+    </div>
+</section>
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded">
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for="id">ID Kategori</label>
-                        <input type="text" class="form-control" id="id" name="id" value="{{ $category->id }}" readonly>
+                    <h3 class="mb-4" style="text-align: center;">Data Aset</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-md">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">No</th>
+                                    <th style="text-align: center;">Nama Barang</th>
+                                    <th style="text-align: center;">Jumlah</th>
+                                    <th style="text-align: center;">Kondisi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($asets && count($asets) > 0)
+                                    @foreach($asets as $index => $aset)
+                                        <tr>
+                                            <td class="text-center">{{ $index + 1 }}</td>
+                                            <td class="text-center">{{ $aset->nama_barang }}</td>
+                                            <td class="text-center">{{ $aset->jumlah }}</td>
+                                            <td class="text-center">{{ $aset->kondisi }}</td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="4" class="text-center">Tidak ada aset yang terkait dengan kategori ini.</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group">
-                        <label for="nama_kategori">Nama Kategori</label>
-                        <input type="text" class="form-control" id="nama_kategori" name="nama_kategori" value="{{ $category->name }}" readonly>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ route('categories.index') }}" class="btn btn-sm btn-primary mt-3">Kembali</a>
                     </div>
-                    <a href="{{ route('categories.index') }}" class="btn btn-primary">Back</a>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            @if(session()->has('success'))
-                toastr.success('{{ session('success') }}', 'BERHASIL!');
-            @elseif(session()->has('error'))
-                toastr.error('{{ session('error') }}', 'GAGAL!');
-            @endif
-        });
-    </script>
+</div>
 @endsection
