@@ -108,10 +108,12 @@
             ]
         });
 
-        // Event handler untuk tombol "Tambah Kategori"
-        // Event handler untuk tombol "Tambah Kategori"
-    $('#btn-tambah-kategori').click(function(e) {
+        $('#btn-tambah-kategori').click(function(e) {
         e.preventDefault(); // Hindari navigasi ke link
+
+        // Reset form saat modal ditampilkan
+        $('#form-tambah-kategori')[0].reset();
+
         $('#modal-tambah-kategori').modal('show');
     });
 
