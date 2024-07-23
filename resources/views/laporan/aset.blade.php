@@ -14,13 +14,14 @@
     <div class="section-header no-print">
         <h1 class="section-title">Data Laporan Aset</h1>
     </div>
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center no-print">
-                    <div>
-                        <button onclick="prepareForPrint()" class="btn btn-primary"><i class="bi bi-printer"></i> Cetak Laporan</button>
-                        <button onclick="exportToExcel()" class="btn btn-success"><i class="bi bi-file-earmark-excel"></i> Simpan ke Excel</button>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded">
+                    <div class="card-body no-print">
+                        <div>
+                        <button onclick="prepareForPrint()" class="btn btn-sm btn-primary"><i class="bi bi-printer"></i> Cetak Laporan</button>
+                        <button onclick="exportToExcel()" class="btn btn-sm btn-success"><i class="bi bi-file-earmark-excel"></i> Simpan ke Excel</button>
                     </div>
                 </div>
                 <div class="card-body printableArea">
