@@ -19,7 +19,7 @@
                                     <th style="text-align: center;">No</th>
                                     <th style="text-align: center;">Nama Barang</th>
                                     <th style="text-align: center;">Jumlah</th>
-                                    <th style="text-align: center; width:50px">Kondisi</th>
+                                    <th style="text-align: center; width:50pxss">Kondisi</th>
                                 </tr>
                             </thead>
                             <tbody>
