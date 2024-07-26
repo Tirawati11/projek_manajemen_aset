@@ -3,7 +3,7 @@
 @section('content')
 <section class="section">
     <div class="section-header">
-        <h1 class="section-title" style="font-family: 'Roboto', sans-serif; color: #333;">Dashboard</h1>
+        <h1 class="section-title">Dashboard</h1>
     </div>
 </section>
 <div class="container">
@@ -24,7 +24,7 @@
                 </div>
             </div>
         </div>
-        
+
 
         <!-- Kolom kedua -->
         <div class="col-lg-4 col-md-4 col-sm-6 col-12 mb-3">
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Kolom ketiga -->
         <div class="col-lg-4 col-md-4 col-sm-6 col-12 mb-3">
             <div class="card card-statistic-1">

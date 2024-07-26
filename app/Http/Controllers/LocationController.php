@@ -79,16 +79,25 @@ class LocationController extends Controller
     /**
      * Display the specified resource.
      */
-      public function show($id)
-{
-    // Mengambil data lokasi berdasarkan ID
-    $location = Location::findOrFail($id);
 
-    // Mengambil data peminjaman barang yang terkait dengan lokasi tersebut
-    $peminjamanBarangs = $location->peminjamanBarangs;
+     public function show($id)
+     {
+         $location = Location::findOrFail($id);
 
-    return view('lokasi.show', compact('location', 'peminjamanBarangs'));
-}
+         if (request()->ajax()) {
+             $peminjamanBarangs = $location->peminjamanBarangs()->with('barang')->select('peminjaman_barangs.*');
+
+             return DataTables::of($peminjamanBarangs)
+                 ->addIndexColumn()
+                 ->editColumn('barang.nama_barang', function($row) {
+                     return $row->barang ? $row->barang->nama_barang : 'Barang tidak ditemukan';
+                 })
+                 ->make(true);
+         }
+
+         return view('lokasi.show', compact('location'));
+     }
+
 
     /**
      * Show the form for editing the specified resource.
