@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show');
         Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+        Route::get('categories/{categoryId}/asets/data', [CategoryController::class, 'getAsetsData'])->name('categories.asets.data');
 
 
         // Route Lokasi

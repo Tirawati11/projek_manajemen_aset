@@ -14,6 +14,11 @@ use Yajra\DataTables\Facades\Datatables;
 
 class CategoryController extends Controller
 {
+    public function getAsetsData($categoryId)
+{
+    $asets = Aset::where('category_id', $categoryId)->select(['id', 'nama_barang', 'jumlah', 'kondisi']);
+    return DataTables::of($asets)->make(true);
+}
     public function index()
 {
     // Mengambil data kategori
